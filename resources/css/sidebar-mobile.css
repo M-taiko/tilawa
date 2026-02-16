@@ -1,0 +1,115 @@
+/* ============================================
+   TILAWA SIDEBAR - MOBILE OPTIMIZATIONS
+   Touch-friendly interactions for mobile devices
+   ============================================ */
+
+@media (max-width: 1023px) {
+    /* Larger touch targets */
+    .nav-item {
+        padding: 1rem;
+        min-height: 52px;
+    }
+
+    .nav-item .icon-wrapper {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+
+    /* Always visible buttons on mobile */
+    .favorite-toggle,
+    .remove-favorite {
+        opacity: 1;
+        padding: 0.75rem;
+    }
+
+    /* Prevent iOS zoom on input focus */
+    .sidebar-search-container input {
+        font-size: 16px;
+        padding: 0.875rem 2.5rem 0.875rem 1rem;
+    }
+
+    /* Larger section headers */
+    .sidebar-section > div:first-child {
+        font-size: 0.75rem;
+        padding: 0.625rem 1rem;
+    }
+
+    /* More comfortable spacing */
+    .nav-section {
+        gap: 0.75rem;
+    }
+
+    /* Larger favorites section */
+    .sidebar-favorites a {
+        padding: 0.875rem 0.75rem;
+        min-height: 52px;
+    }
+
+    /* Improve tap feedback */
+    .nav-item:active {
+        transform: scale(0.98);
+        opacity: 0.8;
+    }
+}
+
+/* ============================================
+   TABLET OPTIMIZATIONS (768px - 1023px)
+   ============================================ */
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    /* Slightly larger sidebar on tablets */
+    #desktopSidebar {
+        width: 16rem;
+    }
+
+    /* Better use of space */
+    .sidebar-search-container {
+        padding: 1rem;
+    }
+
+    .nav-item {
+        padding: 0.875rem 1rem;
+    }
+}
+
+/* ============================================
+   LANDSCAPE MOBILE
+   ============================================ */
+
+@media (max-width: 1023px) and (orientation: landscape) {
+    /* Reduce vertical spacing in landscape */
+    .sidebar-nav {
+        gap: 1rem;
+    }
+
+    .nav-section {
+        gap: 0.5rem;
+    }
+
+    .sidebar-section {
+        margin-top: 1rem;
+        padding-top: 1rem;
+    }
+}
+
+/* ============================================
+   SMALL MOBILE (< 375px)
+   ============================================ */
+
+@media (max-width: 374px) {
+    /* Compact mode for very small screens */
+    .nav-item {
+        padding: 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    .nav-item .icon-wrapper {
+        width: 2rem;
+        height: 2rem;
+    }
+
+    .sidebar-search-container input {
+        padding: 0.75rem 2rem 0.75rem 0.875rem;
+        font-size: 14px;
+    }
+}

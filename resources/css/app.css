@@ -1,0 +1,141 @@
+@import 'tailwindcss';
+
+/* ============================================
+   TILAWA PROFESSIONAL DESIGN SYSTEM
+   Pure Tailwind CSS 4.0 - Modern Glassmorphism
+   ============================================ */
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+/* ============================================
+   DESIGN TOKENS
+   ============================================ */
+
+@theme {
+    /* Font Family */
+    --font-sans: 'Tajawal', ui-sans-serif, system-ui, sans-serif;
+
+    /* Primary Colors - Royal Blue (More Vibrant) */
+    --color-primary-50: #eff6ff;
+    --color-primary-100: #dbeafe;
+    --color-primary-200: #bfdbfe;
+    --color-primary-300: #93c5fd;
+    --color-primary-400: #60a5fa;
+    --color-primary-500: #3b82f6;
+    --color-primary-600: #2563eb;
+    --color-primary-700: #1d4ed8;
+    --color-primary-800: #1e40af;
+    --color-primary-900: #1e3a8a;
+    --color-primary-950: #172554;
+
+    /* Secondary/Accent Colors - Teal/Cyan */
+    --color-accent-50: #f0fdfa;
+    --color-accent-100: #ccfbf1;
+    --color-accent-200: #99f6e4;
+    --color-accent-500: #14b8a6;
+    --color-accent-600: #0d9488;
+
+    /* Semantic Colors - High Contrast */
+    --color-success-50: #f0fdf4;
+    --color-success-100: #dcfce7;
+    --color-success-500: #22c55e;
+    --color-success-600: #16a34a;
+    
+    --color-warning-50: #fffbeb;
+    --color-warning-100: #fef3c7;
+    --color-warning-500: #f59e0b;
+    --color-warning-600: #d97706;
+    
+    --color-error-50: #fef2f2;
+    --color-error-100: #fee2e2;
+    --color-error-500: #ef4444;
+    --color-error-600: #dc2626;
+
+    --color-info-50: #f0f9ff;
+    --color-info-100: #e0f2fe;
+    --color-info-500: #0ea5e9;
+    --color-info-600: #0284c7;
+
+    /* Border Radius - Modern & Soft */
+    --radius-sm: 0.5rem;      /* 8px */
+    --radius-DEFAULT: 0.75rem; /* 12px */
+    --radius-md: 0.75rem;      /* 12px */
+    --radius-lg: 1rem;         /* 16px */
+    --radius-xl: 1.5rem;       /* 24px */
+    --radius-2xl: 2rem;        /* 32px */
+
+    /* Shadows - Soft & Diffused */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-DEFAULT: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+    --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+    --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+    --shadow-xl: 0 25px 50px -12px rgb(0 0 0 / 0.15);
+    --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+}
+
+/* ============================================
+   GLOBAL STYLES
+   ============================================ */
+
+html {
+    @apply scroll-smooth;
+}
+
+body {
+    @apply antialiased text-slate-800 bg-slate-50;
+    font-feature-settings: "cv11", "ss01";
+}
+
+/* Glassmorphism Utilities */
+.glass {
+    @apply bg-white/70 backdrop-blur-lg border border-white/20 shadow-glass;
+}
+
+.glass-card {
+    @apply bg-white/80 backdrop-blur-md border border-slate-200/50 shadow-sm hover:shadow-md transition-all duration-300;
+}
+
+.glass-panel {
+    @apply bg-white/60 backdrop-blur-xl border border-white/40;
+}
+
+/* Modern Inputs */
+.input-modern {
+    @apply bg-white/50 border-slate-200 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 transition-all duration-200;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    @apply w-1.5 h-1.5;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-slate-300/50 rounded-full hover:bg-slate-400/50 transition-colors;
+}
+
+/* Selection */
+::selection {
+    @apply bg-primary-500/20 text-primary-900;
+}
+
+/* Animation Utilities */
+.hover-lift {
+    @apply transition-transform duration-300 hover:-translate-y-1;
+}
+
+.hover-scale {
+    @apply transition-transform duration-300 hover:scale-[1.02];
+}
+
+/* ============================================
+   SIDEBAR STYLES
+   ============================================ */
+@import './sidebar.css';
+@import './sidebar-mobile.css';
