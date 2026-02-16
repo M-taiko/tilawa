@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build:*)",
+      "Bash(find:*)",
+      "Bash(docker exec:*)",
+      "Bash(ls:*)",
+      "Bash(php artisan make:migration:*)"
+    ]
+  }
+}

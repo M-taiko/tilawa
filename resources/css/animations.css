@@ -1,0 +1,813 @@
+/* ============================================
+   TILAWA ANIMATIONS & MICRO-INTERACTIONS
+   ============================================ */
+
+/* ============================================
+   1. PAGE TRANSITIONS
+   ============================================ */
+
+/* Fade In */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Fade In Up */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.4s ease-out;
+}
+
+/* Fade In Down */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-down {
+    animation: fadeInDown 0.4s ease-out;
+}
+
+/* Fade In Left (for RTL) */
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+[dir="rtl"] .fade-in-right {
+    animation: fadeInRight 0.4s ease-out;
+}
+
+/* Fade In Right (for LTR) */
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+[dir="ltr"] .fade-in-right {
+    animation: fadeInLeft 0.4s ease-out;
+}
+
+/* Scale In */
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.scale-in {
+    animation: scaleIn 0.3s ease-out;
+}
+
+/* ============================================
+   2. STAGGERED ANIMATIONS
+   ============================================ */
+
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+.stagger-6 { animation-delay: 0.6s; }
+.stagger-7 { animation-delay: 0.7s; }
+.stagger-8 { animation-delay: 0.8s; }
+.stagger-9 { animation-delay: 0.9s; }
+.stagger-10 { animation-delay: 1s; }
+
+/* ============================================
+   3. BUTTON INTERACTIONS
+   ============================================ */
+
+/* Button Press Effect */
+.btn:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+/* Ripple Effect */
+.btn-ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-ripple::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease-out, height 0.6s ease-out, opacity 0.6s ease-out;
+    opacity: 0;
+}
+
+.btn-ripple:active::after {
+    width: 300px;
+    height: 300px;
+    opacity: 1;
+    transition: 0s;
+}
+
+/* Button Glow Effect */
+.btn-glow:hover:not(:disabled) {
+    box-shadow: 0 0 20px var(--primary-400), 0 0 40px var(--primary-300);
+}
+
+/* ============================================
+   4. FORM INTERACTIONS
+   ============================================ */
+
+/* Input Focus Animation */
+.input,
+.select,
+.textarea {
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Floating Label Effect */
+.form-floating {
+    position: relative;
+}
+
+.form-floating input,
+.form-floating textarea,
+.form-floating select {
+    padding-top: 1.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.form-floating label {
+    position: absolute;
+    top: 0.75rem;
+    right: 16px;
+    left: 16px;
+    padding: 0;
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+    pointer-events: none;
+}
+
+[dir="ltr"] .form-floating label {
+    right: 16px;
+    left: 16px;
+}
+
+.form-floating input:focus ~ label,
+.form-floating input:not(:placeholder-shown) ~ label,
+.form-floating textarea:focus ~ label,
+.form-floating textarea:not(:placeholder-shown) ~ label,
+.form-floating select:focus ~ label,
+.form-floating select:not([value=""]) ~ label {
+    top: 0;
+    font-size: var(--text-xs);
+    color: var(--primary-600);
+}
+
+/* Shake Animation for Errors */
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-4px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(4px);
+    }
+}
+
+.shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+/* Success Checkmark Animation */
+@keyframes checkmark {
+    0% {
+        stroke-dashoffset: 100;
+    }
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+.checkmark {
+    animation: checkmark 0.5s ease-in-out;
+}
+
+/* ============================================
+   5. LOADING STATES
+   ============================================ */
+
+/* Spinner */
+.spinner {
+    display: inline-block;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 3px solid var(--border-medium);
+    border-top-color: var(--primary-600);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Spinner Sizes */
+.spinner-xs {
+    width: 1rem;
+    height: 1rem;
+    border-width: 2px;
+}
+
+.spinner-sm {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-width: 2px;
+}
+
+.spinner-md {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-width: 3px;
+}
+
+.spinner-lg {
+    width: 2rem;
+    height: 2rem;
+    border-width: 4px;
+}
+
+.spinner-xl {
+    width: 3rem;
+    height: 3rem;
+    border-width: 5px;
+}
+
+/* Dot Pulse */
+.dot-pulse {
+    display: inline-flex;
+    gap: 4px;
+}
+
+.dot-pulse span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--primary-600);
+    animation: dotPulse 1.4s ease-in-out infinite both;
+}
+
+.dot-pulse span:nth-child(1) {
+    animation-delay: -0.32s;
+}
+
+.dot-pulse span:nth-child(2) {
+    animation-delay: -0.16s;
+}
+
+@keyframes dotPulse {
+    0%, 80%, 100% {
+        transform: scale(0);
+        opacity: 0.5;
+    }
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Dots Wave */
+.dots-wave {
+    display: inline-flex;
+    gap: 4px;
+}
+
+.dots-wave span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--primary-600);
+    animation: dotsWave 1.4s ease-in-out infinite both;
+}
+
+.dots-wave span:nth-child(1) {
+    animation-delay: -0.4s;
+}
+
+.dots-wave span:nth-child(2) {
+    animation-delay: -0.2s;
+}
+
+@keyframes dotsWave {
+    0%, 40%, 100% {
+        transform: translateY(0);
+    }
+    20% {
+        transform: translateY(-8px);
+    }
+}
+
+/* Skeleton Loading */
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        var(--slate-200) 25%,
+        var(--slate-300) 37%,
+        var(--slate-200) 63%
+    );
+    background-size: 400% 100%;
+    animation: skeleton-loading 1.4s ease infinite;
+    border-radius: var(--radius-md);
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0 50%;
+    }
+}
+
+.skeleton-text {
+    height: 1em;
+    margin-bottom: 0.5em;
+}
+
+.skeleton-text-sm {
+    height: 0.75em;
+}
+
+.skeleton-text-lg {
+    height: 1.5em;
+}
+
+.skeleton-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+}
+
+.skeleton-card {
+    height: 120px;
+}
+
+/* ============================================
+   6. HOVER EFFECTS
+   ============================================ */
+
+/* Hover Lift */
+.hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Hover Scale */
+.hover-scale {
+    transition: transform 0.3s ease;
+}
+
+.hover-scale:hover {
+    transform: scale(1.02);
+}
+
+/* Hover Glow */
+.hover-glow {
+    transition: box-shadow 0.3s ease;
+}
+
+.hover-glow:hover {
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+}
+
+/* Hover Underline */
+.hover-underline {
+    position: relative;
+}
+
+.hover-underline::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--primary-600);
+    transition: width 0.3s ease;
+}
+
+[dir="ltr"] .hover-underline::after {
+    left: 0;
+}
+
+[dir="rtl"] .hover-underline::after {
+    right: 0;
+    left: auto;
+}
+
+.hover-underline:hover::after {
+    width: 100%;
+}
+
+/* ============================================
+   7. SCROLL ANIMATIONS
+   ============================================ */
+
+/* Fade in on scroll */
+.scroll-fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.scroll-fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Slide in from right on scroll (RTL) */
+.scroll-slide-in-right {
+    opacity: 0;
+    transform: translateX(50px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+[dir="rtl"] .scroll-slide-in-right.visible,
+[dir="ltr"] .scroll-slide-in-left.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Slide in from left on scroll (LTR) */
+@keyframes scrollSlideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+[dir="ltr"] .scroll-slide-in-left {
+    animation: scrollSlideInLeft 0.6s ease forwards;
+    opacity: 0;
+}
+
+[dir="ltr"] .scroll-slide-in-left.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* ============================================
+   8. MODAL ANIMATIONS
+   ============================================ */
+
+/* Modal Backdrop Fade */
+.modal-backdrop {
+    animation: modalFadeIn 0.2s ease;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Modal Scale In */
+.modal-content {
+    animation: modalScaleIn 0.3s ease;
+}
+
+@keyframes modalScaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* ============================================
+   9. DRAWER/SIDEBAR ANIMATIONS
+   ============================================ */
+
+/* Slide in from right (RTL) */
+.drawer-right {
+    animation: slideInRight 0.3s ease;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+/* Slide in from left (LTR) */
+[dir="ltr"] .drawer-right {
+    animation: slideInLeft 0.3s ease;
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+/* Slide out */
+.drawer-slide-out {
+    animation: slideOutRight 0.3s ease;
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(100%);
+    }
+}
+
+[dir="ltr"] .drawer-slide-out {
+    animation: slideOutLeft 0.3s ease;
+}
+
+@keyframes slideOutLeft {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+/* ============================================
+   10. NOTIFICATION/TOAST ANIMATIONS
+   ============================================ */
+
+/* Toast Slide In */
+.toast {
+    animation: toastSlideIn 0.3s ease;
+}
+
+@keyframes toastSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Toast Slide Out */
+.toast.slide-out {
+    animation: toastSlideOut 0.3s ease;
+}
+
+@keyframes toastSlideOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+/* ============================================
+   11. ACCORDION ANIMATIONS
+   ============================================ */
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.accordion-content.open {
+    max-height: 1000px;
+}
+
+/* ============================================
+   12. TAB ANIMATIONS
+   ============================================ */
+
+.tab-content {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.tab-content.active {
+    display: block;
+    opacity: 1;
+    animation: fadeIn 0.3s ease;
+}
+
+/* ============================================
+   13. PROGRESS BAR ANIMATION
+   ============================================ */
+
+@keyframes progressAnimation {
+    from {
+        width: 0;
+    }
+}
+
+.progress-bar-animated {
+    animation: progressAnimation 1s ease-out;
+}
+
+/* Striped Progress Bar */
+.progress-bar-striped {
+    background-image: linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.15) 25%,
+        transparent 25%,
+        transparent 50%,
+        rgba(255, 255, 255, 0.15) 50%,
+        rgba(255, 255, 255, 0.15) 75%,
+        transparent 75%,
+        transparent
+    );
+    background-size: 1rem 1rem;
+    animation: progressStripes 1s linear infinite;
+}
+
+@keyframes progressStripes {
+    from {
+        background-position: 1rem 0;
+    }
+    to {
+        background-position: 0 0;
+    }
+}
+
+/* ============================================
+   14. PULSE ANIMATION
+   ============================================ */
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Pulse Ring */
+@keyframes pulseRing {
+    0% {
+        transform: scale(0.8);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+.pulse-ring::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: inherit;
+    animation: pulseRing 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+/* ============================================
+   15. BOUNCE ANIMATION
+   ============================================ */
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-25%);
+    }
+}
+
+.bounce {
+    animation: bounce 1s infinite;
+}
+
+/* ============================================
+   16. UTILITY ANIMATIONS
+   ============================================ */
+
+/* No Animation */
+.no-animation {
+    animation: none !important;
+    transition: none !important;
+}
+
+/* Slow Animation */
+.animation-slow {
+    animation-duration: 1s !important;
+}
+
+/* Fast Animation */
+.animation-fast {
+    animation-duration: 0.2s !important;
+}
+
+/* Animation Delay Classes */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-500 { animation-delay: 500ms; }
+.delay-700 { animation-delay: 700ms; }
+.delay-1000 { animation-delay: 1000ms; }
+
+/* Reduced Motion (Accessibility) */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+}

@@ -1,0 +1,177 @@
+/* ============================================
+   TILAWA SIDEBAR - ENHANCED GLASSMORPHISM
+   Modern sidebar with glass effects, animations, and interactions
+   ============================================ */
+
+/* ============================================
+   GLASSMORPHISM CORE
+   ============================================ */
+
+.sidebar-glass {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
+}
+
+/* Navigation item glass effect */
+.nav-item-glass {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-item-glass:hover {
+    background: rgba(255, 255, 255, 0.6);
+    border-color: rgba(37, 99, 235, 0.3);
+    transform: translateX(-2px); /* RTL: moves right */
+}
+
+
+/* ============================================
+   SEARCH FUNCTIONALITY
+   ============================================ */
+
+.sidebar-search-container {
+    transition: all 0.3s ease;
+}
+
+.nav-item.search-hidden,
+.sidebar-section.search-hidden {
+    display: none;
+}
+
+
+
+/* ============================================
+   ENHANCED HOVER EFFECTS
+   ============================================ */
+
+.nav-item {
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 3px;
+    height: 0;
+    background: linear-gradient(to bottom, #3b82f6, #2563eb);
+    transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-item:hover::before {
+    height: 100%;
+}
+
+/* RTL Support for hover indicator */
+[dir="ltr"] .nav-item::before {
+    right: auto;
+    left: 0;
+}
+
+/* Icon wrapper animations */
+.nav-item .icon-wrapper {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-item:hover .icon-wrapper {
+    transform: scale(1.05) rotate(5deg);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+/* Active state pulse */
+.nav-item.active .icon-wrapper,
+.nav-item[class*="bg-gradient"] .icon-wrapper {
+    animation: iconPulse 2s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 8px rgba(59, 130, 246, 0);
+    }
+}
+
+/* ============================================
+   STAGGERED ENTRANCE ANIMATIONS
+   ============================================ */
+
+.sidebar-nav .nav-item {
+    animation: fadeInRight 0.4s ease-out backwards;
+}
+
+.sidebar-nav .nav-item:nth-child(1) { animation-delay: 0.05s; }
+.sidebar-nav .nav-item:nth-child(2) { animation-delay: 0.1s; }
+.sidebar-nav .nav-item:nth-child(3) { animation-delay: 0.15s; }
+.sidebar-nav .nav-item:nth-child(4) { animation-delay: 0.2s; }
+.sidebar-nav .nav-item:nth-child(5) { animation-delay: 0.25s; }
+.sidebar-nav .nav-item:nth-child(6) { animation-delay: 0.3s; }
+.sidebar-nav .nav-item:nth-child(7) { animation-delay: 0.35s; }
+.sidebar-nav .nav-item:nth-child(8) { animation-delay: 0.4s; }
+.sidebar-nav .nav-item:nth-child(9) { animation-delay: 0.45s; }
+.sidebar-nav .nav-item:nth-child(10) { animation-delay: 0.5s; }
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* LTR-specific animation */
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Apply correct animation based on direction */
+[dir="ltr"] .sidebar-nav .nav-item {
+    animation: fadeInLeft 0.4s ease-out backwards;
+}
+
+
+/* ============================================
+   ACCESSIBILITY & REDUCED MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    .nav-item,
+    .sidebar-nav .nav-item {
+        animation: none;
+        transition: none;
+    }
+}
+
+/* ============================================
+   FOCUS STYLES
+   ============================================ */
+
+.nav-item:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+.sidebar-search-container input:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
