@@ -152,8 +152,13 @@ class DashboardService
                     ->where('sessions.attendance_status', 'present')
                     ->where('sessions.date', '>=', now()->subDays(30));
             })
-            ->select('students.*', DB::raw('COALESCE(SUM(sessions.ayah_count), 0) as total_memorized'))
-            ->groupBy('students.id')
+            ->select(
+                'students.id',
+                'students.name',
+                'students.class_id',
+                DB::raw('COALESCE(SUM(sessions.ayah_count), 0) as total_memorized')
+            )
+            ->groupBy('students.id', 'students.name', 'students.class_id')
             ->orderByDesc('total_memorized')
             ->limit($limit)
             ->get()
@@ -181,8 +186,13 @@ class DashboardService
                 $join->on('students.id', '=', 'sessions.student_id')
                     ->where('sessions.tenant_id', '=', $tenantId);
             })
-            ->select('students.*', DB::raw('MAX(sessions.date) as last_session_date'))
-            ->groupBy('students.id')
+            ->select(
+                'students.id',
+                'students.name',
+                'students.class_id',
+                DB::raw('MAX(sessions.date) as last_session_date')
+            )
+            ->groupBy('students.id', 'students.name', 'students.class_id')
             ->havingRaw('last_session_date IS NULL OR last_session_date < ?', [now()->subDays(14)->toDateString()])
             ->limit($limit)
             ->get()
