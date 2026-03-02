@@ -23,8 +23,9 @@
     <div class="flex items-center justify-between max-w-6xl mx-auto mb-4 animate-fadeInUp">
         {{-- لوجو Masar Soft --}}
         <a href="https://masarsoft.io" target="_blank" class="flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity">
-            <img src="/images/logo.png" alt="Masar Soft" class="w-8 h-8 rounded-lg object-cover shadow"
-                 onerror="this.outerHTML='<div class=\'w-8 h-8 rounded-lg bg-gradient-to-br from-primary-600 to-primary-800 flex items-center justify-center text-white font-extrabold text-sm shadow\'>M</div>'">
+            <div class="w-8 h-8 rounded-lg shadow bg-white flex items-center justify-center overflow-hidden" style="padding:2px;">
+                <img src="/images/logo.png" alt="Masar Soft" style="width:100%;height:100%;object-fit:contain;">
+            </div>
             <span class="text-xs font-bold text-slate-500" style="font-family:'Tajawal',sans-serif;">Masar Soft</span>
         </a>
 

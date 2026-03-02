@@ -16,10 +16,9 @@
 
         {{-- الشعار --}}
         <div style="text-align:center;margin-bottom:32px;">
-            <div style="width:72px;height:72px;border-radius:20px;overflow:hidden;margin:0 auto 16px;box-shadow:0 8px 32px rgba(201,168,76,0.3);">
+            <div style="width:84px;height:84px;border-radius:20px;overflow:hidden;margin:0 auto 16px;box-shadow:0 8px 32px rgba(201,168,76,0.3);background:#fff;display:flex;align-items:center;justify-content:center;padding:6px;">
                 <img src="/images/logo.png" alt="Masar Soft"
-                     style="width:100%;height:100%;object-fit:cover;"
-                     onerror="this.parentElement.innerHTML='<div style=\'width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#c9a84c,#8b6914);display:flex;align-items:center;justify-content:center;\'><span style=\'font-size:2rem;font-family:Amiri,serif;color:#fff;font-weight:700;\'>ت</span></div>'">
+                     style="width:100%;height:100%;object-fit:contain;">
             </div>
             <h1 style="font-family:'Tajawal',sans-serif;font-size:1.75rem;font-weight:800;color:#f8fafc;margin-bottom:4px;">Masar Soft Tilawa</h1>
             <p style="font-family:'Tajawal',sans-serif;font-size:0.9rem;color:#94a3b8;">منصة تحفيظ القرآن الكريم</p>
