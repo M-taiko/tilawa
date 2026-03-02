@@ -34,10 +34,28 @@
  [x-cloak] { display: none !important; }
  </style>
  <script>
- // تسجيل Service Worker
  if ('serviceWorker' in navigator) {
      window.addEventListener('load', () => {
          navigator.serviceWorker.register('/sw.js')
+             .then(reg => {
+                 // كاش الـ CSS/JS assets الحالية فوراً
+                 const sw = reg.active || reg.installing || reg.waiting;
+                 const assets = Array.from(document.querySelectorAll('link[rel="stylesheet"][href*="/build/"], script[src*="/build/"]'))
+                     .map(el => el.getAttribute('href') || el.getAttribute('src'))
+                     .filter(Boolean);
+                 if (assets.length) {
+                     const sendCache = (controller) => {
+                         controller.postMessage({ type: 'CACHE_PAGES', pages: assets });
+                     };
+                     if (navigator.serviceWorker.controller) {
+                         sendCache(navigator.serviceWorker.controller);
+                     } else {
+                         navigator.serviceWorker.addEventListener('controllerchange', () => {
+                             sendCache(navigator.serviceWorker.controller);
+                         }, { once: true });
+                     }
+                 }
+             })
              .catch(err => console.warn('SW:', err));
      });
  }

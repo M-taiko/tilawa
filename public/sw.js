@@ -1,21 +1,44 @@
-// ===== Tilawa PWA Service Worker v4 =====
-const CACHE_VERSION = 'v4';
+// ===== Tilawa PWA Service Worker v5 =====
+const CACHE_VERSION = 'v5';
 const CORE_CACHE    = 'tilawa-core-'  + CACHE_VERSION;
 const QURAN_CACHE   = 'tilawa-quran-' + CACHE_VERSION;
 const FONT_CACHE    = 'tilawa-fonts-' + CACHE_VERSION;
 const ALL_CACHES    = [CORE_CACHE, QURAN_CACHE, FONT_CACHE];
 
+// الصفحات الأساسية اللي لازم تتكاش فوراً
+const CORE_URLS = [
+    '/offline.html',
+    '/manifest.json',
+    '/images/logo.png',
+    '/js/quran-offline.js',
+];
+
+// أول 30 صفحة من القرآن تتكاش تلقائياً عند التثبيت
+const INITIAL_QURAN_PAGES = [];
+for (let i = 1; i <= 30; i++) {
+    INITIAL_QURAN_PAGES.push('/quran/page/' + i);
+}
+INITIAL_QURAN_PAGES.push('/quran/');
+INITIAL_QURAN_PAGES.push('/quran');
+
 // ===== Install =====
 self.addEventListener('install', (event) => {
     event.waitUntil(
-        caches.open(CORE_CACHE)
-            .then(cache => cache.addAll([
-                '/offline.html',
-                '/manifest.json',
-                '/images/logo.png',
-                '/js/quran-offline.js',
-            ]))
-            .then(() => self.skipWaiting())
+        Promise.all([
+            // كاش الملفات الأساسية
+            caches.open(CORE_CACHE).then(cache => cache.addAll(CORE_URLS)),
+
+            // كاش أول 30 صفحة قرآن في الخلفية (بدون انتظار عشان ما يتأخرش الـ install)
+            caches.open(QURAN_CACHE).then(async cache => {
+                for (const url of INITIAL_QURAN_PAGES) {
+                    try {
+                        const res = await fetch(url, { credentials: 'same-origin' });
+                        if (res.ok) await cache.put(url, res);
+                    } catch { /* ignore */ }
+                }
+            }),
+        ])
+        .then(() => self.skipWaiting())
     );
 });
 
@@ -53,7 +76,10 @@ self.addEventListener('fetch', (event) => {
 
     const url = new URL(req.url);
 
-    // خطوط خارجية — Cache First
+    // تجاهل طلبات غير HTTP
+    if (!url.protocol.startsWith('http')) return;
+
+    // خطوط خارجية وـ CDN — Cache First
     if (
         url.hostname === 'fonts.googleapis.com' ||
         url.hostname === 'fonts.gstatic.com' ||
@@ -63,7 +89,7 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // CSS / JS (build assets + quran-offline) — Cache First ثم network
+    // CSS / JS (build assets + quran-offline) — Cache First
     if (url.pathname.startsWith('/build/') || url.pathname.startsWith('/js/')) {
         event.respondWith(cacheFirst(req, CORE_CACHE));
         return;
@@ -78,36 +104,38 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // صفحات القرآن — Cache First مع revalidate في الخلفية
+    // صفحات القرآن — Cache First (يرجع الكاش فوراً، يحدّث في الخلفية)
     if (
         url.pathname.startsWith('/quran/page/') ||
+        url.pathname.startsWith('/quran/surah/') ||
+        url.pathname.startsWith('/quran/juz/') ||
         url.pathname === '/quran/' ||
         url.pathname === '/quran'
     ) {
-        event.respondWith(staleWhileRevalidate(req, QURAN_CACHE));
+        event.respondWith(cacheFirstWithBackground(req, QURAN_CACHE));
         return;
     }
 
-    // باقي الطلبات — Network First مع fallback
+    // باقي الطلبات — Network First مع fallback للكاش
     event.respondWith(
-        fetch(req).then(res => {
-            // كاش CSS/JS اللي بيجي مع الصفحات ديناميكياً
-            if (res.ok && (
-                url.pathname.startsWith('/build/') ||
-                url.pathname.startsWith('/icons/') ||
-                url.pathname.startsWith('/images/')
-            )) {
-                caches.open(CORE_CACHE).then(c => c.put(req, res.clone()));
-            }
-            return res;
-        }).catch(() =>
-            caches.match(req).then(cached => cached || caches.match('/offline.html'))
-        )
+        fetch(req)
+            .then(res => {
+                if (res.ok) {
+                    const clone = res.clone();
+                    caches.open(CORE_CACHE).then(c => c.put(req, clone));
+                }
+                return res;
+            })
+            .catch(() =>
+                caches.match(req)
+                    .then(cached => cached || caches.match('/offline.html'))
+            )
     );
 });
 
 // ===== Cache Strategies =====
 
+// Cache First: يرجع الكاش لو موجود، يجيب من الشبكة لو لأ
 async function cacheFirst(request, cacheName) {
     const cache  = await caches.open(cacheName);
     const cached = await cache.match(request);
@@ -117,21 +145,35 @@ async function cacheFirst(request, cacheName) {
         if (response.ok) cache.put(request, response.clone());
         return response;
     } catch {
-        return caches.match('/offline.html').then(r => r || new Response('Offline', { status: 503 }));
+        const offline = await caches.match('/offline.html');
+        return offline || new Response('Offline', { status: 503 });
     }
 }
 
-async function staleWhileRevalidate(request, cacheName) {
+// Cache First مع تحديث في الخلفية
+async function cacheFirstWithBackground(request, cacheName) {
     const cache  = await caches.open(cacheName);
     const cached = await cache.match(request);
 
-    const fetchPromise = fetch(request, { credentials: 'same-origin' })
+    // حدّث الكاش في الخلفية دايماً
+    const fetchAndUpdate = fetch(request, { credentials: 'same-origin' })
         .then(response => {
             if (response.ok) cache.put(request, response.clone());
             return response;
         })
-        .catch(() => cached || caches.match('/offline.html'));
+        .catch(() => null);
 
-    // لو موجود في الكاش رجّعه فوراً وحدّث في الخلفية
-    return cached || fetchPromise;
+    if (cached) {
+        // رجّع الكاش فوراً وحدّث في الخلفية
+        fetchAndUpdate.catch(() => {});
+        return cached;
+    }
+
+    // مفيش كاش — انتظر الشبكة
+    const networkResponse = await fetchAndUpdate;
+    if (networkResponse && networkResponse.ok) return networkResponse;
+
+    // مفيش شبكة ومفيش كاش — offline page
+    const offline = await caches.match('/offline.html');
+    return offline || new Response('Offline', { status: 503 });
 }

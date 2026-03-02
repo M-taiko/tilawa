@@ -38,7 +38,23 @@
  <script>
  if ('serviceWorker' in navigator) {
      window.addEventListener('load', () => {
-         navigator.serviceWorker.register('/sw.js').catch(() => {});
+         navigator.serviceWorker.register('/sw.js')
+             .then(() => {
+                 const assets = Array.from(document.querySelectorAll('link[rel="stylesheet"][href*="/build/"], script[src*="/build/"]'))
+                     .map(el => el.getAttribute('href') || el.getAttribute('src'))
+                     .filter(Boolean);
+                 const sendCache = (controller) => {
+                     if (assets.length) controller.postMessage({ type: 'CACHE_PAGES', pages: assets });
+                 };
+                 if (navigator.serviceWorker.controller) {
+                     sendCache(navigator.serviceWorker.controller);
+                 } else {
+                     navigator.serviceWorker.addEventListener('controllerchange', () => {
+                         sendCache(navigator.serviceWorker.controller);
+                     }, { once: true });
+                 }
+             })
+             .catch(() => {});
      });
  }
  </script>
