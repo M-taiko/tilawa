@@ -545,7 +545,7 @@ html, body { height: 100%; overflow: hidden; }
 
             <select class="page-select" onchange="navigateToPage(this.value)">
                 @for($i = 1; $i <= 604; $i++)
-                    <option value="{{ $i }}" {{ $i == $pageNumber ? 'selected' : '' }}>{{ $i }}</option>
+                    <option value="{{ $i }}" {{ $i == $pageNumber ? 'selected' : '' }}>{{ toArabicNumerals($i) }}</option>
                 @endfor
             </select>
 
@@ -633,19 +633,25 @@ html, body { height: 100%; overflow: hidden; }
                         <div class="surah-title-banner">
                             <div class="surah-title-inner">
                                 <span class="surah-title-name">سورة {{ $verse->surah->name_arabic }}</span>
-                                <span class="surah-title-info">{{ $verse->surah->ayah_count }} آية</span>
+                                <span class="surah-title-info">{{ toArabicNumerals($verse->surah->ayah_count) }} آية</span>
                             </div>
                         </div>
+                        {{-- البسملة: تظهر لكل السور ماعدا التوبة (9) والفاتحة (1 - لأن البسملة هي الآية الأولى فيها) --}}
                         @if($verse->surah_id != 9 && $verse->surah_id != 1)
                             <div class="basmala">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
                         @endif
                     @endif
 
-                    <span class="verse-container quran-font"
-                          data-verse-number="{{ $verse->verse_number }}"
-                          data-surah-id="{{ $verse->surah_id }}"
-                          data-surah-name="{{ $verse->surah->name_arabic }}"
-                          onclick="showVersePopup(this)">{{ $verse->verse_text }}<span class="verse-end-marker">{{ $verse->verse_number }}</span></span>
+                    {{-- في الفاتحة: الآية الأولى هي البسملة - نعرضها كبسملة وليس كآية عادية --}}
+                    @if($verse->surah_id == 1 && $verse->verse_number == 1)
+                        <div class="basmala">{{ $verse->verse_text }}</div>
+                    @else
+                        <span class="verse-container quran-font"
+                              data-verse-number="{{ $verse->verse_number }}"
+                              data-surah-id="{{ $verse->surah_id }}"
+                              data-surah-name="{{ $verse->surah->name_arabic }}"
+                              onclick="showVersePopup(this)">{{ $verse->verse_text }}<span class="verse-end-marker">{{ toArabicNumerals($verse->verse_number) }}</span></span>
+                    @endif
 
                 @endforeach
             </div>
@@ -656,7 +662,7 @@ html, body { height: 100%; overflow: hidden; }
                 <span class="mushaf-nav-arrow" onclick="navigatePage('next')">‹</span>
                 @endif
 
-                <div class="mushaf-page-number">{{ $pageNumber }}</div>
+                <div class="mushaf-page-number">{{ toArabicNumerals($pageNumber) }}</div>
 
                 @if($pageNumber > 1)
                 <span class="mushaf-nav-arrow" onclick="navigatePage('prev')">›</span>
@@ -715,6 +721,10 @@ const PAGE_NUM   = {{ $pageNumber }};
 const PREV_URL   = {!! $pageNumber > 1 ? json_encode($buildPageUrl($pageNumber - 1)) : 'null' !!};
 const NEXT_URL   = {!! $pageNumber < 604 ? json_encode($buildPageUrl($pageNumber + 1)) : 'null' !!};
 const BOOKMARK_KEY = 'tilawa_bookmark';
+
+// تحويل الأرقام للعربية
+const _AR = {'0':'٠','1':'١','2':'٢','3':'٣','4':'٤','5':'٥','6':'٦','7':'٧','8':'٨','9':'٩'};
+const toAr = n => String(n).replace(/[0-9]/g, d => _AR[d]);
 
 // ========== التنقل ==========
 function navigateToPage(n) {
@@ -780,7 +790,7 @@ function showVersePopup(el) {
 
     document.getElementById('popup-verse-text').textContent = text;
     document.getElementById('popup-verse-meta').textContent =
-        'سورة ' + surahName + ' - الآية ' + verseNum;
+        'سورة ' + surahName + ' - الآية ' + toAr(verseNum);
 
     // حالة الـ bookmark
     refreshBookmarkBtn();
@@ -818,7 +828,7 @@ function openTafsir() {
     const surahName = activeVerseEl.dataset.surahName;
 
     openQuranModal(
-        'تفسير سورة ' + surahName + ' - آية ' + verseNum,
+        'تفسير سورة ' + surahName + ' - آية ' + toAr(verseNum),
         '<div class="quran-modal-loading">⏳ جاري تحميل التفسير...</div>'
     );
 
@@ -849,11 +859,11 @@ function openAsbab() {
 
     // أسباب النزول غير متاحة في API مجاني موثوق — نعرض معلومة واضحة
     openQuranModal(
-        'أسباب النزول - سورة ' + surahName + ' آية ' + verseNum,
+        'أسباب النزول - سورة ' + surahName + ' آية ' + toAr(verseNum),
         `<div style="text-align:center;padding:20px 0;">
             <p style="font-size:2rem;margin-bottom:12px;">📚</p>
             <p style="font-size:0.95rem;color:#c9a84c;font-weight:700;margin-bottom:8px;">
-                سورة ${surahName} — الآية ${verseNum}
+                سورة ${surahName} — الآية ${toAr(verseNum)}
             </p>
             <p style="font-size:0.85rem;color:#94a3b8;line-height:1.9;">
                 للاطلاع على أسباب النزول<br>
@@ -961,7 +971,7 @@ function showLastPosBanner(bm) {
     div.className = 'last-pos-banner';
     div.innerHTML = `
         <span>🔖</span>
-        <span>توقفت عند سورة ${bm.surahName} - آية ${bm.verse} (ص${bm.page})</span>
+        <span>توقفت عند سورة ${bm.surahName} - آية ${toAr(bm.verse)} (ص${toAr(bm.page)})</span>
         <span style="font-size:0.9rem;opacity:0.8;margin-right:4px;">← اضغط للذهاب</span>
         <span class="dismiss" onclick="hideBanner();event.stopPropagation()">✕</span>
     `;

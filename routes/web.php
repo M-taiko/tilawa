@@ -77,6 +77,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tenants/{tenant}/admins/{admin}/toggle-status', [TenantAdminController::class, 'toggleStatus'])->name('tenant_admins.toggle-status');
 
         Route::get('analytics', [VisitorAnalyticsController::class, 'index'])->name('analytics');
+        Route::get('analytics/visitor/{ip}', [VisitorAnalyticsController::class, 'visitorDetail'])->name('analytics.visitor');
     });
 
     Route::middleware(['role:tenant_admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -140,6 +141,7 @@ Route::middleware(['auth'])->group(function () {
 
         // Visitor Analytics
         Route::get('analytics', [VisitorAnalyticsController::class, 'index'])->name('analytics');
+        Route::get('analytics/visitor/{ip}', [VisitorAnalyticsController::class, 'visitorDetail'])->name('analytics.visitor');
 
         // Payment System - الرسوم والمدفوعات
         Route::resource('student-fees', StudentFeeController::class);

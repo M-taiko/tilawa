@@ -5,7 +5,23 @@
       "Bash(find:*)",
       "Bash(docker exec:*)",
       "Bash(ls:*)",
-      "Bash(php artisan make:migration:*)"
+      "Bash(php artisan make:migration:*)",
+      "Bash(php artisan cache:table:*)",
+      "Bash(php artisan migrate:*)",
+      "Bash(php artisan make:controller:*)",
+      "Bash(php artisan migrate:rollback:*)",
+      "Bash(php artisan tinker:*)",
+      "Bash(mysql:*)",
+      "Bash(php artisan make:seeder:*)",
+      "Bash(php artisan db:seed:*)",
+      "Bash(php artisan make:model:*)",
+      "Bash(php artisan migrate:status:*)",
+      "Bash(php artisan route:list:*)",
+      "Bash(php artisan:*)",
+      "Bash(php artisan config:clear:*)",
+      "Bash(php -r \"list\\($w,$h\\)=getimagesize\\(''c:/xampp/htdocs/tilawa/public/images/logo.png''\\); echo $w.''x''.$h;\")",
+      "Bash(php -r \"echo implode\\(''x'', array_slice\\(getimagesize\\(''c:/xampp/htdocs/tilawa/public/images/logo.png''\\), 0, 2\\)\\);\")",
+      "Bash(composer dump-autoload -q)"
     ]
   }
 }
