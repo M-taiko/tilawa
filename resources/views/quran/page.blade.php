@@ -1033,14 +1033,15 @@ document.addEventListener('DOMContentLoaded', function() {
         page.style.transform = 'scale(1)';
     });
 
-    // ===== Pre-cache الصفحات المجاورة للقراءة Offline =====
-    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+    // ===== Pre-cache الصفحات المجاورة + الـ assets =====
+    const cachePages = () => {
+        if (!('serviceWorker' in navigator) || !navigator.serviceWorker.controller) return;
+
+        // 10 صفحات للأمام + 10 للخلف
         const pagesToCache = [];
-        // 5 صفحات للأمام + 2 للخلف
-        for (let i = PAGE_NUM - 2; i <= PAGE_NUM + 5; i++) {
-            if (i >= 1 && i <= 604 && i !== PAGE_NUM) {
+        for (let i = PAGE_NUM - 10; i <= PAGE_NUM + 10; i++) {
+            if (i >= 1 && i <= 604 && i !== PAGE_NUM)
                 pagesToCache.push('/quran/page/' + i);
-            }
         }
         if (pagesToCache.length) {
             navigator.serviceWorker.controller.postMessage({
@@ -1048,6 +1049,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 pages: pagesToCache,
             });
         }
+
+        // كاش الـ CSS/JS assets الحالية
+        const assets = Array.from(document.querySelectorAll('link[rel="stylesheet"], script[src]'))
+            .map(el => el.href || el.src)
+            .filter(u => u && u.includes('/build/'));
+        assets.push('/images/logo.png', '/manifest.json');
+        if (assets.length) {
+            navigator.serviceWorker.controller.postMessage({
+                type: 'CACHE_PAGES',
+                pages: assets.map(u => new URL(u).pathname),
+            });
+        }
+    };
+
+    // نستنى لو الـ SW لسه مش active
+    if (navigator.serviceWorker.controller) {
+        cachePages();
+    } else {
+        navigator.serviceWorker.addEventListener('controllerchange', cachePages, { once: true });
     }
 });
 
