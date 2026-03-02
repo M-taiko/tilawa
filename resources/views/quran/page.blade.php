@@ -241,8 +241,8 @@ html, body { height: 100%; overflow: hidden; }
     width: 1.5em;
     height: 1.5em;
     margin: 0 0.12em;
-    font-family: 'Amiri',serif;
-    font-size: 0.6em;
+    font-family: 'Tajawal', 'Segoe UI', sans-serif;
+    font-size: 0.55em;
     color: #7a5c1e;
     background: radial-gradient(circle, #fdf3d0 60%, #e8d5a0 100%);
     border: 1.5px solid #c9a84c;
@@ -633,24 +633,32 @@ html, body { height: 100%; overflow: hidden; }
                         <div class="surah-title-banner">
                             <div class="surah-title-inner">
                                 <span class="surah-title-name">سورة {{ $verse->surah->name_arabic }}</span>
-                                <span class="surah-title-info">{{ toArabicNumerals($verse->surah->ayah_count) }} آية</span>
+                                <span class="surah-title-info">{{ $verse->surah->ayah_count ? toArabicNumerals($verse->surah->ayah_count) : '' }} آية</span>
                             </div>
                         </div>
-                        {{-- البسملة: تظهر لكل السور ماعدا التوبة (9) والفاتحة (1 - لأن البسملة هي الآية الأولى فيها) --}}
+                        {{-- البسملة المستقلة: لكل السور ماعدا التوبة (9) والفاتحة (1) --}}
                         @if($verse->surah_id != 9 && $verse->surah_id != 1)
                             <div class="basmala">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
                         @endif
                     @endif
 
-                    {{-- في الفاتحة: الآية الأولى هي البسملة - نعرضها كبسملة وليس كآية عادية --}}
-                    @if($verse->surah_id == 1 && $verse->verse_number == 1)
-                        <div class="basmala">{{ $verse->verse_text }}</div>
+                    @php
+                        $isFatihaBasmala = ($verse->surah_id == 1 && $verse->verse_number == 1);
+                        $verseText = $verse->verse_text;
+                        // نزيل البسملة من بداية نص الآية لو كانت مدمجة فيها
+                        if (!$isFatihaBasmala && $basmalaPrefix && str_starts_with($verseText, $basmalaPrefix)) {
+                            $verseText = substr($verseText, strlen($basmalaPrefix));
+                        }
+                    @endphp
+
+                    @if($isFatihaBasmala)
+                        <div class="basmala">{{ $verseText }}</div>
                     @else
                         <span class="verse-container quran-font"
                               data-verse-number="{{ $verse->verse_number }}"
                               data-surah-id="{{ $verse->surah_id }}"
                               data-surah-name="{{ $verse->surah->name_arabic }}"
-                              onclick="showVersePopup(this)">{{ $verse->verse_text }}<span class="verse-end-marker">{{ toArabicNumerals($verse->verse_number) }}</span></span>
+                              onclick="showVersePopup(this)">{{ $verseText }}<span class="verse-end-marker">{{ $verse->verse_number }}</span></span>
                     @endif
 
                 @endforeach
