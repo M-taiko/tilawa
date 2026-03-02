@@ -136,7 +136,7 @@
             <div class="p-4 md:p-6">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
                     @foreach($surahs as $surah)
-                        <a href="{{ route('quran.page', ['pageNumber' => $surah->start_page]) }}"
+                        <a href="{{ $surah->start_page ? route('quran.page', ['pageNumber' => $surah->start_page]) : '#' }}"
                            class="group block p-4 rounded-xl border-2 border-emerald-100 hover:border-gold-400 hover:bg-gradient-to-r hover:from-emerald-50 hover:to-gold-50 transition-all duration-300 hover:shadow-md">
                             <div class="flex items-center justify-between gap-3">
                                 <div class="flex-1">
@@ -175,14 +175,14 @@
             <div class="p-4 md:p-6">
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-3">
                     @foreach($juzs as $juz)
-                        @php $juzPage = $juz->startSurah?->start_page ?? (($juz->id - 1) * 20 + 1); @endphp
-                        <a href="{{ route('quran.page', ['pageNumber' => $juzPage]) }}"
+                        @php $juzPage = $juz->startSurah?->start_page; @endphp
+                        <a href="{{ $juzPage ? route('quran.page', ['pageNumber' => $juzPage]) : '#' }}"
                            class="group block p-4 rounded-xl border-2 border-gold-100 hover:border-emerald-400 hover:bg-gradient-to-br hover:from-gold-50 hover:to-emerald-50 transition-all duration-300 hover:shadow-md text-center">
                             <div class="w-12 h-12 mx-auto mb-2 rounded-full bg-gradient-to-br from-gold-400 to-gold-500 flex items-center justify-center text-white font-bold text-lg shadow-md group-hover:scale-110 transition-transform">
                                 {{ $juz->id }}
                             </div>
                             <h3 class="font-bold text-xs text-gold-900 mb-0.5">{{ $juz->name_arabic }}</h3>
-                            <p class="surah-name-uthmanic text-xs text-slate-600" style="font-size:0.85rem;">{{ $juz->startSurah->name_arabic }}</p>
+                            <p class="surah-name-uthmanic text-xs text-slate-600" style="font-size:0.85rem;">{{ $juz->startSurah?->name_arabic }}</p>
                         </a>
                     @endforeach
                 </div>
