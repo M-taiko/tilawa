@@ -8,6 +8,7 @@ use App\Models\Juz;
 use App\Models\Surah;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class QuranService
 {
@@ -112,7 +113,23 @@ class QuranService
             'quran:surahs:all',
             now()->addMinutes(self::CACHE_DURATION),
             function () {
-                return Surah::orderBy('id')->get();
+                $surahs = Surah::orderBy('id')->get();
+
+                // لو start_page مش محسوب (الـ seeder لم يتشغل) نحسبه من جدول الآيات
+                $needsUpdate = $surahs->where('start_page', null)->isNotEmpty();
+                if ($needsUpdate) {
+                    $firstPages = Verse::select('surah_id', DB::raw('MIN(page_number) as start_page'))
+                        ->groupBy('surah_id')
+                        ->pluck('start_page', 'surah_id');
+
+                    $surahs->each(function ($surah) use ($firstPages) {
+                        if (!$surah->start_page && isset($firstPages[$surah->id])) {
+                            $surah->start_page = $firstPages[$surah->id];
+                        }
+                    });
+                }
+
+                return $surahs;
             }
         );
     }
