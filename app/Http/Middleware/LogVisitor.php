@@ -12,8 +12,11 @@ class LogVisitor
     {
         $response = $next($request);
 
-        // سجّل فقط GET requests ناجحة
-        if ($request->isMethod('GET') && $response->getStatusCode() === 200) {
+        // سجّل فقط صفحات القرآن (الزوار بدون تسجيل دخول)
+        $path = $request->path();
+        $isQuranPage = $path === 'quran' || str_starts_with($path, 'quran/');
+
+        if ($request->isMethod('GET') && $response->getStatusCode() === 200 && $isQuranPage) {
             try {
                 $ip = $request->ip();
                 $ua = $request->userAgent() ?? '';

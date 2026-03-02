@@ -187,6 +187,72 @@
         </div>
     </div>
 
+    {{-- جدول الزوار الفريدين --}}
+    <x-card class="p-5">
+        <h2 class="text-base font-bold text-slate-700 mb-4 flex items-center gap-2">
+            <span>👥</span> قراء المصحف (بدون تسجيل دخول)
+            <span class="text-xs font-normal text-slate-400 mr-auto">{{ $visitors->total() }} زائر فريد</span>
+        </h2>
+
+        @if($visitors->isEmpty())
+            <p class="text-sm text-slate-400 text-center py-8">لا توجد بيانات بعد</p>
+        @else
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="border-b border-slate-100 text-right">
+                        <th class="pb-3 text-xs font-semibold text-slate-500 pr-2">IP</th>
+                        <th class="pb-3 text-xs font-semibold text-slate-500">الدولة</th>
+                        <th class="pb-3 text-xs font-semibold text-slate-500">المدينة</th>
+                        <th class="pb-3 text-xs font-semibold text-slate-500">الجهاز</th>
+                        <th class="pb-3 text-xs font-semibold text-slate-500">الزيارات</th>
+                        <th class="pb-3 text-xs font-semibold text-slate-500">آخر زيارة</th>
+                        <th class="pb-3 text-xs font-semibold text-slate-500"></th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                    @foreach($visitors as $v)
+                    @php
+                        $deviceIcons = ['mobile' => '📱', 'tablet' => '📟', 'desktop' => '🖥️'];
+                    @endphp
+                    <tr class="hover:bg-slate-50/60 transition-colors">
+                        <td class="py-2.5 pr-2 font-mono text-xs text-slate-600" dir="ltr">{{ $v->ip }}</td>
+                        <td class="py-2.5 text-slate-700">{{ $v->country_name ?? '—' }}</td>
+                        <td class="py-2.5 text-slate-500 text-xs">{{ $v->city ?? '—' }}</td>
+                        <td class="py-2.5 text-center">
+                            <span title="{{ $v->device_type }}">{{ $deviceIcons[$v->device_type] ?? '💻' }}</span>
+                        </td>
+                        <td class="py-2.5">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700">
+                                {{ number_format($v->visit_count) }}
+                            </span>
+                        </td>
+                        <td class="py-2.5 text-xs text-slate-400" dir="ltr">
+                            {{ \Carbon\Carbon::parse($v->last_visit)->diffForHumans() }}
+                        </td>
+                        <td class="py-2.5 pl-2">
+                            @php
+                                $routeName = auth()->user()->isSaasAdmin() ? 'saas.analytics.visitor' : 'admin.analytics.visitor';
+                            @endphp
+                            <a href="{{ route($routeName, urlencode($v->ip)) }}"
+                               class="text-xs text-primary-600 hover:text-primary-800 font-semibold hover:underline">
+                                تفاصيل ←
+                            </a>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
+        @if($visitors->hasPages())
+        <div class="mt-4 flex justify-center">
+            {{ $visitors->appends(['days' => $days])->links() }}
+        </div>
+        @endif
+        @endif
+    </x-card>
+
 </div>
 
 <script>
