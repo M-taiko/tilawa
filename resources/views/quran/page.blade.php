@@ -539,8 +539,8 @@ html, body { height: 100%; overflow: hidden; }
         </a>
 
         <div style="display:flex;align-items:center;gap:6px;">
-            @if($pageNumber > 1)
-            <a href="{{ $buildPageUrl($pageNumber - 1) }}" class="top-bar-btn" id="btn-prev" onclick="return swipeTo(event, 'prev')">›</a>
+            @if($pageNumber < 604)
+            <a href="{{ $buildPageUrl($pageNumber + 1) }}" class="top-bar-btn" id="btn-next" onclick="return swipeTo(event, 'next')">‹</a>
             @endif
 
             <select class="page-select" onchange="navigateToPage(this.value)">
@@ -549,8 +549,8 @@ html, body { height: 100%; overflow: hidden; }
                 @endfor
             </select>
 
-            @if($pageNumber < 604)
-            <a href="{{ $buildPageUrl($pageNumber + 1) }}" class="top-bar-btn" id="btn-next" onclick="return swipeTo(event, 'next')">‹</a>
+            @if($pageNumber > 1)
+            <a href="{{ $buildPageUrl($pageNumber - 1) }}" class="top-bar-btn" id="btn-prev" onclick="return swipeTo(event, 'prev')">›</a>
             @endif
         </div>
 
@@ -652,14 +652,14 @@ html, body { height: 100%; overflow: hidden; }
 
             {{-- ذيل الصفحة --}}
             <div class="mushaf-footer">
-                @if($pageNumber > 1)
-                <span class="mushaf-nav-arrow" onclick="navigatePage('prev')">›</span>
+                @if($pageNumber < 604)
+                <span class="mushaf-nav-arrow" onclick="navigatePage('next')">‹</span>
                 @endif
 
                 <div class="mushaf-page-number">{{ $pageNumber }}</div>
 
-                @if($pageNumber < 604)
-                <span class="mushaf-nav-arrow" onclick="navigatePage('next')">‹</span>
+                @if($pageNumber > 1)
+                <span class="mushaf-nav-arrow" onclick="navigatePage('prev')">›</span>
                 @endif
             </div>
         </div>
@@ -727,7 +727,7 @@ function navigatePage(dir) {
     const url = dir === 'prev' ? PREV_URL : NEXT_URL;
     if (!url) return;
     const page = document.getElementById('mushaf-page');
-    page.classList.add(dir === 'next' ? 'slide-out-left' : 'slide-out-right');
+    page.classList.add(dir === 'next' ? 'slide-out-right' : 'slide-out-left');
     setTimeout(() => { window.location.href = url; }, 250);
 }
 
@@ -760,9 +760,9 @@ function swipeTo(e, dir) {
         const dy = Math.abs(e.changedTouches[0].clientY - startY);
         if (Math.abs(dx) < 50 || dy > 80) return;
 
-        // في المصحف العربي: swipe يسار = صفحة تالية، swipe يمين = سابقة
-        if (dx < -50) navigatePage('next');
-        else if (dx > 50)  navigatePage('prev');
+        // المصحف العربي: swipe يمين = صفحة تالية (تقليب للأمام)، swipe يسار = سابقة
+        if (dx > 50)  navigatePage('next');
+        else if (dx < -50) navigatePage('prev');
     });
 })();
 
