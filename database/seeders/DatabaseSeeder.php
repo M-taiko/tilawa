@@ -13,6 +13,9 @@ class DatabaseSeeder extends Seeder
         // Seed Quran Surahs data
         $this->call(SurahSeeder::class);
 
+        // Seed full Quran data (verses, pages, juzs, start_page)
+        $this->call(QuranDataSeeder::class);
+
         // Create SaaS Admin (global admin) - idempotent
         User::firstOrCreate(
             ['email' => 'root@tilawa.com'],
