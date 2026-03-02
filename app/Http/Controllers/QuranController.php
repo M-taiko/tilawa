@@ -41,6 +41,23 @@ class QuranController extends Controller
         $verses = $this->quranService->getPageVerses($pageNumber);
         $page = $this->quranService->getPageInfo($pageNumber);
 
+        // البسملة الفعلية من قاعدة البيانات (سورة 2 آية 1 تبدأ بها)
+        static $basmalaPrefix = null;
+        if ($basmalaPrefix === null) {
+            $s2v1 = \App\Models\Verse::where('surah_id', 2)->where('verse_number', 1)->value('verse_text');
+            $s6v1 = \App\Models\Verse::where('surah_id', 6)->where('verse_number', 1)->value('verse_text');
+            if ($s2v1 && $s6v1) {
+                $len = min(strlen($s2v1), strlen($s6v1));
+                $commonLen = 0;
+                for ($i = 0; $i < $len; $i++) {
+                    if ($s2v1[$i] === $s6v1[$i]) $commonLen++;
+                    else break;
+                }
+                $basmalaPrefix = substr($s2v1, 0, $commonLen);
+            }
+            $basmalaPrefix = $basmalaPrefix ?: '';
+        }
+
         // معلومات الـ highlighting للطالب
         $highlightInfo = [
             'student_id' => $request->query('student_id'),
@@ -54,7 +71,7 @@ class QuranController extends Controller
             $student = Student::find($highlightInfo['student_id']);
         }
 
-        return view('quran.page', compact('verses', 'page', 'pageNumber', 'highlightInfo', 'student'));
+        return view('quran.page', compact('verses', 'page', 'pageNumber', 'highlightInfo', 'student', 'basmalaPrefix'));
     }
 
     /**
