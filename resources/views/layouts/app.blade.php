@@ -50,9 +50,9 @@
   <div class="px-6 py-6 border-b border-slate-100/80">
   <div class="flex items-center justify-between">
   <div class="flex items-center gap-3">
-  <div class="h-11 w-11 rounded-2xl overflow-hidden shadow-lg shadow-primary-500/30 ring-1 ring-white/60 sidebar-logo flex-shrink-0">
-  <img src="/images/logo.png" alt="Masar Soft" class="w-full h-full object-cover"
-       onerror="this.parentElement.innerHTML='<span style=\'display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:white;font-weight:800;font-size:1.2rem;\'>ت</span>'">
+  <div class="h-11 w-11 rounded-2xl shadow-lg shadow-primary-500/30 ring-1 ring-white/60 sidebar-logo flex-shrink-0 bg-white flex items-center justify-center overflow-hidden" style="padding:2px;">
+  <img src="/images/logo.png" alt="Masar Soft" class="w-full h-full" style="object-fit:contain;"
+       onerror="this.parentElement.innerHTML='<span style=\'display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:white;font-weight:800;font-size:1.2rem;border-radius:inherit;\'>ت</span>'">
   </div>
   <div class="sidebar-text overflow-hidden transition-all duration-300 whitespace-nowrap">
   <div class="font-extrabold text-xl text-slate-900 tracking-tight">Tilawa</div>
