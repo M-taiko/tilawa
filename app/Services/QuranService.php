@@ -197,6 +197,39 @@ class QuranService
     }
 
     /**
+     * الحصول على كل آيات القرآن دفعة واحدة (للتحميل offline)
+     */
+    public function getAllVerses(): Collection
+    {
+        return Cache::remember(
+            'quran:all:verses',
+            now()->addMinutes(self::CACHE_DURATION),
+            function () {
+                return Verse::select('id', 'surah_id', 'verse_number', 'verse_text', 'page_number', 'juz_number', 'sajda')
+                    ->orderBy('surah_id')
+                    ->orderBy('verse_number')
+                    ->get();
+            }
+        );
+    }
+
+    /**
+     * الحصول على معلومات كل الصفحات (للتحميل offline)
+     */
+    public function getAllPages(): Collection
+    {
+        return Cache::remember(
+            'quran:all:pages',
+            now()->addMinutes(self::CACHE_DURATION),
+            function () {
+                return QuranPage::select('id', 'juz_number', 'first_surah_id', 'first_verse_number', 'last_surah_id', 'last_verse_number')
+                    ->orderBy('id')
+                    ->get();
+            }
+        );
+    }
+
+    /**
      * تحديد الصفحة من سورة وآية
      */
     public function getPageNumber(int $surahId, int $verseNumber): ?int

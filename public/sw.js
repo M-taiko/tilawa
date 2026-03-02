@@ -1,5 +1,5 @@
-// ===== Tilawa PWA Service Worker v3 =====
-const CACHE_VERSION = 'v3';
+// ===== Tilawa PWA Service Worker v4 =====
+const CACHE_VERSION = 'v4';
 const CORE_CACHE    = 'tilawa-core-'  + CACHE_VERSION;
 const QURAN_CACHE   = 'tilawa-quran-' + CACHE_VERSION;
 const FONT_CACHE    = 'tilawa-fonts-' + CACHE_VERSION;
@@ -13,6 +13,7 @@ self.addEventListener('install', (event) => {
                 '/offline.html',
                 '/manifest.json',
                 '/images/logo.png',
+                '/js/quran-offline.js',
             ]))
             .then(() => self.skipWaiting())
     );
@@ -62,8 +63,8 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // CSS / JS (build assets) — Cache First ثم network
-    if (url.pathname.startsWith('/build/')) {
+    // CSS / JS (build assets + quran-offline) — Cache First ثم network
+    if (url.pathname.startsWith('/build/') || url.pathname.startsWith('/js/')) {
         event.respondWith(cacheFirst(req, CORE_CACHE));
         return;
     }

@@ -133,4 +133,27 @@ class QuranController extends Controller
 
         return response()->json(['verse' => $verse]);
     }
+
+    /**
+     * API: تحميل كل القرآن للعمل offline (Dexie)
+     */
+    public function apiDownloadAll()
+    {
+        $verses = $this->quranService->getAllVerses();
+        $pages  = $this->quranService->getAllPages();
+        $surahs = $this->quranService->getAllSurahs()
+            ->map(fn($s) => [
+                'id'          => $s->id,
+                'name_arabic' => $s->name_arabic,
+                'ayah_count'  => $s->ayah_count,
+                'start_page'  => $s->start_page,
+            ]);
+
+        return response()->json([
+            'version' => 1,
+            'surahs'  => $surahs,
+            'pages'   => $pages,
+            'verses'  => $verses,
+        ])->header('Cache-Control', 'public, max-age=2592000');
+    }
 }

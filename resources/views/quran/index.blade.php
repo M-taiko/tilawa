@@ -51,6 +51,38 @@
         </div>
     </div>
 
+    {{-- بطاقة تحميل القرآن للعمل Offline --}}
+    <div id="offline-download-card" class="max-w-6xl mx-auto mb-6 animate-fadeInUp">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-2xl border-2 border-teal-300 bg-gradient-to-r from-teal-50 via-emerald-50 to-teal-50 shadow-md">
+            <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center shadow-lg text-white text-2xl">
+                ⬇️
+            </div>
+            <div class="flex-1 min-w-0">
+                <div id="offline-status-title" class="font-bold text-teal-900 text-base">تحميل القرآن للقراءة بدون إنترنت</div>
+                <div id="offline-status-desc" class="text-xs text-teal-700 mt-0.5">احفظ القرآن الكريم كاملاً على جهازك واقرأه في أي مكان بدون إنترنت</div>
+                {{-- شريط التقدم --}}
+                <div id="offline-progress-bar-wrap" class="hidden mt-2">
+                    <div class="w-full bg-teal-200 rounded-full h-2">
+                        <div id="offline-progress-bar" class="bg-teal-600 h-2 rounded-full transition-all duration-300" style="width:0%"></div>
+                    </div>
+                    <div id="offline-progress-text" class="text-xs text-teal-700 mt-1"></div>
+                </div>
+            </div>
+            <div class="flex flex-col gap-2 flex-shrink-0 w-full sm:w-auto">
+                <button id="offline-download-btn"
+                        onclick="handleOfflineDownload()"
+                        class="px-4 py-2 rounded-xl bg-teal-500 hover:bg-teal-600 text-white font-bold text-sm transition-colors shadow cursor-pointer w-full sm:w-auto text-center">
+                    تحميل القرآن
+                </button>
+                <button id="offline-delete-btn"
+                        onclick="handleOfflineDelete()"
+                        class="hidden px-4 py-1.5 rounded-xl bg-red-100 hover:bg-red-200 text-red-600 text-xs font-semibold transition-colors cursor-pointer w-full sm:w-auto text-center">
+                    حذف البيانات
+                </button>
+            </div>
+        </div>
+    </div>
+
     {{-- بطاقة تثبيت PWA (تظهر فقط إذا لم يكن التطبيق مثبتاً) --}}
     <div id="pwa-install-card" class="hidden max-w-6xl mx-auto mb-6 animate-fadeInUp">
         <div class="flex items-center gap-4 p-4 rounded-2xl border-2 border-emerald-300 bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 shadow-md">
@@ -220,7 +252,93 @@
         </p>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/dexie@3/dist/dexie.min.js"></script>
+<script src="/js/quran-offline.js"></script>
 <script>
+// ===== Offline Download UI =====
+(async function () {
+    // تحقق من حالة التحميل عند تحميل الصفحة
+    if (typeof TilawaOffline === 'undefined') return;
+
+    const downloaded = await TilawaOffline.isQuranDownloaded();
+    updateOfflineUI(downloaded);
+})();
+
+function updateOfflineUI(isDownloaded) {
+    const title  = document.getElementById('offline-status-title');
+    const desc   = document.getElementById('offline-status-desc');
+    const btn    = document.getElementById('offline-download-btn');
+    const delBtn = document.getElementById('offline-delete-btn');
+
+    if (isDownloaded) {
+        title.textContent  = 'القرآن الكريم محفوظ على جهازك ✓';
+        desc.textContent   = 'يمكنك قراءة القرآن الكريم كاملاً حتى بدون إنترنت';
+        btn.textContent    = 'تحديث البيانات';
+        btn.className      = btn.className.replace('bg-teal-500 hover:bg-teal-600', 'bg-emerald-500 hover:bg-emerald-600');
+        delBtn.classList.remove('hidden');
+
+        // تحديث التاريخ
+        TilawaOffline.getDownloadInfo().then(info => {
+            if (info.downloaded_at) {
+                const d = new Date(info.downloaded_at);
+                desc.textContent = `تم التحميل: ${d.toLocaleDateString('ar-EG')} — ${info.verse_count} آية محفوظة`;
+            }
+        });
+    } else {
+        title.textContent  = 'تحميل القرآن للقراءة بدون إنترنت';
+        desc.textContent   = 'احفظ القرآن الكريم كاملاً على جهازك واقرأه في أي مكان بدون إنترنت';
+        btn.textContent    = 'تحميل القرآن';
+        delBtn.classList.add('hidden');
+    }
+}
+
+async function handleOfflineDownload() {
+    if (typeof TilawaOffline === 'undefined') {
+        alert('خطأ: مكتبة التخزين غير محملة');
+        return;
+    }
+
+    const btn          = document.getElementById('offline-download-btn');
+    const progressWrap = document.getElementById('offline-progress-bar-wrap');
+    const progressBar  = document.getElementById('offline-progress-bar');
+    const progressText = document.getElementById('offline-progress-text');
+    const desc         = document.getElementById('offline-status-desc');
+
+    btn.disabled   = true;
+    btn.textContent = 'جارٍ التحميل...';
+    progressWrap.classList.remove('hidden');
+
+    try {
+        await TilawaOffline.downloadQuran((percent, message) => {
+            progressBar.style.width = percent + '%';
+            progressText.textContent = message;
+        });
+
+        progressWrap.classList.add('hidden');
+        updateOfflineUI(true);
+
+        // أخبر الـ Service Worker يكاش كل صفحات القرآن في الخلفية
+        TilawaOffline.cacheAllPagesViaSW().catch(() => {});
+    } catch (err) {
+        progressWrap.classList.add('hidden');
+        btn.disabled    = false;
+        btn.textContent = 'إعادة المحاولة';
+        desc.textContent = 'حدث خطأ أثناء التحميل: ' + err.message;
+        console.error('Quran download error:', err);
+    }
+}
+
+async function handleOfflineDelete() {
+    if (!confirm('هل تريد حذف بيانات القرآن المحفوظة؟')) return;
+
+    await TilawaOffline.deleteQuranData();
+    updateOfflineUI(false);
+
+    const btn = document.getElementById('offline-download-btn');
+    btn.disabled    = false;
+    btn.textContent = 'تحميل القرآن';
+}
+
 // ===== Bookmark =====
 (function() {
     const BOOKMARK_KEY = 'tilawa_bookmark';

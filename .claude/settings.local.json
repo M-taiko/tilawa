@@ -21,7 +21,10 @@
       "Bash(php artisan config:clear:*)",
       "Bash(php -r \"list\\($w,$h\\)=getimagesize\\(''c:/xampp/htdocs/tilawa/public/images/logo.png''\\); echo $w.''x''.$h;\")",
       "Bash(php -r \"echo implode\\(''x'', array_slice\\(getimagesize\\(''c:/xampp/htdocs/tilawa/public/images/logo.png''\\), 0, 2\\)\\);\")",
-      "Bash(composer dump-autoload -q)"
+      "Bash(composer dump-autoload -q)",
+      "Bash(php -r \"echo extension_loaded\\(''gd''\\) ? ''GD OK'' : ''GD NOT FOUND'';\")",
+      "Bash(php -r \":*)",
+      "Bash(\"c:/xampp/htdocs/tilawa/public/icons/icon.svg\":*)"
     ]
   }
 }
