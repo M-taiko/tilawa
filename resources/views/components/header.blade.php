@@ -17,11 +17,15 @@
  <div class="flex items-center gap-4 lg:gap-6">
  <!-- User Profile -->
  <div class="flex items-center gap-3 pl-2 lg:pl-6">
+ @auth
  <div class="hidden md:block text-left group cursor-pointer">
  <div class="text-sm font-bold text-slate-800 group-hover:text-primary-600 transition-colors">{{ auth()->user()->name }}</div>
  <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">{{ auth()->user()->email }}</div>
  </div>
  <x-avatar class="ring-2 ring-white shadow-md cursor-pointer hover:ring-primary-100 transition-all">{{ substr(auth()->user()->name, 0, 1) }}</x-avatar>
+ @else
+ <a href="{{ route('login') }}" class="text-sm font-semibold text-primary-600 hover:text-primary-700 transition-colors">تسجيل الدخول</a>
+ @endauth
  </div>
  </div>
  </div>

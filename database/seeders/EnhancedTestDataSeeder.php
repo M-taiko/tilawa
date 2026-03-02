@@ -42,8 +42,8 @@ class EnhancedTestDataSeeder extends Seeder
         // Create admin (active)
         $admin = User::create([
             'name' => 'أحمد المدير',
-            'email' => 'admin@tilawa.com',
-            'password' => Hash::make('password'),
+            'email' => 'donia.a5ra2019@gmail.com',
+            'password' => Hash::make('123456789'),
             'global_role' => 'tenant_admin',
             'is_active' => true,
         ]);

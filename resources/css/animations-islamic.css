@@ -1,0 +1,243 @@
+/* ============================================
+   ISLAMIC ANIMATIONS - انيميشن إسلامي
+   ============================================ */
+
+/* Entrance Animations - دخول سلس */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Geometric Pattern Rotation - دوران الأنماط الهندسية */
+@keyframes rotatePattern {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-pattern {
+    animation: rotatePattern 60s linear infinite;
+}
+
+.animate-pattern-slow {
+    animation: rotatePattern 120s linear infinite;
+}
+
+/* Achievement Celebration - احتفال بالإنجاز */
+@keyframes celebrate {
+    0%, 100% {
+        transform: scale(1) rotate(0deg);
+    }
+    25% {
+        transform: scale(1.1) rotate(5deg);
+    }
+    50% {
+        transform: scale(1.15) rotate(0deg);
+    }
+    75% {
+        transform: scale(1.1) rotate(-5deg);
+    }
+}
+
+.celebrate {
+    animation: celebrate 0.6s ease-in-out;
+}
+
+.celebrate-loop {
+    animation: celebrate 2s ease-in-out infinite;
+}
+
+/* Gold Shimmer Effect - تأثير ذهبي لامع */
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.gold-shimmer {
+    background: linear-gradient(90deg,
+        var(--color-gold-400) 0%,
+        var(--color-gold-200) 50%,
+        var(--color-gold-400) 100%);
+    background-size: 1000px 100%;
+    animation: shimmer 3s infinite;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Quran Progress Glow - توهج التقدم */
+@keyframes progressGlow {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 40px rgba(16, 185, 129, 0.6),
+                    0 0 60px rgba(16, 185, 129, 0.4);
+    }
+}
+
+.progress-glow {
+    animation: progressGlow 2s ease-in-out infinite;
+}
+
+/* Pulse Animation - نبض */
+@keyframes pulse-islamic {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.9;
+    }
+}
+
+.pulse-islamic {
+    animation: pulse-islamic 2s ease-in-out infinite;
+}
+
+/* Float Animation - طفو */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.float {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Glow Effect - توهج */
+@keyframes glow-gold {
+    0%, 100% {
+        box-shadow: 0 0 5px var(--color-gold-400),
+                    0 0 10px var(--color-gold-400);
+    }
+    50% {
+        box-shadow: 0 0 20px var(--color-gold-500),
+                    0 0 30px var(--color-gold-400),
+                    0 0 40px var(--color-gold-300);
+    }
+}
+
+.glow-gold {
+    animation: glow-gold 2s ease-in-out infinite;
+}
+
+@keyframes glow-emerald {
+    0%, 100% {
+        box-shadow: 0 0 5px var(--color-primary-400),
+                    0 0 10px var(--color-primary-400);
+    }
+    50% {
+        box-shadow: 0 0 20px var(--color-primary-500),
+                    0 0 30px var(--color-primary-400),
+                    0 0 40px var(--color-primary-300);
+    }
+}
+
+.glow-emerald {
+    animation: glow-emerald 2s ease-in-out infinite;
+}
+
+/* Entrance Animation Classes */
+.animate-fadeInUp {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-slideInRight {
+    animation: slideInRight 0.6s ease-out;
+}
+
+.animate-slideInLeft {
+    animation: slideInLeft 0.6s ease-out;
+}
+
+/* Staggered Animation */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+
+/* Hover Effects - تأثيرات التمرير */
+.hover-glow-gold {
+    transition: all 0.3s ease;
+}
+
+.hover-glow-gold:hover {
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.4),
+                0 0 40px rgba(245, 158, 11, 0.2);
+    transform: translateY(-2px);
+}
+
+.hover-glow-emerald {
+    transition: all 0.3s ease;
+}
+
+.hover-glow-emerald:hover {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.4),
+                0 0 40px rgba(16, 185, 129, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .animate-pattern,
+    .animate-pattern-slow,
+    .celebrate-loop,
+    .gold-shimmer,
+    .progress-glow,
+    .pulse-islamic,
+    .float,
+    .glow-gold,
+    .glow-emerald {
+        animation: none !important;
+    }
+}

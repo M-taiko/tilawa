@@ -13,15 +13,16 @@
  // Modern base styles
  $baseClasses = 'inline-flex items-center justify-center gap-2 font-semibold transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.98] select-none cursor-pointer';
 
- // Modern variant styles
+ // Islamic variant styles - تصميم إسلامي
  $variantClasses = [
- 'primary' => 'bg-gradient-to-br from-primary-600 to-primary-700 text-white hover:to-primary-800 shadow-md shadow-primary-500/20 focus:ring-primary-500/30 border border-transparent',
- 'secondary' => 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:border-slate-300 shadow-sm focus:ring-slate-200',
- 'ghost' => 'bg-transparent text-slate-600 hover:bg-slate-100/50 hover:text-slate-900 focus:ring-slate-100',
- 'outline' => 'bg-transparent border-2 border-primary-500 text-primary-600 hover:bg-primary-50 focus:ring-primary-100',
- 'danger' => 'bg-gradient-to-br from-error-500 to-error-600 text-white hover:to-error-700 shadow-md shadow-error-500/20 focus:ring-error-500/30 border border-transparent',
- 'success' => 'bg-gradient-to-br from-success-500 to-success-600 text-white hover:to-success-700 shadow-md shadow-success-500/20 focus:ring-success-500/30 border border-transparent',
- 'warning' => 'bg-gradient-to-br from-warning-500 to-warning-600 text-white hover:to-warning-700 shadow-md shadow-warning-500/20 focus:ring-warning-500/30 border border-transparent',
+ 'primary' => 'bg-gradient-to-br from-primary-600 to-primary-700 text-white hover:shadow-lg hover:shadow-primary-500/30 hover:-translate-y-0.5 shadow-md shadow-primary-500/20 focus:ring-gold-500/40 border border-transparent transition-all duration-300',
+ 'gold' => 'bg-gradient-to-br from-gold-500 to-gold-600 text-white hover:shadow-lg hover:shadow-gold-500/30 hover:-translate-y-0.5 shadow-md shadow-gold-500/20 focus:ring-gold-500/40 border border-transparent transition-all duration-300',
+ 'secondary' => 'bg-white text-slate-700 border border-primary-200 hover:bg-primary-50 hover:border-primary-300 hover:text-primary-700 shadow-sm focus:ring-primary-200 transition-all duration-200',
+ 'ghost' => 'bg-transparent text-primary-700 hover:bg-primary-50 hover:text-primary-800 focus:ring-primary-100 transition-all duration-200',
+ 'outline' => 'bg-transparent border-2 border-primary-500 text-primary-600 hover:bg-primary-50 hover:border-primary-600 focus:ring-primary-200 transition-all duration-200',
+ 'danger' => 'bg-gradient-to-br from-error-500 to-error-600 text-white hover:shadow-lg hover:shadow-error-500/30 hover:-translate-y-0.5 shadow-md shadow-error-500/20 focus:ring-error-500/30 border border-transparent transition-all duration-300',
+ 'success' => 'bg-gradient-to-br from-success-500 to-success-600 text-white hover:shadow-lg hover:shadow-success-500/30 hover:-translate-y-0.5 shadow-md shadow-success-500/20 focus:ring-success-500/30 border border-transparent transition-all duration-300',
+ 'warning' => 'bg-gradient-to-br from-warning-500 to-warning-600 text-white hover:shadow-lg hover:shadow-warning-500/30 hover:-translate-y-0.5 shadow-md shadow-warning-500/20 focus:ring-warning-500/30 border border-transparent transition-all duration-300',
  'glass' => 'bg-white/20 backdrop-blur-md border border-white/30 text-white hover:bg-white/30 shadow-sm',
  ];
 

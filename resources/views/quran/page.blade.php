@@ -1,0 +1,941 @@
+@extends('layouts.mushaf')
+
+@section('title', 'صفحة ' . $pageNumber . ' - المصحف الكريم')
+
+@push('styles')
+<style>
+[x-cloak] { display: none !important; }
+
+/* ===== خط المصحف العثماني ===== */
+@font-face {
+    font-family: 'KFGQPC Uthmanic';
+    src: url('https://cdn.jsdelivr.net/gh/khaled-11/KFGQPC-Uthmanic-Script-HAFS@main/UthmanicHafs1Ver18.ttf') format('truetype');
+    font-display: swap;
+}
+
+/* ===== Layout كامل الشاشة ===== */
+html, body { height: 100%; overflow: hidden; }
+
+.mushaf-shell {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    background: linear-gradient(160deg, #1a0e00 0%, #2d1a00 60%, #1a0e00 100%);
+    overflow: hidden;
+    position: relative;
+}
+
+/* ===== شريط التنقل العلوي ===== */
+.top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    background: rgba(0,0,0,0.35);
+    border-bottom: 1px solid rgba(201,168,76,0.25);
+    flex-shrink: 0;
+    z-index: 20;
+    gap: 8px;
+}
+
+.top-bar-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 10px;
+    border-radius: 8px;
+    color: #f0d080;
+    font-size: 0.75rem;
+    font-family: 'Amiri', serif;
+    font-weight: 600;
+    background: rgba(201,168,76,0.12);
+    border: 1px solid rgba(201,168,76,0.3);
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+}
+.top-bar-btn:hover { background: rgba(201,168,76,0.25); }
+.top-bar-btn.active { background: rgba(201,168,76,0.35); color: #fde68a; }
+
+.page-select {
+    padding: 4px 8px;
+    border-radius: 8px;
+    background: rgba(201,168,76,0.15);
+    border: 1px solid rgba(201,168,76,0.4);
+    color: #f0d080;
+    font-size: 0.8rem;
+    font-family: 'Amiri', serif;
+    font-weight: 700;
+    cursor: pointer;
+    outline: none;
+    max-width: 90px;
+}
+.page-select option { background: #2d1a00; color: #f0d080; }
+
+/* ===== منطقة المصحف (قابلة للـ Swipe) ===== */
+.mushaf-area {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+}
+
+/* ===== ورقة المصحف ===== */
+.mushaf-page {
+    background: linear-gradient(135deg, #fdf8f0 0%, #faf4e8 50%, #fdf8f0 100%);
+    border: 1px solid #c9a84c;
+    box-shadow:
+        0 0 0 4px #e8d5a0,
+        0 0 0 8px #c9a84c,
+        0 8px 40px rgba(100,70,20,0.4),
+        inset 0 0 60px rgba(200,160,80,0.06);
+    position: relative;
+    width: 100%;
+    max-width: 660px;
+    border-radius: 2px;
+    transition: transform 0.28s cubic-bezier(.4,0,.2,1), opacity 0.28s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 600px) {
+    .mushaf-area {
+        align-items: stretch;
+        overflow: hidden; /* منع الـ scroll على التليفون */
+    }
+    .mushaf-page {
+        max-width: 100%;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        box-shadow: inset 0 0 40px rgba(200,160,80,0.06);
+        height: 100%;
+        overflow: hidden;
+    }
+}
+
+/* إطار داخلي */
+.mushaf-page::before {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border: 1px solid rgba(201,168,76,0.4);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* animation أثناء الـ swipe */
+.mushaf-page.slide-out-left  { transform: translateX(-60px); opacity: 0; }
+.mushaf-page.slide-out-right { transform: translateX(60px);  opacity: 0; }
+.mushaf-page.slide-in-left   { transform: translateX(60px);  opacity: 0; }
+.mushaf-page.slide-in-right  { transform: translateX(-60px); opacity: 0; }
+
+/* ===== رأس الصفحة ===== */
+.mushaf-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 20px 6px;
+    border-bottom: 1px solid rgba(201,168,76,0.35);
+    position: relative;
+    z-index: 2;
+}
+.mushaf-header-text {
+    font-family: 'Amiri', serif;
+    font-size: 0.78rem;
+    color: #7a5c1e;
+    font-weight: 600;
+}
+
+/* ===== عنوان السورة ===== */
+.surah-title-banner {
+    text-align: center;
+    margin: 12px 20px 6px;
+    position: relative;
+    z-index: 2;
+}
+.surah-title-inner {
+    display: inline-block;
+    padding: 6px 36px;
+    border-top: 2px solid #c9a84c;
+    border-bottom: 2px solid #c9a84c;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.08) 30%, rgba(201,168,76,0.08) 70%, transparent);
+    position: relative;
+}
+.surah-title-inner::before,
+.surah-title-inner::after {
+    content: '❧';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #c9a84c;
+    font-size: 1rem;
+}
+.surah-title-inner::before { right: 6px; }
+.surah-title-inner::after  { left: 6px; transform: translateY(-50%) scaleX(-1); }
+.surah-title-name {
+    font-family: 'KFGQPC Uthmanic','Amiri Quran','Scheherazade New',serif;
+    font-size: 1.35rem;
+    color: #3d2b00;
+    display: block;
+    line-height: 1.5;
+}
+.surah-title-info {
+    font-family: 'Amiri',serif;
+    font-size: 0.7rem;
+    color: #7a5c1e;
+    display: block;
+}
+
+/* ===== البسملة ===== */
+.basmala {
+    text-align: center;
+    padding: 4px 0 8px;
+    font-family: 'KFGQPC Uthmanic','Amiri Quran','Scheherazade New',serif;
+    font-size: 1.8rem;
+    color: #1a1200;
+    line-height: 2.8;
+    position: relative;
+    z-index: 2;
+}
+
+/* ===== نص القرآن ===== */
+.mushaf-body {
+    padding: 4px 22px 14px;
+    direction: rtl;
+    text-align: justify;
+    text-align-last: center;
+    position: relative;
+    z-index: 2;
+}
+.quran-font {
+    font-family: 'KFGQPC Uthmanic','Amiri Quran','Scheherazade New',serif;
+    font-size: 1.75rem;
+    line-height: 3.0;
+    color: #0d0d0d;
+}
+
+/* ===== حاوية الآية ===== */
+.verse-container {
+    display: inline;
+    border-radius: 3px;
+    cursor: pointer;
+    padding: 0 1px;
+    transition: background 0.2s;
+    -webkit-tap-highlight-color: transparent;
+}
+.verse-container:active {
+    background: rgba(201,168,76,0.2);
+}
+
+/* ===== رقم الآية ===== */
+.verse-end-marker {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5em;
+    height: 1.5em;
+    margin: 0 0.12em;
+    font-family: 'Amiri',serif;
+    font-size: 0.6em;
+    color: #7a5c1e;
+    background: radial-gradient(circle, #fdf3d0 60%, #e8d5a0 100%);
+    border: 1.5px solid #c9a84c;
+    border-radius: 50%;
+    vertical-align: middle;
+    position: relative;
+    top: -0.08em;
+    line-height: 1;
+    font-weight: 700;
+}
+
+/* ===== علامة متابعة القراءة 🔖 ===== */
+.verse-bookmark {
+    background: linear-gradient(90deg, rgba(234,179,8,0.18), rgba(234,179,8,0.08)) !important;
+    border-bottom: 3.5px solid #b45309;
+    border-radius: 2px;
+    position: relative;
+}
+.verse-bookmark::after {
+    content: '🔖';
+    position: absolute;
+    top: -1.4em;
+    right: 0;
+    font-size: 0.55em;
+    line-height: 1;
+    pointer-events: none;
+}
+
+/* ===== highlight المعلم ===== */
+.verse-highlighted-start {
+    background-color: rgba(16,185,129,0.15);
+    border-bottom: 4px solid #059669;
+    border-radius: 2px;
+}
+.verse-highlighted-middle {
+    background-color: rgba(59,130,246,0.12);
+    border-bottom: 4px solid #3b82f6;
+    border-radius: 2px;
+}
+.verse-highlighted-end {
+    background-color: rgba(245,158,11,0.15);
+    border-bottom: 4px solid #d97706;
+    border-radius: 2px;
+}
+
+/* ===== فاصل بين السور ===== */
+.surah-divider {
+    border: none;
+    border-top: 1px solid rgba(201,168,76,0.5);
+    margin: 10px 0;
+}
+
+/* ===== ذيل الصفحة ===== */
+.mushaf-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 6px 20px 10px;
+    border-top: 1px solid rgba(201,168,76,0.35);
+    position: relative;
+    z-index: 2;
+    gap: 10px;
+}
+.mushaf-page-number {
+    font-family: 'Amiri',serif;
+    font-size: 0.85rem;
+    color: #7a5c1e;
+    font-weight: 700;
+    background: radial-gradient(circle, #fdf3d0, #e8d5a0);
+    border: 1.5px solid #c9a84c;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.mushaf-nav-arrow {
+    color: #c9a84c;
+    font-size: 1.4rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: background 0.2s;
+    user-select: none;
+}
+.mushaf-nav-arrow:hover { background: rgba(201,168,76,0.15); }
+
+/* ===== Popup الآية ===== */
+.verse-popup-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(0,0,0,0.55);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0 0 env(safe-area-inset-bottom, 0);
+    animation: fadeIn 0.18s ease;
+}
+.verse-popup-overlay.closing {
+    animation: fadeOut 0.2s ease forwards;
+}
+@keyframes fadeIn  { from { opacity:0 } to { opacity:1 } }
+@keyframes fadeOut { from { opacity:1 } to { opacity:0 } }
+
+.verse-popup-sheet {
+    background: #fff;
+    border-radius: 20px 20px 0 0;
+    width: 100%;
+    max-width: 600px;
+    padding: 16px 20px 28px;
+    box-shadow: 0 -8px 40px rgba(0,0,0,0.25);
+    animation: slideUp 0.22s cubic-bezier(.4,0,.2,1);
+    direction: rtl;
+}
+.verse-popup-sheet.closing {
+    animation: slideDown 0.2s cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes slideUp   { from { transform: translateY(100%) } to { transform: translateY(0) } }
+@keyframes slideDown { from { transform: translateY(0) }    to { transform: translateY(100%) } }
+
+.popup-handle {
+    width: 36px; height: 4px;
+    background: #e2e8f0;
+    border-radius: 2px;
+    margin: 0 auto 14px;
+}
+
+.popup-verse-text {
+    font-family: 'KFGQPC Uthmanic','Amiri Quran','Scheherazade New',serif;
+    font-size: 1.3rem;
+    line-height: 2.5;
+    color: #1a1200;
+    text-align: center;
+    margin-bottom: 6px;
+    direction: rtl;
+}
+.popup-verse-meta {
+    font-family: 'Amiri',serif;
+    font-size: 0.8rem;
+    color: #64748b;
+    text-align: center;
+    margin-bottom: 14px;
+}
+.popup-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+.popup-action-btn {
+    padding: 11px 8px;
+    border-radius: 12px;
+    font-family: 'Amiri',serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: opacity 0.2s, transform 0.1s;
+}
+.popup-action-btn:active { transform: scale(0.97); }
+.popup-action-btn .icon { font-size: 1.3rem; }
+
+.btn-bookmark      { background: #fef9c3; color: #92400e; }
+.btn-unbookmark    { background: #fee2e2; color: #991b1b; }
+.btn-copy          { background: #f0fdf4; color: #166534; }
+.btn-close         { background: #f1f5f9; color: #475569; grid-column: span 2; }
+
+/* ===== لافتة آخر موضع ===== */
+.last-pos-banner {
+    position: fixed;
+    bottom: env(safe-area-inset-bottom, 12px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
+    background: linear-gradient(90deg, #1a0e00, #3d2200);
+    border: 1px solid #c9a84c;
+    border-radius: 24px;
+    padding: 8px 18px;
+    color: #f0d080;
+    font-family: 'Amiri',serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    cursor: pointer;
+    white-space: nowrap;
+    animation: bannerIn 0.3s cubic-bezier(.4,0,.2,1);
+    max-width: 90vw;
+}
+@keyframes bannerIn { from { opacity:0; transform:translateX(-50%) translateY(20px) } to { opacity:1; transform:translateX(-50%) translateY(0) } }
+.last-pos-banner .dismiss { opacity:0.6; font-size:0.75rem; }
+
+/* ===== شاشة التليفون ===== */
+@media (max-width: 600px) {
+    .mushaf-body {
+        padding: 2px 12px 6px;
+        flex: 1;
+        overflow: hidden;
+    }
+    .mushaf-header { padding: 4px 14px; }
+    .mushaf-footer { padding: 4px 14px 6px; }
+
+    /* الخط يتكيف مع ارتفاع الشاشة */
+    .quran-font { font-size: 2.4dvh; line-height: 2.6; }
+    .basmala    { font-size: 2.8dvh; line-height: 2.2; padding: 2px 0 4px; }
+
+    .surah-title-banner { margin: 6px 14px 2px; }
+    .surah-title-inner  { padding: 3px 28px; }
+    .surah-title-name   { font-size: 2.5dvh; }
+}
+</style>
+@endpush
+
+@section('content')
+@php
+    $buildPageUrl = function($page) use ($highlightInfo) {
+        $params = ['pageNumber' => $page];
+        if (!empty($highlightInfo['student_id'])) {
+            $params['student_id'] = $highlightInfo['student_id'];
+            $params['highlight_start'] = $highlightInfo['highlight_start'];
+            $params['highlight_end'] = $highlightInfo['highlight_end'];
+            $params['mode'] = $highlightInfo['mode'];
+        }
+        return route('quran.page', $params);
+    };
+    $juzName   = $page?->juz?->name_arabic ?? '';
+    $surahName = $verses->first()?->surah?->name_arabic ?? '';
+@endphp
+
+<div class="mushaf-shell" id="mushaf-shell">
+
+    {{-- ===== شريط التنقل العلوي ===== --}}
+    <div class="top-bar">
+
+        <a href="{{ route('quran.index') }}" class="top-bar-btn">
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
+            </svg>
+            الفهرس
+        </a>
+
+        <div style="display:flex;align-items:center;gap:6px;">
+            @if($pageNumber > 1)
+            <a href="{{ $buildPageUrl($pageNumber - 1) }}" class="top-bar-btn" id="btn-prev" onclick="return swipeTo(event, 'prev')">›</a>
+            @endif
+
+            <select class="page-select" onchange="navigateToPage(this.value)">
+                @for($i = 1; $i <= 604; $i++)
+                    <option value="{{ $i }}" {{ $i == $pageNumber ? 'selected' : '' }}>{{ $i }}</option>
+                @endfor
+            </select>
+
+            @if($pageNumber < 604)
+            <a href="{{ $buildPageUrl($pageNumber + 1) }}" class="top-bar-btn" id="btn-next" onclick="return swipeTo(event, 'next')">‹</a>
+            @endif
+        </div>
+
+        <div style="display:flex;gap:6px;align-items:center;">
+            {{-- زر الرجوع لآخر موضع --}}
+            <button id="goto-bookmark-btn" class="top-bar-btn hidden" onclick="goToBookmark()" title="الرجوع لآخر موضع">
+                🔖
+            </button>
+            {{-- PWA --}}
+            <button id="pwa-install-btn" class="top-bar-btn hidden" onclick="installPWA()">📲</button>
+        </div>
+    </div>
+
+    {{-- Teacher Action Bar --}}
+    @if(isset($highlightInfo['mode']) && $highlightInfo['mode'] === 'teacher' && isset($student))
+    <div style="padding:6px 12px;flex-shrink:0;" x-data="{ showConfirm: false }">
+        <div style="background:#ecfdf5;border:2px solid #34d399;border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+            <div>
+                <div style="font-family:'Amiri',serif;font-weight:700;color:#065f46;font-size:0.9rem;">الطالب: {{ $student->name }}</div>
+                <div style="font-size:0.75rem;color:#374151;margin-top:2px;">
+                    من الآية <strong style="color:#059669;">{{ $highlightInfo['highlight_start'] }}</strong>
+                    إلى <strong style="color:#d97706;">{{ $highlightInfo['highlight_end'] }}</strong>
+                </div>
+            </div>
+            <button @click="showConfirm = true"
+                    style="padding:7px 14px;background:#059669;color:#fff;border:none;border-radius:8px;font-family:'Amiri',serif;font-weight:700;font-size:0.85rem;cursor:pointer;">
+                ✓ تأكيد الحفظ
+            </button>
+        </div>
+
+        <div x-show="showConfirm" x-cloak
+             style="position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;padding:16px;"
+             @click.self="showConfirm = false">
+            <div style="background:#fff;border-radius:16px;max-width:400px;width:100%;padding:24px;" @click.stop>
+                <h3 style="font-family:'Amiri',serif;font-size:1.1rem;font-weight:700;text-align:center;margin-bottom:10px;">تأكيد الحفظ</h3>
+                <p style="font-size:0.85rem;color:#374151;text-align:center;margin-bottom:14px;">
+                    الطالب <strong>{{ $student->name }}</strong> حفظ من الآية
+                    <strong>{{ $highlightInfo['highlight_start'] }}</strong> إلى <strong>{{ $highlightInfo['highlight_end'] }}</strong>
+                </p>
+                <form method="POST" action="{{ route('teacher.memorization.confirm', $student) }}">
+                    @csrf
+                    <input type="hidden" name="surah_id" value="{{ $verses->first()->surah_id ?? '' }}">
+                    <input type="hidden" name="start_ayah" value="{{ $highlightInfo['highlight_start'] }}">
+                    <input type="hidden" name="end_ayah" value="{{ $highlightInfo['highlight_end'] }}">
+                    <input type="hidden" name="page_number" value="{{ $pageNumber }}">
+                    <textarea name="notes" rows="2" style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:8px;font-size:0.85rem;margin-bottom:12px;direction:rtl;" placeholder="ملاحظات (اختياري)"></textarea>
+                    <div style="display:flex;gap:8px;">
+                        <button type="button" @click="showConfirm = false"
+                                style="flex:1;padding:10px;background:#f1f5f9;border:none;border-radius:8px;font-family:'Amiri',serif;font-weight:600;cursor:pointer;">إلغاء</button>
+                        <button type="submit"
+                                style="flex:1;padding:10px;background:#059669;color:#fff;border:none;border-radius:8px;font-family:'Amiri',serif;font-weight:700;cursor:pointer;">تأكيد</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    {{-- ===== منطقة المصحف ===== --}}
+    <div class="mushaf-area" id="mushaf-area">
+        <div class="mushaf-page" id="mushaf-page">
+
+            {{-- رأس الصفحة --}}
+            <div class="mushaf-header">
+                <span class="mushaf-header-text">{{ $juzName }}</span>
+                <span class="mushaf-header-text" style="color:#c9a84c;font-size:0.75rem;">۞ تلاوة ۞</span>
+                <span class="mushaf-header-text">{{ $surahName }}</span>
+            </div>
+
+            {{-- محتوى الصفحة --}}
+            <div class="mushaf-body" id="mushaf-body">
+                @php $currentSurahId = null; @endphp
+
+                @foreach($verses as $verse)
+                    @if($verse->verse_number == 1)
+                        @if($currentSurahId !== null)
+                            <hr class="surah-divider">
+                        @endif
+                        @php $currentSurahId = $verse->surah_id; @endphp
+                        <div class="surah-title-banner">
+                            <div class="surah-title-inner">
+                                <span class="surah-title-name">سورة {{ $verse->surah->name_arabic }}</span>
+                                <span class="surah-title-info">{{ $verse->surah->ayah_count }} آية</span>
+                            </div>
+                        </div>
+                        @if($verse->surah_id != 9 && $verse->surah_id != 1)
+                            <div class="basmala">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
+                        @endif
+                    @endif
+
+                    <span class="verse-container quran-font"
+                          data-verse-number="{{ $verse->verse_number }}"
+                          data-surah-id="{{ $verse->surah_id }}"
+                          data-surah-name="{{ $verse->surah->name_arabic }}"
+                          onclick="showVersePopup(this)">{{ $verse->verse_text }}<span class="verse-end-marker">{{ $verse->verse_number }}</span></span>
+
+                @endforeach
+            </div>
+
+            {{-- ذيل الصفحة --}}
+            <div class="mushaf-footer">
+                @if($pageNumber > 1)
+                <span class="mushaf-nav-arrow" onclick="navigatePage('prev')">›</span>
+                @endif
+
+                <div class="mushaf-page-number">{{ $pageNumber }}</div>
+
+                @if($pageNumber < 604)
+                <span class="mushaf-nav-arrow" onclick="navigatePage('next')">‹</span>
+                @endif
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{{-- ===== Popup الآية ===== --}}
+<div id="verse-popup-overlay" class="verse-popup-overlay" style="display:none;" onclick="closeVersePopup()">
+    <div class="verse-popup-sheet" id="verse-popup-sheet" onclick="event.stopPropagation()">
+        <div class="popup-handle"></div>
+        <div class="popup-verse-text" id="popup-verse-text"></div>
+        <div class="popup-verse-meta" id="popup-verse-meta"></div>
+        <div class="popup-actions">
+            <button class="popup-action-btn btn-bookmark" id="popup-bookmark-btn" onclick="toggleBookmark()">
+                <span class="icon">🔖</span>
+                <span id="popup-bookmark-label">حفظ موضع القراءة</span>
+            </button>
+            <button class="popup-action-btn btn-copy" onclick="copyVerse()">
+                <span class="icon">📋</span>
+                نسخ الآية
+            </button>
+            <button class="popup-action-btn btn-close" onclick="closeVersePopup()">
+                إغلاق
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+const PAGE_NUM   = {{ $pageNumber }};
+const PREV_URL   = {!! $pageNumber > 1 ? json_encode($buildPageUrl($pageNumber - 1)) : 'null' !!};
+const NEXT_URL   = {!! $pageNumber < 604 ? json_encode($buildPageUrl($pageNumber + 1)) : 'null' !!};
+const BOOKMARK_KEY = 'tilawa_bookmark';
+
+// ========== التنقل ==========
+function navigateToPage(n) {
+    const url = new URL(window.location.href);
+    url.pathname = '/quran/page/' + n;
+    window.location.href = url.toString();
+}
+
+function navigatePage(dir) {
+    const url = dir === 'prev' ? PREV_URL : NEXT_URL;
+    if (!url) return;
+    const page = document.getElementById('mushaf-page');
+    page.classList.add(dir === 'next' ? 'slide-out-left' : 'slide-out-right');
+    setTimeout(() => { window.location.href = url; }, 250);
+}
+
+function swipeTo(e, dir) {
+    e.preventDefault();
+    navigatePage(dir);
+    return false;
+}
+
+// ========== Swipe بالإصبع ==========
+(function() {
+    let startX = 0, startY = 0, moved = false;
+    const area = document.getElementById('mushaf-area');
+
+    area.addEventListener('touchstart', e => {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        moved = false;
+    }, { passive: true });
+
+    area.addEventListener('touchmove', e => {
+        const dx = e.touches[0].clientX - startX;
+        const dy = Math.abs(e.touches[0].clientY - startY);
+        if (Math.abs(dx) > 10 && dy < 60) moved = true;
+    }, { passive: true });
+
+    area.addEventListener('touchend', e => {
+        if (!moved) return;
+        const dx = e.changedTouches[0].clientX - startX;
+        const dy = Math.abs(e.changedTouches[0].clientY - startY);
+        if (Math.abs(dx) < 50 || dy > 80) return;
+
+        // في المصحف العربي: swipe يسار = صفحة تالية، swipe يمين = سابقة
+        if (dx < -50) navigatePage('next');
+        else if (dx > 50)  navigatePage('prev');
+    });
+})();
+
+// ========== Popup الآية ==========
+let activeVerseEl = null;
+
+function showVersePopup(el) {
+    activeVerseEl = el;
+    const verseNum  = el.dataset.verseNumber;
+    const surahName = el.dataset.surahName;
+
+    // نص الآية (بدون علامة الرقم)
+    const textNode = el.childNodes[0];
+    const text = textNode ? textNode.textContent.trim() : '';
+
+    document.getElementById('popup-verse-text').textContent = text;
+    document.getElementById('popup-verse-meta').textContent =
+        'سورة ' + surahName + ' - الآية ' + verseNum;
+
+    // حالة الـ bookmark
+    refreshBookmarkBtn();
+
+    const overlay = document.getElementById('verse-popup-overlay');
+    overlay.style.display = 'flex';
+    overlay.classList.remove('closing');
+    document.getElementById('verse-popup-sheet').classList.remove('closing');
+}
+
+function closeVersePopup() {
+    const overlay = document.getElementById('verse-popup-overlay');
+    const sheet   = document.getElementById('verse-popup-sheet');
+    overlay.classList.add('closing');
+    sheet.classList.add('closing');
+    setTimeout(() => { overlay.style.display = 'none'; }, 200);
+}
+
+// ========== Bookmark (آخر موضع القراءة) ==========
+function getBookmark() {
+    try { return JSON.parse(localStorage.getItem(BOOKMARK_KEY) || 'null'); } catch { return null; }
+}
+
+function refreshBookmarkBtn() {
+    const bm = getBookmark();
+    const el = activeVerseEl;
+    if (!el) return;
+    const isCurrentBm = bm && bm.page === PAGE_NUM &&
+                        bm.verse == el.dataset.verseNumber &&
+                        bm.surah == el.dataset.surahId;
+    const hasAnyBm = !!bm;
+    const btn   = document.getElementById('popup-bookmark-btn');
+    const label = document.getElementById('popup-bookmark-label');
+    if (isCurrentBm) {
+        // نفس الآية المحفوظة — خيار الإزالة
+        btn.className = 'popup-action-btn btn-unbookmark';
+        label.textContent = 'إزالة علامة القراءة';
+    } else if (hasAnyBm) {
+        // يوجد bookmark قديم — سيُستبدل
+        btn.className = 'popup-action-btn btn-bookmark';
+        label.textContent = 'تحديث موضع القراءة';
+    } else {
+        btn.className = 'popup-action-btn btn-bookmark';
+        label.textContent = 'حفظ موضع القراءة';
+    }
+}
+
+function toggleBookmark() {
+    const el = activeVerseEl;
+    if (!el) return;
+    const bm = getBookmark();
+    const isCurrentBm = bm && bm.page === PAGE_NUM &&
+                        bm.verse == el.dataset.verseNumber &&
+                        bm.surah == el.dataset.surahId;
+
+    // إزالة visual من الآية القديمة
+    document.querySelectorAll('.verse-bookmark').forEach(e => e.classList.remove('verse-bookmark'));
+
+    if (isCurrentBm) {
+        localStorage.removeItem(BOOKMARK_KEY);
+        document.getElementById('goto-bookmark-btn').classList.add('hidden');
+        hideBanner();
+    } else {
+        const data = {
+            page:      PAGE_NUM,
+            surah:     parseInt(el.dataset.surahId),
+            verse:     parseInt(el.dataset.verseNumber),
+            surahName: el.dataset.surahName,
+        };
+        localStorage.setItem(BOOKMARK_KEY, JSON.stringify(data));
+        el.classList.add('verse-bookmark');
+        document.getElementById('goto-bookmark-btn').classList.remove('hidden');
+    }
+    refreshBookmarkBtn();
+    closeVersePopup();
+}
+
+function copyVerse() {
+    const text = document.getElementById('popup-verse-text').textContent;
+    navigator.clipboard?.writeText(text).catch(() => {});
+    closeVersePopup();
+}
+
+// ========== الانتقال للـ Bookmark ==========
+function goToBookmark() {
+    const bm = getBookmark();
+    if (!bm) return;
+    if (bm.page !== PAGE_NUM) {
+        const url = new URL(window.location.href);
+        url.pathname = '/quran/page/' + bm.page;
+        window.location.href = url.toString();
+        return;
+    }
+    // scroll للآية
+    document.querySelectorAll('.verse-container').forEach(el => {
+        if (parseInt(el.dataset.verseNumber) === bm.verse && parseInt(el.dataset.surahId) === bm.surah) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    });
+}
+
+// ========== لافتة العودة لآخر موضع ==========
+let bannerTimeout;
+function showLastPosBanner(bm) {
+    hideBanner();
+    const div = document.createElement('div');
+    div.id = 'last-pos-banner';
+    div.className = 'last-pos-banner';
+    div.innerHTML = `
+        <span>🔖</span>
+        <span>توقفت عند سورة ${bm.surahName} - آية ${bm.verse} (ص${bm.page})</span>
+        <span style="font-size:0.9rem;opacity:0.8;margin-right:4px;">← اضغط للذهاب</span>
+        <span class="dismiss" onclick="hideBanner();event.stopPropagation()">✕</span>
+    `;
+    div.onclick = () => { hideBanner(); goToBookmark(); };
+    document.body.appendChild(div);
+    bannerTimeout = setTimeout(hideBanner, 7000);
+}
+
+function hideBanner() {
+    clearTimeout(bannerTimeout);
+    const el = document.getElementById('last-pos-banner');
+    if (el) el.remove();
+}
+
+// ========== تهيئة عند التحميل ==========
+document.addEventListener('DOMContentLoaded', function() {
+
+    // === تطبيق الـ bookmark الموجود ===
+    const bm = getBookmark();
+    if (bm) {
+        document.getElementById('goto-bookmark-btn').classList.remove('hidden');
+
+        if (bm.page === PAGE_NUM) {
+            // وضع علامة بصرية على الآية
+            document.querySelectorAll('.verse-container').forEach(el => {
+                if (parseInt(el.dataset.verseNumber) === bm.verse &&
+                    parseInt(el.dataset.surahId) === bm.surah) {
+                    el.classList.add('verse-bookmark');
+                }
+            });
+        } else {
+            // أظهر لافتة العودة
+            setTimeout(() => showLastPosBanner(bm), 800);
+        }
+    }
+
+    // === تحديث bookmark تلقائياً عند مغادرة الصفحة ===
+    // (يحفظ آخر صفحة زارها المستخدم كـ "آخر موضع")
+    // لا نحفظ تلقائياً - نترك المستخدم يختار عبر الـ popup
+
+    // === highlight المعلم ===
+    @if(isset($highlightInfo) && $highlightInfo['student_id'])
+    const highlightStart = {{ $highlightInfo['highlight_start'] ?? 'null' }};
+    const highlightEnd   = {{ $highlightInfo['highlight_end'] ?? 'null' }};
+    if (highlightStart && highlightEnd) {
+        let first = null;
+        document.querySelectorAll('.verse-container').forEach(el => {
+            const v = parseInt(el.dataset.verseNumber);
+            if (v === highlightStart) {
+                el.classList.add('verse-highlighted-start');
+                if (!first) first = el;
+            } else if (v === highlightEnd) {
+                el.classList.add('verse-highlighted-end');
+            } else if (v > highlightStart && v < highlightEnd) {
+                el.classList.add('verse-highlighted-middle');
+            }
+        });
+        if (first) setTimeout(() => first.scrollIntoView({ behavior: 'smooth', block: 'center' }), 600);
+    }
+    @endif
+
+    // animation دخول الصفحة
+    const page = document.getElementById('mushaf-page');
+    page.style.opacity = '0';
+    page.style.transform = 'scale(0.98)';
+    requestAnimationFrame(() => {
+        page.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        page.style.opacity = '1';
+        page.style.transform = 'scale(1)';
+    });
+
+    // ===== Pre-cache الصفحات المجاورة للقراءة Offline =====
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        const pagesToCache = [];
+        // 5 صفحات للأمام + 2 للخلف
+        for (let i = PAGE_NUM - 2; i <= PAGE_NUM + 5; i++) {
+            if (i >= 1 && i <= 604 && i !== PAGE_NUM) {
+                pagesToCache.push('/quran/page/' + i);
+            }
+        }
+        if (pagesToCache.length) {
+            navigator.serviceWorker.controller.postMessage({
+                type: 'CACHE_PAGES',
+                pages: pagesToCache,
+            });
+        }
+    }
+});
+
+// ========== PWA Install ==========
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    document.getElementById('pwa-install-btn').classList.remove('hidden');
+});
+function installPWA() {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => {
+        deferredPrompt = null;
+        document.getElementById('pwa-install-btn').classList.add('hidden');
+    });
+}
+
+// ========== Keyboard shortcuts ==========
+document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') navigatePage('prev');
+    if (e.key === 'ArrowLeft')  navigatePage('next');
+    if (e.key === 'Escape')     closeVersePopup();
+});
+</script>
+
+@endsection

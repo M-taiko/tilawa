@@ -1,0 +1,111 @@
+/* ============================================
+   ISLAMIC GEOMETRIC PATTERNS - أنماط هندسية إسلامية
+   ============================================ */
+
+/* Background Patterns */
+.pattern-moroccan {
+    background-color: var(--color-primary-50);
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2310b981' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.pattern-islamic-stars {
+    background-color: var(--color-sand-50);
+    background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23f59e0b' fill-opacity='0.06' fill-rule='evenodd'%3E%3Cpath d='M40 40l20-20v20zm20 0l-20 20v-20zm-20 0L20 20v20zm-20 0l20 20V40z'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.pattern-subtle {
+    background-color: #fafaf9;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%2310b981' fill-opacity='0.03'%3E%3Ccircle cx='50' cy='50' r='1.5'/%3E%3Ccircle cx='0' cy='50' r='1.5'/%3E%3Ccircle cx='100' cy='50' r='1.5'/%3E%3Ccircle cx='50' cy='0' r='1.5'/%3E%3Ccircle cx='50' cy='100' r='1.5'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Islamic Decorative Borders */
+.border-islamic {
+    border-width: 2px;
+    border-style: solid;
+    border-image: linear-gradient(90deg,
+        var(--color-primary-500) 0%,
+        var(--color-gold-500) 50%,
+        var(--color-primary-500) 100%) 1;
+}
+
+.border-gold-gradient {
+    border: 2px solid;
+    border-image: linear-gradient(135deg,
+        var(--color-gold-400),
+        var(--color-gold-600)) 1;
+}
+
+.border-emerald-gradient {
+    border: 2px solid;
+    border-image: linear-gradient(135deg,
+        var(--color-primary-400),
+        var(--color-primary-600)) 1;
+}
+
+/* Islamic Card Decorations */
+.card-islamic {
+    @apply bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg;
+    @apply border border-primary-100/50;
+    @apply relative overflow-hidden;
+}
+
+.card-islamic::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg,
+        var(--color-primary-500),
+        var(--color-gold-500),
+        var(--color-primary-500));
+}
+
+.card-islamic-gold {
+    @apply bg-gradient-to-br from-gold-50 to-white;
+    @apply border-2 border-gold-200;
+    @apply shadow-lg shadow-gold-500/10;
+}
+
+/* Pattern Overlay Utilities */
+.pattern-overlay {
+    position: relative;
+}
+
+.pattern-overlay::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4z'/%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+}
+
+/* Decorative Corners */
+.corner-islamic {
+    position: relative;
+}
+
+.corner-islamic::before,
+.corner-islamic::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-style: solid;
+    border-color: var(--color-gold-400);
+}
+
+.corner-islamic::before {
+    top: -1px;
+    right: -1px;
+    border-width: 2px 2px 0 0;
+    border-top-right-radius: 4px;
+}
+
+.corner-islamic::after {
+    bottom: -1px;
+    left: -1px;
+    border-width: 0 0 2px 2px;
+    border-bottom-left-radius: 4px;
+}

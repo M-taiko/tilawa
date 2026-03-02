@@ -1,0 +1,70 @@
+/* ============================================
+   ISLAMIC TYPOGRAPHY - خطوط عربية جميلة
+   ============================================ */
+
+/* Arabic Heading Styles */
+.arabic-heading {
+    font-family: var(--font-arabic-display);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+}
+
+.arabic-body {
+    font-family: var(--font-arabic-body);
+    font-weight: 400;
+    line-height: 1.8;
+}
+
+/* Quran Text - خط خاص للآيات */
+.quran-text {
+    font-family: 'Amiri', serif;
+    font-size: 1.25rem;
+    line-height: 2;
+    color: var(--color-primary-800);
+    text-align: justify;
+    direction: rtl;
+}
+
+/* Islamic Decorative Text */
+.text-islamic-gold {
+    background: linear-gradient(135deg, var(--color-gold-500), var(--color-gold-700));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.text-islamic-emerald {
+    background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-700));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Typography Utilities */
+.heading-islamic {
+    font-family: var(--font-arabic-display);
+    font-weight: 700;
+    color: var(--color-primary-800);
+}
+
+.subheading-islamic {
+    font-family: var(--font-arabic-body);
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-primary-700);
+}
+
+.body-islamic {
+    font-family: var(--font-arabic-body);
+    color: rgb(51 65 85);
+}
+
+/* Text Shadows for Islamic Aesthetic */
+.text-shadow-gold {
+    text-shadow: 0 2px 10px rgba(245, 158, 11, 0.3);
+}
+
+.text-shadow-emerald {
+    text-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
+}

@@ -15,28 +15,42 @@
    ============================================ */
 
 @theme {
-    /* Font Family */
-    --font-sans: 'Tajawal', ui-sans-serif, system-ui, sans-serif;
+    /* Font Families - خطوط عربية جميلة */
+    --font-sans: 'Tajawal', 'Cairo', ui-sans-serif, system-ui, sans-serif;
+    --font-arabic-display: 'Amiri', 'Noto Kufi Arabic', serif;
+    --font-arabic-body: 'Tajawal', 'Cairo', sans-serif;
 
-    /* Primary Colors - Royal Blue (More Vibrant) */
-    --color-primary-50: #eff6ff;
-    --color-primary-100: #dbeafe;
-    --color-primary-200: #bfdbfe;
-    --color-primary-300: #93c5fd;
-    --color-primary-400: #60a5fa;
-    --color-primary-500: #3b82f6;
-    --color-primary-600: #2563eb;
-    --color-primary-700: #1d4ed8;
-    --color-primary-800: #1e40af;
-    --color-primary-900: #1e3a8a;
-    --color-primary-950: #172554;
+    /* Primary Colors - أخضر زمردي إسلامي (Islamic Emerald Green) */
+    --color-primary-50: #ecfdf5;
+    --color-primary-100: #d1fae5;
+    --color-primary-200: #a7f3d0;
+    --color-primary-300: #6ee7b7;
+    --color-primary-400: #34d399;
+    --color-primary-500: #10b981;  /* Main emerald */
+    --color-primary-600: #059669;
+    --color-primary-700: #047857;
+    --color-primary-800: #065f46;
+    --color-primary-900: #064e3b;
+    --color-primary-950: #022c22;
 
-    /* Secondary/Accent Colors - Teal/Cyan */
-    --color-accent-50: #f0fdfa;
-    --color-accent-100: #ccfbf1;
-    --color-accent-200: #99f6e4;
-    --color-accent-500: #14b8a6;
-    --color-accent-600: #0d9488;
+    /* Gold/Amber - ذهبي (Islamic Gold) */
+    --color-gold-50: #fffbeb;
+    --color-gold-100: #fef3c7;
+    --color-gold-200: #fde68a;
+    --color-gold-300: #fcd34d;
+    --color-gold-400: #fbbf24;
+    --color-gold-500: #f59e0b;  /* Main gold */
+    --color-gold-600: #d97706;
+    --color-gold-700: #b45309;
+    --color-gold-800: #92400e;
+    --color-gold-900: #78350f;
+
+    /* Secondary/Accent - أزرق فاتح (Light Blue) */
+    --color-accent-50: #f0f9ff;
+    --color-accent-100: #e0f2fe;
+    --color-accent-200: #bae6fd;
+    --color-accent-500: #0ea5e9;
+    --color-accent-600: #0284c7;
 
     /* Semantic Colors - High Contrast */
     --color-success-50: #f0fdf4;
@@ -135,7 +149,10 @@ body {
 }
 
 /* ============================================
-   SIDEBAR STYLES
+   ISLAMIC DESIGN SYSTEM IMPORTS
    ============================================ */
+@import './typography.css';
+@import './patterns.css';
+@import './animations-islamic.css';
 @import './sidebar.css';
 @import './sidebar-mobile.css';

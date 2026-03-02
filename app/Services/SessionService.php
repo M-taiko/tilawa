@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Session;
 use App\Models\Student;
 use App\Models\StudentFoundationSkillMastery;
+use App\Models\Verse;
 
 class SessionService
 {
@@ -68,6 +69,19 @@ class SessionService
             if (!empty($data['ayah_from']) && !empty($data['ayah_to'])) {
                 $payload['ayah_count'] = ($data['ayah_to'] - $data['ayah_from']) + 1;
             }
+
+            // Auto-calculate page_number from Verse
+            if (!empty($data['surah_id']) && !empty($data['ayah_from'])) {
+                $verse = Verse::where('surah_id', $data['surah_id'])
+                    ->where('verse_number', $data['ayah_from'])
+                    ->first(['page_number']);
+                $payload['page_number'] = $verse?->page_number;
+            }
+
+            // Detailed evaluations
+            $payload['memorization_score'] = $data['memorization_score'] ?? null;
+            $payload['recitation_score'] = $data['recitation_score'] ?? null;
+            $payload['tajweed_score'] = $data['tajweed_score'] ?? null;
         }
 
         return $payload;

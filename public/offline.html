@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>أنت غير متصل - تلاوة</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+    height: 100%;
+    background: linear-gradient(160deg, #1a0e00, #2d1a00, #1a0e00);
+    font-family: 'Amiri', serif;
+    color: #f0d080;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+}
+.container { max-width: 360px; width: 100%; }
+.icon { font-size: 4rem; margin-bottom: 20px; }
+h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 10px; color: #fde68a; }
+p  { font-size: 1rem; color: #d4a855; line-height: 1.8; margin-bottom: 24px; }
+.verse {
+    background: rgba(201,168,76,0.12);
+    border: 1px solid rgba(201,168,76,0.35);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 28px;
+    font-size: 1.1rem;
+    line-height: 2;
+    color: #fdf8f0;
+}
+.verse small { display: block; font-size: 0.75rem; color: #c9a84c; margin-top: 6px; }
+.btn {
+    display: inline-block;
+    padding: 12px 32px;
+    background: linear-gradient(135deg, #c9a84c, #a07830);
+    color: #1a0e00;
+    font-family: 'Amiri', serif;
+    font-weight: 700;
+    font-size: 1rem;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+.btn:hover { opacity: 0.85; }
+.tip { margin-top: 20px; font-size: 0.8rem; color: #7a5c1e; }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="icon">📵</div>
+    <h1>أنت غير متصل بالإنترنت</h1>
+    <p>لا يوجد اتصال بالشبكة الآن.<br>الصفحات التي زرتها من قبل متاحة للقراءة.</p>
+
+    <div class="verse">
+        وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ فَهَلْ مِن مُّدَّكِرٍ
+        <small>سورة القمر - الآية ١٧</small>
+    </div>
+
+    <a href="/quran/" class="btn">العودة للمصحف</a>
+
+    <p class="tip">💡 ثبّت التطبيق لتتمكن من قراءة القرآن بدون إنترنت في أي وقت</p>
+</div>
+</body>
+</html>

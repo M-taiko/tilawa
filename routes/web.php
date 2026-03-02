@@ -16,6 +16,9 @@ use App\Http\Controllers\Admin\TeacherController;
 use App\Http\Controllers\Admin\HolidayController;
 use App\Http\Controllers\Admin\AnnouncementController;
 use App\Http\Controllers\Admin\ActivityLogController;
+use App\Http\Controllers\Admin\StudentFeeController;
+use App\Http\Controllers\Admin\PaymentController;
+use App\Http\Controllers\Admin\PaymentReportController;
 use App\Http\Controllers\Student\ProgressController;
 use App\Http\Controllers\Public\ParentController;
 use App\Http\Controllers\Teacher\DashboardController as TeacherDashboardController;
@@ -23,8 +26,12 @@ use App\Http\Controllers\Teacher\ExportController as TeacherExportController;
 use App\Http\Controllers\Teacher\ReportController as TeacherReportController;
 use App\Http\Controllers\Teacher\SessionController as TeacherSessionController;
 use App\Http\Controllers\Teacher\StudentController as TeacherStudentController;
+use App\Http\Controllers\Teacher\MemorizationController as TeacherMemorizationController;
 use App\Http\Controllers\Saas\TenantAdminController;
 use App\Http\Controllers\Saas\TenantController as SaasTenantController;
+use App\Http\Controllers\Saas\VisitorAnalyticsController;
+use App\Http\Controllers\QuranController;
+use App\Http\Controllers\QuranSearchController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -68,6 +75,8 @@ Route::middleware(['auth'])->group(function () {
             ->except(['show'])
             ->names('tenant_admins');
         Route::post('tenants/{tenant}/admins/{admin}/toggle-status', [TenantAdminController::class, 'toggleStatus'])->name('tenant_admins.toggle-status');
+
+        Route::get('analytics', [VisitorAnalyticsController::class, 'index'])->name('analytics');
     });
 
     Route::middleware(['role:tenant_admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -128,6 +137,19 @@ Route::middleware(['auth'])->group(function () {
 
         // Activity Logs
         Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
+
+        // Visitor Analytics
+        Route::get('analytics', [VisitorAnalyticsController::class, 'index'])->name('analytics');
+
+        // Payment System - الرسوم والمدفوعات
+        Route::resource('student-fees', StudentFeeController::class);
+        Route::post('student-fees/bulk', [StudentFeeController::class, 'bulkSet'])->name('student-fees.bulk');
+
+        Route::resource('payments', PaymentController::class);
+        Route::post('payments/generate-monthly', [PaymentController::class, 'generateMonthly'])->name('payments.generate-monthly');
+
+        Route::get('reports/payments/overdue', [PaymentReportController::class, 'overdueReport'])->name('reports.payments.overdue');
+        Route::get('reports/payments/monthly', [PaymentReportController::class, 'monthlyReport'])->name('reports.payments.monthly');
     });
 
     Route::middleware(['role:teacher'])->prefix('teacher')->name('teacher.')->group(function () {
@@ -145,5 +167,35 @@ Route::middleware(['auth'])->group(function () {
 
         // Progress map
         Route::get('students/{student}/progress', [ProgressController::class, 'show'])->name('students.progress');
+
+        // Memorization tracking
+        Route::prefix('memorization')->name('memorization.')->group(function () {
+            Route::get('students/{student}', [TeacherMemorizationController::class, 'show'])->name('show');
+            Route::get('students/{student}/quran-page', [TeacherMemorizationController::class, 'openQuranPage'])->name('open-quran');
+            Route::post('students/{student}/assignments', [TeacherMemorizationController::class, 'storeAssignment'])->name('assignments.store');
+            Route::post('students/{student}/tests', [TeacherMemorizationController::class, 'storeTest'])->name('tests.store');
+            Route::post('students/{student}/confirm', [TeacherMemorizationController::class, 'confirmMemorization'])->name('confirm');
+        });
+    });
+
+});
+
+// المصحف الكريم (متاح للجميع بدون تسجيل دخول)
+Route::prefix('quran')->name('quran.')->group(function () {
+    Route::get('/', [QuranController::class, 'index'])->name('index');
+    Route::get('/page/{pageNumber}', [QuranController::class, 'showPage'])->name('page');
+    Route::get('/surah/{surahId}', [QuranController::class, 'showSurah'])->name('surah');
+    Route::get('/juz/{juzNumber}', [QuranController::class, 'showJuz'])->name('juz');
+
+    // البحث
+    Route::get('/search', [QuranSearchController::class, 'index'])->name('search.index');
+    Route::post('/search', [QuranSearchController::class, 'search'])->name('search');
+
+    // API Routes للاستخدام الداخلي (JSON)
+    Route::prefix('api')->name('api.')->group(function () {
+        Route::get('/page/{pageNumber}', [QuranController::class, 'apiGetPage'])->name('page');
+        Route::get('/verse/{surahId}/{verseNumber}', [QuranController::class, 'apiGetVerse'])->name('verse');
+        Route::post('/search', [QuranSearchController::class, 'apiSearch'])->name('search');
+        Route::get('/suggestions', [QuranSearchController::class, 'apiSuggestions'])->name('suggestions');
     });
 });

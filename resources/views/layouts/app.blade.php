@@ -8,13 +8,38 @@
  <title>@yield('title', 'Tilawa - تحفيظ القرآن')</title>
  <link rel="preconnect" href="https://fonts.googleapis.com">
  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
- <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+ {{-- خطوط عربية إسلامية جميلة --}}
+ <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:wght@400;700&family=Noto+Kufi+Arabic:wght@400;500;600;700&family=Tajawal:wght@300;400;500;600;700;800&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+ {{-- خط المصحف العثماني من مجمع الملك فهد --}}
+ <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+ {{-- PWA --}}
+ <link rel="manifest" href="/manifest.json">
+ <meta name="theme-color" content="#c9a84c">
+ <meta name="mobile-web-app-capable" content="yes">
+ <meta name="apple-mobile-web-app-capable" content="yes">
+ <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+ <meta name="apple-mobile-web-app-title" content="تلاوة">
+ <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+ <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
  @vite(['resources/css/app.css', 'resources/js/app.js'])
+ <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
  @stack('styles')
+ <style>
+ [x-cloak] { display: none !important; }
+ </style>
+ <script>
+ // تسجيل Service Worker
+ if ('serviceWorker' in navigator) {
+     window.addEventListener('load', () => {
+         navigator.serviceWorker.register('/sw.js')
+             .catch(err => console.warn('SW:', err));
+     });
+ }
+ </script>
 </head>
 <body class="bg-gray-50 text-slate-800 min-h-screen antialiased selection:bg-primary-500/20 selection:text-primary-900">
  @php
- $hideNav = request()->routeIs('login') || request()->routeIs('parent.show');
+ $hideNav = request()->routeIs('login') || request()->routeIs('parent.show') || !auth()->check();
  @endphp
 
  <div class="min-h-screen flex">

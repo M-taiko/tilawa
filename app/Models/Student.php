@@ -55,4 +55,70 @@ class Student extends Model
     {
         return $this->belongsTo(Surah::class, 'current_surah_id');
     }
+
+    /**
+     * علاقة مع رسوم الطالب
+     */
+    public function fees()
+    {
+        return $this->hasMany(StudentFee::class);
+    }
+
+    /**
+     * الرسوم النشطة
+     */
+    public function activeFee()
+    {
+        return $this->hasOne(StudentFee::class)->where('is_active', true)->latest('effective_from');
+    }
+
+    /**
+     * علاقة مع المدفوعات
+     */
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    /**
+     * علاقة مع المقاطع المعينة للحفظ
+     */
+    public function memorizations()
+    {
+        return $this->hasMany(StudentMemorizationAssignment::class);
+    }
+
+    /**
+     * المقطع الحالي قيد الحفظ
+     */
+    public function currentMemorization()
+    {
+        return $this->hasOne(StudentMemorizationAssignment::class)
+            ->where('status', 'in_progress')
+            ->latest('assigned_date');
+    }
+
+    /**
+     * علاقة مع اختبارات الحفظ
+     */
+    public function tests()
+    {
+        return $this->hasMany(MemorizationTest::class);
+    }
+
+    /**
+     * الحصول على رقم الصفحة الحالية للطالب
+     */
+    public function getCurrentPageNumber(): ?int
+    {
+        if (!$this->current_surah_id || !$this->current_ayah) {
+            return null;
+        }
+
+        $verse = Verse::where('surah_id', $this->current_surah_id)
+            ->where('verse_number', $this->current_ayah)
+            ->first(['page_number']);
+
+        return $verse?->page_number;
+    }
 }
