@@ -16,10 +16,12 @@
 
         {{-- الشعار --}}
         <div style="text-align:center;margin-bottom:32px;">
-            <div style="width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#c9a84c,#8b6914);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 8px 32px rgba(201,168,76,0.3);">
-                <span style="font-size:2rem;font-family:'Amiri',serif;color:#fff;font-weight:700;">ت</span>
+            <div style="width:72px;height:72px;border-radius:20px;overflow:hidden;margin:0 auto 16px;box-shadow:0 8px 32px rgba(201,168,76,0.3);">
+                <img src="/images/logo.png" alt="Masar Soft"
+                     style="width:100%;height:100%;object-fit:cover;"
+                     onerror="this.parentElement.innerHTML='<div style=\'width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#c9a84c,#8b6914);display:flex;align-items:center;justify-content:center;\'><span style=\'font-size:2rem;font-family:Amiri,serif;color:#fff;font-weight:700;\'>ت</span></div>'">
             </div>
-            <h1 style="font-family:'Tajawal',sans-serif;font-size:1.75rem;font-weight:800;color:#f8fafc;margin-bottom:6px;">تلاوة</h1>
+            <h1 style="font-family:'Tajawal',sans-serif;font-size:1.75rem;font-weight:800;color:#f8fafc;margin-bottom:4px;">Masar Soft Tilawa</h1>
             <p style="font-family:'Tajawal',sans-serif;font-size:0.9rem;color:#94a3b8;">منصة تحفيظ القرآن الكريم</p>
         </div>
 
@@ -123,6 +125,18 @@
             <p style="text-align:center;margin-top:14px;font-family:'Tajawal',sans-serif;font-size:0.75rem;color:#475569;">
                 المصحف الكريم متاح للجميع بدون تسجيل دخول
             </p>
+
+            {{-- جملة الاشتراك --}}
+            <div style="margin-top:16px;padding:14px 16px;border:1px solid rgba(201,168,76,0.25);border-radius:12px;background:rgba(201,168,76,0.05);text-align:center;">
+                <p style="font-family:'Tajawal',sans-serif;font-size:0.8rem;color:#94a3b8;line-height:1.7;">
+                    للاشتراك في برنامج المعلم لمراجعة الطلاب<br>
+                    يرجى التواصل على
+                    <a href="mailto:sales@masarsoft.io"
+                       style="color:#c9a84c;font-weight:700;text-decoration:none;">
+                        sales@masarsoft.io
+                    </a>
+                </p>
+            </div>
         </div>
 
     </div>

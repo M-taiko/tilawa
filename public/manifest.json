@@ -1,7 +1,7 @@
 {
-    "name": "تلاوة - المصحف الكريم",
-    "short_name": "تلاوة",
-    "description": "تطبيق تلاوة لحفظ وتلاوة القرآن الكريم",
+    "name": "Masar Soft Tilawa",
+    "short_name": "Tilawa",
+    "description": "تطبيق تلاوة من Masar Soft لحفظ وتلاوة القرآن الكريم",
     "start_url": "/quran/",
     "scope": "/",
     "display": "standalone",
@@ -59,6 +59,12 @@
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "maskable any"
+        },
+        {
+            "src": "/images/logo.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
         }
     ],
     "shortcuts": [
