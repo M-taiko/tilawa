@@ -394,6 +394,50 @@ html, body { height: 100%; overflow: hidden; }
     grid-template-columns: 1fr 1fr;
     gap: 8px;
 }
+/* Modal التفسير وأسباب النزول */
+.quran-modal-overlay {
+    position: fixed; inset: 0; z-index: 9999;
+    background: rgba(0,0,0,0.7);
+    display: flex; align-items: flex-end; justify-content: center;
+    padding: 0;
+}
+.quran-modal-sheet {
+    width: 100%; max-width: 520px;
+    max-height: 80vh;
+    background: #1c1109;
+    border-radius: 20px 20px 0 0;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    animation: slideUp 0.3s ease;
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.quran-modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+    flex-shrink: 0;
+}
+.quran-modal-title {
+    font-family: 'Amiri', serif;
+    font-size: 1.1rem; font-weight: 700;
+    color: #c9a84c;
+}
+.quran-modal-close {
+    background: rgba(255,255,255,0.1); border: none; cursor: pointer;
+    width: 32px; height: 32px; border-radius: 50%;
+    color: #cbd5e1; font-size: 1.1rem;
+    display: flex; align-items: center; justify-content: center;
+}
+.quran-modal-body {
+    flex: 1; overflow-y: auto; padding: 20px;
+    font-family: 'Amiri', serif; font-size: 1rem;
+    color: #e2d5b5; line-height: 2;
+    direction: rtl; text-align: right;
+}
+.quran-modal-loading {
+    text-align: center; padding: 40px;
+    color: #64748b; font-size: 0.9rem;
+}
 .popup-action-btn {
     padding: 11px 8px;
     border-radius: 12px;
@@ -414,6 +458,8 @@ html, body { height: 100%; overflow: hidden; }
 .btn-bookmark      { background: #fef9c3; color: #92400e; }
 .btn-unbookmark    { background: #fee2e2; color: #991b1b; }
 .btn-copy          { background: #f0fdf4; color: #166534; }
+.btn-tafsir        { background: #eff6ff; color: #1e40af; }
+.btn-asbab         { background: #fdf4ff; color: #7e22ce; }
 .btn-close         { background: #f1f5f9; color: #475569; grid-column: span 2; }
 
 /* ===== لافتة آخر موضع ===== */
@@ -636,9 +682,30 @@ html, body { height: 100%; overflow: hidden; }
                 <span class="icon">📋</span>
                 نسخ الآية
             </button>
+            <button class="popup-action-btn btn-tafsir" onclick="openTafsir()">
+                <span class="icon">📖</span>
+                التفسير
+            </button>
+            <button class="popup-action-btn btn-asbab" onclick="openAsbab()">
+                <span class="icon">🌙</span>
+                أسباب النزول
+            </button>
             <button class="popup-action-btn btn-close" onclick="closeVersePopup()">
                 إغلاق
             </button>
+        </div>
+    </div>
+</div>
+
+{{-- Modal التفسير / أسباب النزول --}}
+<div id="quran-modal-overlay" class="quran-modal-overlay" style="display:none;" onclick="closeQuranModal()">
+    <div class="quran-modal-sheet" onclick="event.stopPropagation()">
+        <div class="quran-modal-header">
+            <span class="quran-modal-title" id="quran-modal-title">التفسير</span>
+            <button class="quran-modal-close" onclick="closeQuranModal()">✕</button>
+        </div>
+        <div class="quran-modal-body" id="quran-modal-body">
+            <div class="quran-modal-loading">جاري التحميل...</div>
         </div>
     </div>
 </div>
@@ -730,6 +797,76 @@ function closeVersePopup() {
     overlay.classList.add('closing');
     sheet.classList.add('closing');
     setTimeout(() => { overlay.style.display = 'none'; }, 200);
+}
+
+// ========== Modal التفسير وأسباب النزول ==========
+function openQuranModal(title, content) {
+    document.getElementById('quran-modal-title').textContent = title;
+    document.getElementById('quran-modal-body').innerHTML = content;
+    document.getElementById('quran-modal-overlay').style.display = 'flex';
+    closeVersePopup();
+}
+
+function closeQuranModal() {
+    document.getElementById('quran-modal-overlay').style.display = 'none';
+}
+
+function openTafsir() {
+    if (!activeVerseEl) return;
+    const surahId  = activeVerseEl.dataset.surahId;
+    const verseNum = activeVerseEl.dataset.verseNumber;
+    const surahName = activeVerseEl.dataset.surahName;
+
+    openQuranModal(
+        'تفسير سورة ' + surahName + ' - آية ' + verseNum,
+        '<div class="quran-modal-loading">⏳ جاري تحميل التفسير...</div>'
+    );
+
+    fetch(`https://api.alquran.cloud/v1/ayah/${surahId}:${verseNum}/ar.muyassar`)
+        .then(r => r.json())
+        .then(data => {
+            if (data.code === 200) {
+                const text = data.data.text;
+                document.getElementById('quran-modal-body').innerHTML =
+                    `<p style="font-size:1.05rem;line-height:2.2;">${text}</p>
+                     <p style="font-size:0.75rem;color:#64748b;margin-top:16px;text-align:center;">المصدر: تفسير الميسر</p>`;
+            } else {
+                document.getElementById('quran-modal-body').innerHTML =
+                    '<p style="color:#ef4444;text-align:center;">تعذّر تحميل التفسير. حاول لاحقاً.</p>';
+            }
+        })
+        .catch(() => {
+            document.getElementById('quran-modal-body').innerHTML =
+                '<p style="color:#ef4444;text-align:center;">لا يوجد اتصال بالإنترنت.</p>';
+        });
+}
+
+function openAsbab() {
+    if (!activeVerseEl) return;
+    const surahId  = activeVerseEl.dataset.surahId;
+    const verseNum = activeVerseEl.dataset.verseNumber;
+    const surahName = activeVerseEl.dataset.surahName;
+
+    // أسباب النزول غير متاحة في API مجاني موثوق — نعرض معلومة واضحة
+    openQuranModal(
+        'أسباب النزول - سورة ' + surahName + ' آية ' + verseNum,
+        `<div style="text-align:center;padding:20px 0;">
+            <p style="font-size:2rem;margin-bottom:12px;">📚</p>
+            <p style="font-size:0.95rem;color:#c9a84c;font-weight:700;margin-bottom:8px;">
+                سورة ${surahName} — الآية ${verseNum}
+            </p>
+            <p style="font-size:0.85rem;color:#94a3b8;line-height:1.9;">
+                للاطلاع على أسباب النزول<br>
+                يُرجى الرجوع إلى كتب التفسير المعتمدة<br>
+                كتفسير ابن كثير والطبري والقرطبي
+            </p>
+            <a href="https://quran.ksu.edu.sa/tafseer/katheer/${surahId}-${verseNum}.html"
+               target="_blank"
+               style="display:inline-block;margin-top:16px;padding:10px 20px;background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.4);border-radius:10px;color:#c9a84c;font-size:0.85rem;text-decoration:none;font-weight:600;">
+               📖 تفسير ابن كثير
+            </a>
+        </div>`
+    );
 }
 
 // ========== Bookmark (آخر موضع القراءة) ==========

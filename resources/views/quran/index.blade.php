@@ -19,6 +19,26 @@
 
 @section('content')
 <div class="min-h-screen p-4 md:p-6 pattern-subtle">
+    {{-- شريط علوي: لوجو + زرار الدخول --}}
+    <div class="flex items-center justify-between max-w-6xl mx-auto mb-4 animate-fadeInUp">
+        {{-- لوجو Masar Soft --}}
+        <a href="https://masarsoft.io" target="_blank" class="flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity">
+            <img src="/images/logo.png" alt="Masar Soft" class="w-8 h-8 rounded-lg object-cover shadow"
+                 onerror="this.outerHTML='<div class=\'w-8 h-8 rounded-lg bg-gradient-to-br from-primary-600 to-primary-800 flex items-center justify-center text-white font-extrabold text-sm shadow\'>M</div>'">
+            <span class="text-xs font-bold text-slate-500" style="font-family:'Tajawal',sans-serif;">Masar Soft</span>
+        </a>
+
+        {{-- زرار الرجوع للصفحة الرئيسية --}}
+        <a href="{{ route('login') }}"
+           class="flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-slate-200 shadow-sm text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:shadow-md transition-all"
+           style="font-family:'Tajawal',sans-serif;">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+            </svg>
+            الصفحة الرئيسية
+        </a>
+    </div>
+
     {{-- Islamic Header --}}
     <div class="mb-6 md:mb-8 text-center animate-fadeInUp">
         <div class="inline-block p-4 md:p-6 rounded-2xl bg-gradient-to-br from-emerald-50 to-gold-50 border-2 border-gold-300 shadow-lg mb-4">
@@ -162,7 +182,7 @@
     </div>
 
     {{-- الأجزاء (Juzs) --}}
-    <div id="juzs" class="max-w-7xl mx-auto">
+    <div id="juzs" class="max-w-7xl mx-auto mb-8">
         <x-card islamic class="overflow-hidden animate-fadeInUp stagger-5">
             <div class="p-6 border-b border-gold-100 bg-gradient-to-r from-gold-50 to-emerald-50">
                 <h2 class="text-2xl font-bold text-gold-800 flex items-center gap-3">
@@ -188,6 +208,15 @@
                 </div>
             </div>
         </x-card>
+    </div>
+
+    {{-- Footer --}}
+    <div class="max-w-7xl mx-auto pt-6 pb-4 text-center border-t border-emerald-100 mt-4">
+        <p class="text-xs text-slate-400" style="font-family:'Tajawal',sans-serif;">
+            صُمِّم بالكامل بواسطة
+            <a href="https://masarsoft.io" target="_blank" class="text-emerald-600 hover:text-emerald-800 font-semibold transition-colors">masarsoft.io</a>
+            &nbsp;•&nbsp; نسألكم الدعاء 🤲
+        </p>
     </div>
 </div>
 <script>
