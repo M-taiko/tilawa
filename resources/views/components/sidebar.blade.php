@@ -1,9 +1,11 @@
 {{-- Sidebar Navigation Links --}}
 @php
  $currentRoute = request()->route()->getName();
- $tenantRole = auth()->user()->tenants()
- ->where('tenants.id', session('current_tenant_id'))
- ->first()?->pivot?->role;
+ $tenantRole = auth()->check()
+     ? auth()->user()->tenants()
+         ->where('tenants.id', session('current_tenant_id'))
+         ->first()?->pivot?->role
+     : null;
 
  $isActive = function($routePattern) use ($currentRoute) {
  return str_starts_with($currentRoute, $routePattern);
@@ -38,11 +40,11 @@
  <div class="rounded-2xl border border-white/20 bg-gradient-to-br from-white/60 via-white/50 to-white/40 backdrop-blur-md px-5 py-5 shadow-lg mb-4">
  <div class="flex items-center gap-3">
  <div class="h-14 w-14 rounded-2xl bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700 text-white flex items-center justify-center font-extrabold text-2xl shadow-xl shadow-primary-500/30 ring-2 ring-white/40">
- {{ substr(auth()->user()->name, 0, 1) }}
+ {{ auth()->check() ? substr(auth()->user()->name, 0, 1) : '؟' }}
  </div>
  <div class="flex-1 min-w-0">
- <div class="text-base font-bold text-slate-900 truncate">{{ auth()->user()->name }}</div>
- <div class="text-xs font-medium text-slate-600 truncate">{{ auth()->user()->email }}</div>
+ <div class="text-base font-bold text-slate-900 truncate">{{ auth()->user()?->name ?? 'زائر' }}</div>
+ <div class="text-xs font-medium text-slate-600 truncate">{{ auth()->user()?->email ?? '' }}</div>
  </div>
  </div>
  <div class="mt-4 flex items-center gap-2">
@@ -54,7 +56,82 @@
  </div>
  </div>
 
- @if(auth()->user()->isSaasAdmin())
+ {{-- Notifications Section --}}
+ @php
+ $unreadCount = auth()->check() ? auth()->user()->unreadNotifications()->count() : 0;
+ $recentNotifications = auth()->check() ? auth()->user()->notifications()->take(5)->get() : collect();
+ @endphp
+
+ @if($unreadCount > 0 || $recentNotifications->count() > 0)
+ <div class="px-4 mb-4" x-data="{ showNotifications: false }">
+ <button @click="showNotifications = !showNotifications"
+ class="w-full flex items-center justify-between gap-3 rounded-2xl px-4 py-3 bg-gradient-to-r from-emerald-50 to-blue-50 border-2 border-emerald-200 hover:border-emerald-300 hover:shadow-md transition-all duration-300">
+ <div class="flex items-center gap-3">
+ <div class="relative">
+ <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+ <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+ </svg>
+ @if($unreadCount > 0)
+ <span class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-white">
+ {{ $unreadCount > 9 ? '9+' : $unreadCount }}
+ </span>
+ @endif
+ </div>
+ <span class="text-sm font-semibold text-slate-800">الإشعارات</span>
+ </div>
+ <svg class="w-4 h-4 text-slate-600 transition-transform duration-300" :class="{'rotate-180': showNotifications}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+ <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+ </svg>
+ </button>
+
+ <div x-show="showNotifications"
+ x-cloak
+ x-transition:enter="transition ease-out duration-200"
+ x-transition:enter-start="opacity-0 transform scale-95"
+ x-transition:enter-end="opacity-100 transform scale-100"
+ x-transition:leave="transition ease-in duration-150"
+ x-transition:leave-start="opacity-100 transform scale-100"
+ x-transition:leave-end="opacity-0 transform scale-95"
+ class="mt-2 rounded-xl bg-white border border-slate-200 shadow-lg overflow-hidden">
+ <div class="max-h-96 overflow-y-auto">
+ @forelse($recentNotifications as $notification)
+ <div class="p-3 border-b border-slate-100 hover:bg-slate-50 transition-colors {{ $notification->isUnread() ? 'bg-emerald-50/50' : '' }}">
+ <div class="flex items-start gap-3">
+ <div class="flex-shrink-0">
+ <div class="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
+ <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+ <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+ </svg>
+ </div>
+ </div>
+ <div class="flex-1 min-w-0">
+ <p class="text-xs font-bold text-slate-900 mb-1">{{ $notification->title }}</p>
+ <p class="text-xs text-slate-600 leading-relaxed">{{ $notification->message }}</p>
+ <p class="text-[10px] text-slate-400 mt-1">{{ $notification->created_at->diffForHumans() }}</p>
+ </div>
+ @if($notification->isUnread())
+ <span class="flex-shrink-0 w-2 h-2 rounded-full bg-emerald-500"></span>
+ @endif
+ </div>
+ </div>
+ @empty
+ <div class="p-4 text-center text-sm text-slate-500">
+ لا توجد إشعارات
+ </div>
+ @endforelse
+ </div>
+ @if($recentNotifications->count() > 0)
+ <div class="p-2 bg-slate-50 border-t border-slate-200">
+ <a href="#" class="block text-center text-xs font-semibold text-primary-600 hover:text-primary-700">
+ عرض جميع الإشعارات
+ </a>
+ </div>
+ @endif
+ </div>
+ </div>
+ @endif
+
+ @if(auth()->check() && auth()->user()->isSaasAdmin())
  <div class="sidebar-section px-4" data-section="saas-admin">
  <div class="mb-3 pb-2 border-b border-gradient-to-r from-slate-200/50 to-transparent">
  <h3 class="text-xs font-bold text-slate-600 uppercase tracking-wider">إدارة النظام</h3>
@@ -67,6 +144,15 @@
  </svg>
  </span>
  <span class="tracking-tight sidebar-text">المراكز</span>
+ </a>
+
+ <a href="{{ route('saas.analytics') }}" data-tooltip="إحصائيات الزوار" class="{{ $linkBase }} {{ $isActive('saas.analytics') ? $activeClass : $inactiveClass }}">
+ <span class="{{ $iconClass }} {{ $isActive('saas.analytics') ? '!bg-gradient-to-br !from-primary-500 !to-primary-600 !text-white !shadow-lg !shadow-primary-500/30' : 'text-slate-600 group-hover:text-primary-600 group-hover:scale-110' }}">
+ <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+ <path stroke-linecap="round" stroke-linejoin="round" stroke-width="{{ $isActive('saas.analytics') ? '2' : '1.5' }}" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+ </svg>
+ </span>
+ <span class="tracking-tight sidebar-text">إحصائيات الزوار</span>
  </a>
  </div>
  </div>
@@ -196,6 +282,15 @@
  </span>
  <span class="tracking-tight sidebar-text">سجل النشاطات</span>
  </a>
+
+ <a href="{{ route('admin.analytics') }}" data-tooltip="إحصائيات الزوار" class="{{ $linkBase }} {{ $isActive('admin.analytics') ? $activeClass : $inactiveClass }}">
+ <span class="{{ $iconClass }} {{ $isActive('admin.analytics') ? '!bg-gradient-to-br !from-primary-500 !to-primary-600 !text-white !shadow-lg !shadow-primary-500/30' : 'text-slate-600 group-hover:text-primary-600 group-hover:scale-110' }}">
+ <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+ <path stroke-linecap="round" stroke-linejoin="round" stroke-width="{{ $isActive('admin.analytics') ? '2' : '1.5' }}" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+ </svg>
+ </span>
+ <span class="tracking-tight sidebar-text">إحصائيات الزوار</span>
+ </a>
  </div>
  </div>
  @elseif($tenantRole === 'teacher')
@@ -251,6 +346,32 @@
  </div>
  </div>
  @endif
+
+ {{-- Quran Section (Available for all users) --}}
+ <div class="sidebar-section px-4 mt-6 pt-6 border-t border-slate-200/60" data-section="quran">
+ <div class="mb-3 pb-2 border-b border-slate-200/50">
+ <h3 class="text-xs font-bold text-slate-600 uppercase tracking-wider">القرآن الكريم</h3>
+ </div>
+ <div class="nav-section flex flex-col gap-2">
+ <a href="{{ route('quran.index') }}" data-tooltip="المصحف الكريم" class="{{ $linkBase }} {{ $isActive('quran') ? $activeClass : $inactiveClass }}">
+ <span class="{{ $iconClass }} {{ $isActive('quran') ? '!bg-gradient-to-br !from-emerald-500 !to-emerald-600 !text-white !shadow-lg !shadow-emerald-500/30' : 'text-slate-600 group-hover:text-emerald-600 group-hover:scale-110' }}">
+ <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+ <path stroke-linecap="round" stroke-linejoin="round" stroke-width="{{ $isActive('quran') ? '2' : '1.5' }}" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+ </svg>
+ </span>
+ <span class="tracking-tight sidebar-text">المصحف الكريم</span>
+ </a>
+
+ <a href="{{ route('quran.search.index') }}" data-tooltip="البحث في القرآن" class="{{ $linkBase }} {{ $isActive('quran.search') ? $activeClass : $inactiveClass }}">
+ <span class="{{ $iconClass }} {{ $isActive('quran.search') ? '!bg-gradient-to-br !from-accent-500 !to-accent-600 !text-white !shadow-lg !shadow-accent-500/30' : 'text-slate-600 group-hover:text-accent-600 group-hover:scale-110' }}">
+ <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+ <path stroke-linecap="round" stroke-linejoin="round" stroke-width="{{ $isActive('quran.search') ? '2' : '1.5' }}" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+ </svg>
+ </span>
+ <span class="tracking-tight sidebar-text">البحث في القرآن</span>
+ </a>
+ </div>
+ </div>
 
  <div class="sidebar-section px-4 mt-6 pt-6 border-t border-slate-200/60" data-section="profile">
  <div class="mb-3 pb-2 border-b border-slate-200/50">

@@ -18,12 +18,15 @@
  'lg' => 'h-4',
  ];
 
+ // Islamic gradient colors - ألوان إسلامية متدرجة
  $variantClasses = [
- 'primary' => 'bg-blue-600',
- 'success' => 'bg-green-600',
- 'warning' => 'bg-yellow-600',
- 'error' => 'bg-red-600',
- 'info' => 'bg-cyan-600',
+ 'primary' => 'bg-gradient-to-r from-primary-500 to-primary-600 shadow-sm',
+ 'gold' => 'bg-gradient-to-r from-gold-500 to-gold-600 shadow-sm shadow-gold-500/30',
+ 'emerald-gold' => 'bg-gradient-to-r from-primary-500 via-gold-500 to-primary-600 progress-glow',
+ 'success' => 'bg-gradient-to-r from-success-500 to-success-600 shadow-sm',
+ 'warning' => 'bg-gradient-to-r from-warning-500 to-warning-600 shadow-sm',
+ 'error' => 'bg-gradient-to-r from-error-500 to-error-600 shadow-sm',
+ 'info' => 'bg-gradient-to-r from-accent-500 to-accent-600 shadow-sm',
  ];
 
  $barClasses = collect([
@@ -49,7 +52,7 @@
  @endif
 
  <div
- class="w-full {{ $containerSizeClasses[$size] ?? $containerSizeClasses['md'] }} bg-gray-200 rounded-full overflow-hidden"
+ class="w-full {{ $containerSizeClasses[$size] ?? $containerSizeClasses['md'] }} bg-primary-50 rounded-full overflow-hidden border border-primary-100"
  role="progressbar"
  aria-valuenow="{{ $value }}"
  aria-valuemin="0"

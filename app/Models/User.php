@@ -48,6 +48,16 @@ class User extends Authenticatable
         return $this->hasMany(StudyClass::class, 'teacher_id');
     }
 
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class)->latest();
+    }
+
+    public function unreadNotifications()
+    {
+        return $this->hasMany(Notification::class)->unread()->latest();
+    }
+
     public function isSaasAdmin(): bool
     {
         return $this->global_role === 'saas_admin';
