@@ -13,8 +13,11 @@
  <meta name="apple-mobile-web-app-capable" content="yes">
  <meta name="apple-mobile-web-app-status-bar-style" content="black">
  <meta name="apple-mobile-web-app-title" content="تلاوة">
+ <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png">
+ <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png">
  <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
  <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
+ <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192x192.png">
  {{-- الخطوط --}}
  <link rel="preconnect" href="https://fonts.googleapis.com">
  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

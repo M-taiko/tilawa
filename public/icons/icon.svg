@@ -1,20 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <!-- خلفية دائرية ذهبية -->
-  <circle cx="256" cy="256" r="256" fill="#1a0e00"/>
-  <!-- إطار ذهبي -->
-  <circle cx="256" cy="256" r="240" fill="none" stroke="#c9a84c" stroke-width="8"/>
-  <circle cx="256" cy="256" r="220" fill="none" stroke="#c9a84c" stroke-width="2"/>
-  <!-- رمز المصحف -->
-  <rect x="156" y="130" width="200" height="252" rx="12" fill="#fdf8f0" stroke="#c9a84c" stroke-width="4"/>
-  <rect x="164" y="138" width="184" height="236" rx="8" fill="none" stroke="#c9a84c" stroke-width="1.5" stroke-dasharray="4,3"/>
-  <!-- خطوط النص -->
-  <line x1="188" y1="180" x2="324" y2="180" stroke="#c9a84c" stroke-width="2.5" stroke-linecap="round"/>
-  <line x1="188" y1="210" x2="324" y2="210" stroke="#3d2b00" stroke-width="2" stroke-linecap="round"/>
-  <line x1="188" y1="235" x2="324" y2="235" stroke="#3d2b00" stroke-width="2" stroke-linecap="round"/>
-  <line x1="188" y1="260" x2="310" y2="260" stroke="#3d2b00" stroke-width="2" stroke-linecap="round"/>
-  <line x1="188" y1="285" x2="324" y2="285" stroke="#3d2b00" stroke-width="2" stroke-linecap="round"/>
-  <line x1="188" y1="310" x2="290" y2="310" stroke="#3d2b00" stroke-width="2" stroke-linecap="round"/>
-  <line x1="188" y1="335" x2="324" y2="335" stroke="#3d2b00" stroke-width="2" stroke-linecap="round"/>
-  <!-- حرف ت زخرفي -->
-  <text x="256" y="172" text-anchor="middle" font-family="serif" font-size="28" fill="#c9a84c" font-weight="bold">ت</text>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" rx="80" ry="80" fill="#1a0e00"/>
+  <image x="56" y="26" width="400" height="460" href="/images/logo.png" preserveAspectRatio="xMidYMid meet"/>
 </svg>

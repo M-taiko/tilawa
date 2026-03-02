@@ -199,5 +199,6 @@ Route::prefix('quran')->name('quran.')->group(function () {
         Route::get('/verse/{surahId}/{verseNumber}', [QuranController::class, 'apiGetVerse'])->name('verse');
         Route::post('/search', [QuranSearchController::class, 'apiSearch'])->name('search');
         Route::get('/suggestions', [QuranSearchController::class, 'apiSuggestions'])->name('suggestions');
+        Route::get('/download-all', [QuranController::class, 'apiDownloadAll'])->name('download-all');
     });
 });
