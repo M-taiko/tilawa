@@ -32,6 +32,32 @@
  </svg>
  </x-slot>
  </x-input>
+
+ {{-- Max Teachers & Students --}}
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+ <x-input name="max_teachers" label="الحد الأقصى للمعلمين" type="number"
+ placeholder="مثال: 10" required value="{{ old('max_teachers', 10) }}"
+ :error="$errors->first('max_teachers')"
+ helper="عدد المعلمين المسموح بتسجيلهم" min="1">
+ <x-slot name="icon">
+ <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+ <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+ d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+ </svg>
+ </x-slot>
+ </x-input>
+ <x-input name="max_students" label="الحد الأقصى للطلاب" type="number"
+ placeholder="مثال: 100" required value="{{ old('max_students', 100) }}"
+ :error="$errors->first('max_students')"
+ helper="عدد الطلاب المسموح بتسجيلهم" min="1">
+ <x-slot name="icon">
+ <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+ <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+ d="M12 6.253v13m0-13C6.596.75 2.247 2.506 2.247 5.08c0 3.577 3.066 5.932 9.753 12.745m0-13c5.404-3.874 9.753-2.118 9.753.665 0 3.577-3.066 5.932-9.753 12.745"/>
+ </svg>
+ </x-slot>
+ </x-input>
+ </div>
  </div>
 
  {{-- Admin Info --}}

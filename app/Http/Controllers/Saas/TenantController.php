@@ -29,10 +29,14 @@ class TenantController extends Controller
             'admin_name' => 'required|string|max:255',
             'admin_email' => 'required|email|max:255|unique:users,email',
             'admin_password' => 'required|string|min:6',
+            'max_teachers' => 'required|integer|min:1|max:65535',
+            'max_students' => 'required|integer|min:1|max:65535',
         ]);
 
         $tenant = Tenant::create([
             'name' => $validated['tenant_name'],
+            'max_teachers' => $validated['max_teachers'],
+            'max_students' => $validated['max_students'],
         ]);
 
         $admin = User::create([
@@ -60,10 +64,14 @@ class TenantController extends Controller
     {
         $validated = $request->validate([
             'tenant_name' => 'required|string|max:255',
+            'max_teachers' => 'required|integer|min:1|max:65535',
+            'max_students' => 'required|integer|min:1|max:65535',
         ]);
 
         $tenant->update([
             'name' => $validated['tenant_name'],
+            'max_teachers' => $validated['max_teachers'],
+            'max_students' => $validated['max_students'],
         ]);
 
         return redirect()->route('saas.tenants.index')->with('success', 'تم تحديث بيانات المركز');

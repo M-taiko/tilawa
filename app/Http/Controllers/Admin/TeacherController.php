@@ -54,6 +54,14 @@ class TeacherController extends Controller
     {
         $validated = $request->validated();
 
+        // Check if tenant has reached teacher limit
+        $tenant = \App\Models\Tenant::find(session('current_tenant_id'));
+        if ($tenant && $tenant->hasReachedTeacherLimit()) {
+            return back()
+                ->withErrors(['email' => 'وصل المركز للحد الأقصى من المعلمين (' . $tenant->max_teachers . ' معلم)'])
+                ->withInput();
+        }
+
         $existingUser = User::where('email', $validated['email'])->first();
 
         if ($existingUser) {

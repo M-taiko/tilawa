@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Tenant extends Model
 {
     use SoftDeletes;
-    protected $fillable = ['name', 'is_active'];
+    protected $fillable = ['name', 'is_active', 'max_teachers', 'max_students'];
 
     public function users()
     {
@@ -35,5 +35,15 @@ class Tenant extends Model
     public function foundationSkills()
     {
         return $this->hasMany(FoundationSkill::class);
+    }
+
+    public function hasReachedTeacherLimit(): bool
+    {
+        return $this->users()->wherePivot('role', 'teacher')->count() >= $this->max_teachers;
+    }
+
+    public function hasReachedStudentLimit(): bool
+    {
+        return $this->students()->where('status', '!=', 'graduated')->count() >= $this->max_students;
     }
 }

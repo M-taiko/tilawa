@@ -24,6 +24,7 @@
  <x-table.heading>الحالة</x-table.heading>
  <x-table.heading>مدير المركز</x-table.heading>
  <x-table.heading>تاريخ الإنشاء</x-table.heading>
+ <x-table.heading>المعلمون / الطلاب</x-table.heading>
  <x-table.heading>الإجراءات</x-table.heading>
  </x-table.head>
  <x-table.body>
@@ -51,6 +52,20 @@
  </x-table.cell>
  <x-table.cell>
  {{ $tenant->created_at?->format('Y-m-d') }}
+ </x-table.cell>
+ <x-table.cell>
+ @php
+ $teacherCount = $tenant->users()->wherePivot('role', 'teacher')->count();
+ $studentCount = $tenant->students()->where('status', '!=', 'graduated')->count();
+ @endphp
+ <div class="text-sm space-y-1">
+ <div class="{{ $teacherCount >= $tenant->max_teachers ? 'text-red-600 font-semibold' : 'text-gray-600' }}">
+ معلمون: {{ $teacherCount }} / {{ $tenant->max_teachers }}
+ </div>
+ <div class="{{ $studentCount >= $tenant->max_students ? 'text-red-600 font-semibold' : 'text-gray-600' }}">
+ طلاب: {{ $studentCount }} / {{ $tenant->max_students }}
+ </div>
+ </div>
  </x-table.cell>
  <x-table.cell>
  <div class="flex items-center gap-2 justify-end">
@@ -94,7 +109,7 @@
  </x-table.cell>
  </x-table.row>
  @empty
- <x-table.empty title="لا توجد مراكز" description="ابدأ بإضافة مركز جديد" cols="5">
+ <x-table.empty title="لا توجد مراكز" description="ابدأ بإضافة مركز جديد" cols="6">
  <x-slot:icon>
  <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>

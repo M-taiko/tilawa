@@ -21,7 +21,7 @@ class StoreTeacherRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email',
+            'email' => 'required|email|max:255',
             'password' => 'required|string|min:6',
             'allowed_groups' => 'nullable|array',
             'allowed_groups.*' => 'string|max:100',

@@ -70,6 +70,14 @@ class StudentController extends Controller
     {
         $validated = $request->validated();
 
+        // Check if tenant has reached student limit
+        $tenant = \App\Models\Tenant::find(session('current_tenant_id'));
+        if ($tenant && $tenant->hasReachedStudentLimit()) {
+            return back()
+                ->withErrors(['name' => 'وصل المركز للحد الأقصى من الطلاب (' . $tenant->max_students . ' طالب)'])
+                ->withInput();
+        }
+
         if (!empty($validated['class_id'])) {
             $classExists = StudyClass::where('tenant_id', session('current_tenant_id'))
                 ->where('id', $validated['class_id'])
