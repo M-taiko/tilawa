@@ -7,14 +7,14 @@
 @push('seo')
 <script type="application/ld+json">
 {
-  "@context": "https://schema.org",
-  "@type": "WebPage",
+  "@@context": "https://schema.org",
+  "@@type": "WebPage",
   "name": "صفحة {{ $pageNumber }} من المصحف الكريم",
   "url": "{{ url('/quran/page/' . $pageNumber) }}",
   "description": "قراءة صفحة {{ $pageNumber }} من القرآن الكريم بالرسم العثماني",
   "inLanguage": "ar",
   "isPartOf": {
-    "@type": "WebSite",
+    "@@type": "WebSite",
     "name": "تلاوة",
     "url": "{{ url('/quran') }}"
   }

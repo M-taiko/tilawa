@@ -8,8 +8,8 @@
 @push('seo')
 <script type="application/ld+json">
 {
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
+  "@@context": "https://schema.org",
+  "@@type": "WebApplication",
   "name": "تلاوة — قراءة القرآن الكريم",
   "url": "{{ url('/quran') }}",
   "description": "تطبيق ويب لقراءة القرآن الكريم كاملاً بالرسم العثماني — 604 صفحة، 114 سورة، 30 جزءاً. يعمل بدون إنترنت.",
@@ -17,12 +17,12 @@
   "operatingSystem": "Any",
   "inLanguage": "ar",
   "author": {
-    "@type": "Organization",
+    "@@type": "Organization",
     "name": "Masar Soft",
     "url": "https://masarsoft.io"
   },
   "offers": {
-    "@type": "Offer",
+    "@@type": "Offer",
     "price": "0",
     "priceCurrency": "USD"
   }
