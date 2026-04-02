@@ -5,6 +5,9 @@
  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
  <meta name="csrf-token" content="{{ csrf_token() }}">
 
+ {{-- Google Search Console Verification --}}
+ <meta name="google-site-verification" content="0N4ZFuWAdaKnApOKFasDnWxm4Cxkis9HCP0Gi_MomJ0">
+
  {{-- SEO --}}
  <title>@yield('title', 'المصحف الكريم — تلاوة')</title>
  <meta name="description" content="@yield('meta_description', 'قراءة القرآن الكريم بالرسم العثماني — تطبيق تلاوة')">

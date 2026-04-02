@@ -5,6 +5,9 @@
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
  <meta name="csrf-token" content="{{ csrf_token() }}">
 
+ {{-- Google Search Console Verification --}}
+ <meta name="google-site-verification" content="0N4ZFuWAdaKnApOKFasDnWxm4Cxkis9HCP0Gi_MomJ0">
+
  {{-- SEO Core --}}
  <title>@yield('title', 'تلاوة - قراءة القرآن الكريم | Masar Soft')</title>
  <meta name="description" content="@yield('meta_description', 'تلاوة — تطبيق لقراءة وحفظ القرآن الكريم بالرسم العثماني. تصفح 604 صفحة، 114 سورة، 30 جزءاً. يعمل بدون إنترنت.')">
