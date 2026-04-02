@@ -137,6 +137,14 @@ class QuranController extends Controller
     /**
      * API: تحميل كل القرآن للعمل offline (Dexie)
      */
+    public function sitemap()
+    {
+        $surahs = $this->quranService->getAllSurahs();
+        return response()
+            ->view('sitemap', compact('surahs'))
+            ->header('Content-Type', 'application/xml');
+    }
+
     public function apiDownloadAll()
     {
         $verses = $this->quranService->getAllVerses();

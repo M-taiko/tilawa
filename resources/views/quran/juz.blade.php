@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
-@section('title', $juz->name_arabic . ' - المصحف الكريم')
+@section('title', $juz->name_arabic . ' — الجزء ' . $juz->id . ' من القرآن الكريم | تلاوة')
+@section('meta_description', 'قراءة ' . $juz->name_arabic . ' (الجزء ' . $juz->id . ') من القرآن الكريم بالرسم العثماني — تطبيق تلاوة.')
+@section('canonical', url('/quran/juz/' . $juz->id))
 
 @section('content')
 <div class="min-h-screen p-4 md:p-6 pattern-subtle">

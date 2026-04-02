@@ -1,6 +1,34 @@
 @extends('layouts.app')
 
-@section('title', 'المصحف الكريم - Tilawa')
+@section('title', 'المصحف الكريم — قراءة القرآن الكريم بالرسم العثماني | تلاوة')
+@section('meta_description', 'اقرأ القرآن الكريم كاملاً بالرسم العثماني — 604 صفحة، 114 سورة، 30 جزءاً. تطبيق تلاوة يعمل بدون إنترنت على جميع الأجهزة.')
+@section('canonical', url('/quran'))
+@section('og_type', 'website')
+
+@push('seo')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "تلاوة — قراءة القرآن الكريم",
+  "url": "{{ url('/quran') }}",
+  "description": "تطبيق ويب لقراءة القرآن الكريم كاملاً بالرسم العثماني — 604 صفحة، 114 سورة، 30 جزءاً. يعمل بدون إنترنت.",
+  "applicationCategory": "ReferenceApplication",
+  "operatingSystem": "Any",
+  "inLanguage": "ar",
+  "author": {
+    "@type": "Organization",
+    "name": "Masar Soft",
+    "url": "https://masarsoft.io"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+}
+</script>
+@endpush
 
 @push('styles')
 <style>

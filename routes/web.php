@@ -49,6 +49,9 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+// Sitemap
+Route::get('/sitemap.xml', [QuranController::class, 'sitemap'])->name('sitemap');
+
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])
     ->middleware('throttle:5,1') // Limit: 5 attempts per minute

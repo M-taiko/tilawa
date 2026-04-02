@@ -1,6 +1,32 @@
 @extends('layouts.mushaf')
 
-@section('title', 'صفحة ' . $pageNumber . ' - المصحف الكريم')
+@section('title', 'صفحة ' . $pageNumber . ' من المصحف الكريم | تلاوة')
+@section('meta_description', 'قراءة صفحة ' . $pageNumber . ' من القرآن الكريم بالرسم العثماني — تطبيق تلاوة للقراءة والحفظ.')
+@section('canonical', url('/quran/page/' . $pageNumber))
+
+@push('seo')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "صفحة {{ $pageNumber }} من المصحف الكريم",
+  "url": "{{ url('/quran/page/' . $pageNumber) }}",
+  "description": "قراءة صفحة {{ $pageNumber }} من القرآن الكريم بالرسم العثماني",
+  "inLanguage": "ar",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "تلاوة",
+    "url": "{{ url('/quran') }}"
+  }
+}
+</script>
+@if($pageNumber > 1)
+<link rel="prev" href="{{ url('/quran/page/' . ($pageNumber - 1)) }}">
+@endif
+@if($pageNumber < 604)
+<link rel="next" href="{{ url('/quran/page/' . ($pageNumber + 1)) }}">
+@endif
+@endpush
 
 @push('styles')
 <style>

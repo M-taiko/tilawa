@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'سورة ' . $surah->name_arabic . ' - المصحف الكريم')
+@section('title', 'سورة ' . $surah->name_arabic . ' (' . $surah->ayah_count . ' آية) | تلاوة')
+@section('meta_description', 'قراءة سورة ' . $surah->name_arabic . ' كاملةً — ' . $surah->ayah_count . ' آية — من القرآن الكريم بالرسم العثماني في تطبيق تلاوة.')
+@section('canonical', url('/quran/surah/' . $surah->id))
 
 @section('content')
 <div class="min-h-screen p-4 md:p-6 pattern-subtle">

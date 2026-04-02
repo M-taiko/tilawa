@@ -4,8 +4,29 @@
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
  <meta name="csrf-token" content="{{ csrf_token() }}">
- <meta name="description" content="المصحف الكريم - تلاوة">
- <title>@yield('title', 'المصحف الكريم - تلاوة')</title>
+
+ {{-- SEO --}}
+ <title>@yield('title', 'المصحف الكريم — تلاوة')</title>
+ <meta name="description" content="@yield('meta_description', 'قراءة القرآن الكريم بالرسم العثماني — تطبيق تلاوة')">
+ <link rel="canonical" href="@yield('canonical', url()->current())">
+ <meta name="robots" content="index, follow">
+
+ {{-- Open Graph --}}
+ <meta property="og:type"        content="article">
+ <meta property="og:title"       content="@yield('title', 'المصحف الكريم — تلاوة')">
+ <meta property="og:description" content="@yield('meta_description', 'قراءة القرآن الكريم بالرسم العثماني')">
+ <meta property="og:url"         content="@yield('canonical', url()->current())">
+ <meta property="og:image"       content="{{ url('/images/logo.png') }}">
+ <meta property="og:locale"      content="ar_AR">
+ <meta property="og:site_name"   content="تلاوة — Masar Soft">
+
+ {{-- Twitter Card --}}
+ <meta name="twitter:card"        content="summary">
+ <meta name="twitter:title"       content="@yield('title', 'المصحف الكريم — تلاوة')">
+ <meta name="twitter:description" content="@yield('meta_description', 'قراءة القرآن الكريم بالرسم العثماني')">
+ <meta name="twitter:image"       content="{{ url('/images/logo.png') }}">
+
+ @stack('seo')
  {{-- PWA --}}
  <link rel="manifest" href="/manifest.json">
  <meta name="theme-color" content="#1a0e00">

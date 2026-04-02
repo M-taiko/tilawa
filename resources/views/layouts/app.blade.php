@@ -4,8 +4,36 @@
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
  <meta name="csrf-token" content="{{ csrf_token() }}">
- <meta name="description" content="نظام تلاوة - مركز تحفيظ القرآن">
- <title>@yield('title', 'Tilawa - تحفيظ القرآن')</title>
+
+ {{-- SEO Core --}}
+ <title>@yield('title', 'تلاوة - قراءة القرآن الكريم | Masar Soft')</title>
+ <meta name="description" content="@yield('meta_description', 'تلاوة — تطبيق لقراءة وحفظ القرآن الكريم بالرسم العثماني. تصفح 604 صفحة، 114 سورة، 30 جزءاً. يعمل بدون إنترنت.')">
+ <link rel="canonical" href="@yield('canonical', url()->current())">
+ @php
+ $isPrivate = request()->is('saas/*','admin/*','teacher/*','student/*','login','logout','p/*');
+ @endphp
+ @if($isPrivate || View::hasSection('noindex'))
+ <meta name="robots" content="noindex, nofollow">
+ @else
+ <meta name="robots" content="index, follow">
+ @endif
+
+ {{-- Open Graph --}}
+ <meta property="og:type"        content="@yield('og_type', 'website')">
+ <meta property="og:title"       content="@yield('title', 'تلاوة - قراءة القرآن الكريم')">
+ <meta property="og:description" content="@yield('meta_description', 'تلاوة — تطبيق لقراءة وحفظ القرآن الكريم بالرسم العثماني.')">
+ <meta property="og:url"         content="@yield('canonical', url()->current())">
+ <meta property="og:image"       content="@yield('og_image', url('/images/logo.png'))">
+ <meta property="og:locale"      content="ar_AR">
+ <meta property="og:site_name"   content="تلاوة — Masar Soft">
+
+ {{-- Twitter Card --}}
+ <meta name="twitter:card"        content="summary_large_image">
+ <meta name="twitter:title"       content="@yield('title', 'تلاوة')">
+ <meta name="twitter:description" content="@yield('meta_description', 'قراءة القرآن الكريم بالرسم العثماني')">
+ <meta name="twitter:image"       content="@yield('og_image', url('/images/logo.png'))">
+
+ @stack('seo')
  <link rel="preconnect" href="https://fonts.googleapis.com">
  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
  {{-- خطوط عربية إسلامية جميلة --}}

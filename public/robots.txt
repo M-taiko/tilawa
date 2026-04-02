@@ -1,2 +1,17 @@
 User-agent: *
-Disallow:
+
+# السماح بصفحات القرآن الكريم
+Allow: /quran
+
+# حجب صفحات الإدارة والتسجيل
+Disallow: /login
+Disallow: /logout
+Disallow: /saas/
+Disallow: /admin/
+Disallow: /teacher/
+Disallow: /student/
+Disallow: /p/
+Disallow: /quran/api/
+Disallow: /build/
+
+Sitemap: https://tilawa.masarsoft.io/sitemap.xml
