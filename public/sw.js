@@ -1,5 +1,5 @@
-// ===== Tilawa PWA Service Worker v8 =====
-const CACHE_VERSION = 'v8';
+// ===== Tilawa PWA Service Worker v9 =====
+const CACHE_VERSION = 'v9';
 const CORE_CACHE    = 'tilawa-core-'  + CACHE_VERSION;
 const QURAN_CACHE   = 'tilawa-quran-' + CACHE_VERSION;
 const FONT_CACHE    = 'tilawa-fonts-' + CACHE_VERSION;
@@ -138,7 +138,7 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // صفحات القرآن — Cache First مع تحديث في الخلفية
+    // صفحات القرآن — Network First (لو عندك نت → من النت، لو لا → من الكاش)
     if (
         url.pathname.startsWith('/quran/page/')  ||
         url.pathname.startsWith('/quran/surah/') ||
@@ -146,7 +146,7 @@ self.addEventListener('fetch', (event) => {
         url.pathname === '/quran/'               ||
         url.pathname === '/quran'
     ) {
-        event.respondWith(cacheFirstWithBackground(req, QURAN_CACHE));
+        event.respondWith(networkFirstQuran(req, QURAN_CACHE));
         return;
     }
 
@@ -164,11 +164,11 @@ self.addEventListener('fetch', (event) => {
 
 async function cacheFirst(request, cacheName) {
     const cache  = await caches.open(cacheName);
-    const cached = await cache.match(request);
+    const cached = await cache.match(request.url) || await cache.match(request);
     if (cached) return cached;
     try {
-        const response = await fetch(request, { credentials: 'same-origin' });
-        if (response.ok) cache.put(request, response.clone());
+        const response = await fetch(request.url, { credentials: 'same-origin' });
+        if (response.ok) cache.put(request.url, response.clone());
         return response;
     } catch {
         return (await caches.match('/offline.html'))
@@ -176,23 +176,23 @@ async function cacheFirst(request, cacheName) {
     }
 }
 
-async function cacheFirstWithBackground(request, cacheName) {
-    const cache  = await caches.open(cacheName);
-    const cached = await cache.match(request);
-
-    const networkFetch = fetch(request, { credentials: 'same-origin' })
-        .then(res => { if (res.ok) cache.put(request, res.clone()); return res; })
-        .catch(() => null);
-
-    if (cached) {
-        networkFetch.catch(() => {});
-        return cached;
+// Network First للقرآن: لو عندك نت → من النت وتكاش في الخلفية، لو لا نت → من الكاش
+async function networkFirstQuran(request, cacheName) {
+    const cache = await caches.open(cacheName);
+    try {
+        const response = await fetch(request.url, { credentials: 'same-origin' });
+        if (response.ok) {
+            cache.put(request.url, response.clone());
+        }
+        return response;
+    } catch {
+        // مفيش نت → رجّع من الكاش
+        const cached = await cache.match(request.url)
+                    || await cache.match(request);
+        if (cached) return cached;
+        return (await caches.match('/offline.html'))
+            || new Response('Offline', { status: 503, headers: { 'Content-Type': 'text/plain' } });
     }
-
-    const net = await networkFetch;
-    if (net && net.ok) return net;
-    return (await caches.match('/offline.html'))
-        || new Response('Offline', { status: 503, headers: { 'Content-Type': 'text/plain' } });
 }
 
 async function networkFirstWithFallback(request) {
