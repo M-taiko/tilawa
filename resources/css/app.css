@@ -96,11 +96,13 @@
 
 html {
     @apply scroll-smooth;
+    overflow-x: hidden;
 }
 
 body {
     @apply antialiased text-slate-800 bg-slate-50;
     font-feature-settings: "cv11", "ss01";
+    overflow-x: hidden;
 }
 
 /* Glassmorphism Utilities */
