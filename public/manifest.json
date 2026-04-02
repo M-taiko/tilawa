@@ -2,7 +2,7 @@
     "name": "Masar Soft Tilawa",
     "short_name": "تلاوة",
     "description": "تطبيق تلاوة من Masar Soft لحفظ وتلاوة القرآن الكريم",
-    "start_url": "/quran/",
+    "start_url": "/login",
     "scope": "/",
     "display": "standalone",
     "orientation": "portrait",

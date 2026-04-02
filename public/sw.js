@@ -1,30 +1,55 @@
-// ===== Tilawa PWA Service Worker v6 =====
-const CACHE_VERSION = 'v6';
+// ===== Tilawa PWA Service Worker v7 =====
+const CACHE_VERSION = 'v7';
 const CORE_CACHE    = 'tilawa-core-'  + CACHE_VERSION;
 const QURAN_CACHE   = 'tilawa-quran-' + CACHE_VERSION;
 const FONT_CACHE    = 'tilawa-fonts-' + CACHE_VERSION;
 const ALL_CACHES    = [CORE_CACHE, QURAN_CACHE, FONT_CACHE];
 
-// الملفات الأساسية اللازمة للعمل offline
-const CORE_URLS = [
+// الملفات الثابتة دايماً في الكاش
+const STATIC_CORE = [
     '/offline.html',
     '/manifest.json',
     '/images/logo.png',
     '/js/quran-offline.js',
+    '/login',
 ];
 
 // ===== Install =====
-// مهم: نكاش بس الملفات الأساسية الصغيرة — لا نبلوك بصفحات القرآن
+// نكاش الـ static files + نكتشف build assets تلقائياً من Vite manifest
 self.addEventListener('install', (event) => {
     event.waitUntil(
-        caches.open(CORE_CACHE)
-            .then(cache => cache.addAll(CORE_URLS))
+        buildCoreUrls()
+            .then(urls => caches.open(CORE_CACHE).then(cache => {
+                // addAll بيفشل كله لو فشل واحد — نستخدم حلقة عشان نتجاهل الأخطاء
+                return Promise.all(
+                    urls.map(url =>
+                        cache.add(url).catch(() => {
+                            console.warn('[SW] Failed to cache:', url);
+                        })
+                    )
+                );
+            }))
             .then(() => self.skipWaiting())
     );
 });
 
+// اكتشاف build assets من Vite manifest تلقائياً
+async function buildCoreUrls() {
+    const urls = [...STATIC_CORE];
+    try {
+        const res = await fetch('/build/manifest.json');
+        if (res.ok) {
+            const manifest = await res.json();
+            for (const entry of Object.values(manifest)) {
+                if (entry.file) urls.push('/build/' + entry.file);
+                if (entry.css)  entry.css.forEach(f => urls.push('/build/' + f));
+            }
+        }
+    } catch { /* ignore */ }
+    return urls;
+}
+
 // ===== Activate =====
-// بعد الـ activate: نبدأ نكاش صفحات القرآن في الخلفية بدون ما نحجب أي حاجة
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys()
@@ -33,50 +58,45 @@ self.addEventListener('activate', (event) => {
                     .map(k => caches.delete(k))
             ))
             .then(() => self.clients.claim())
-            .then(() => precacheQuranPages()) // كاش صفحات القرآن بعد الـ activate
+            .then(() => precacheQuranPagesInBackground())
     );
 });
 
-// كاش أول 30 صفحة قرآن + الصفحة الرئيسية في الخلفية
-async function precacheQuranPages() {
-    const cache = await caches.open(QURAN_CACHE);
+// كاش أول 30 صفحة قرآن في الخلفية بعد الـ activate
+function precacheQuranPagesInBackground() {
     const urls = ['/quran/', '/quran'];
     for (let i = 1; i <= 30; i++) urls.push('/quran/page/' + i);
 
-    // كاش بشكل متوازي بدون انتظار — لو فشل في أي صفحة يكمل باقي
-    for (const url of urls) {
-        fetch(url, { credentials: 'same-origin' })
-            .then(res => { if (res.ok) cache.put(url, res.clone()); })
-            .catch(() => {});
-    }
+    caches.open(QURAN_CACHE).then(cache => {
+        urls.forEach(url => {
+            fetch(url, { credentials: 'same-origin' })
+                .then(res => { if (res.ok) cache.put(url, res.clone()); })
+                .catch(() => {});
+        });
+    });
 }
 
 // ===== Messages =====
 self.addEventListener('message', (event) => {
     if (event.data?.type === 'CACHE_PAGES') {
         const pages = event.data.pages || [];
-        // كاش build assets في CORE_CACHE — باقي الصفحات في QURAN_CACHE
         const buildAssets = pages.filter(u => u.startsWith('/build/') || u.startsWith('/js/'));
         const quranPages  = pages.filter(u => !u.startsWith('/build/') && !u.startsWith('/js/'));
 
         if (buildAssets.length) {
-            caches.open(CORE_CACHE).then(cache => {
-                buildAssets.forEach(url => {
-                    fetch(url, { credentials: 'same-origin' })
-                        .then(res => { if (res.ok) cache.put(url, res); })
-                        .catch(() => {});
-                });
-            });
+            caches.open(CORE_CACHE).then(cache =>
+                buildAssets.forEach(url =>
+                    fetch(url).then(res => { if (res.ok) cache.put(url, res); }).catch(() => {})
+                )
+            );
         }
-
         if (quranPages.length) {
-            caches.open(QURAN_CACHE).then(cache => {
-                quranPages.forEach(url => {
+            caches.open(QURAN_CACHE).then(cache =>
+                quranPages.forEach(url =>
                     fetch(url, { credentials: 'same-origin' })
-                        .then(res => { if (res.ok) cache.put(url, res); })
-                        .catch(() => {});
-                });
-            });
+                        .then(res => { if (res.ok) cache.put(url, res); }).catch(() => {})
+                )
+            );
         }
     }
     if (event.data?.type === 'SKIP_WAITING') self.skipWaiting();
@@ -93,14 +113,14 @@ self.addEventListener('fetch', (event) => {
     // خطوط وـ CDN — Cache First
     if (
         url.hostname === 'fonts.googleapis.com' ||
-        url.hostname === 'fonts.gstatic.com' ||
+        url.hostname === 'fonts.gstatic.com'    ||
         url.hostname === 'cdn.jsdelivr.net'
     ) {
         event.respondWith(cacheFirst(req, FONT_CACHE));
         return;
     }
 
-    // Build assets + JS files — Cache First
+    // Build assets + JS — Cache First (لو مش موجود في الكاش يجيبه ويحفظه)
     if (url.pathname.startsWith('/build/') || url.pathname.startsWith('/js/')) {
         event.respondWith(cacheFirst(req, CORE_CACHE));
         return;
@@ -112,15 +132,21 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // صفحات القرآن — Cache First (يرجع فوراً، يحدّث في الخلفية)
+    // صفحات القرآن — Cache First مع تحديث في الخلفية
     if (
-        url.pathname.startsWith('/quran/page/') ||
+        url.pathname.startsWith('/quran/page/')  ||
         url.pathname.startsWith('/quran/surah/') ||
-        url.pathname.startsWith('/quran/juz/')  ||
-        url.pathname === '/quran/'              ||
+        url.pathname.startsWith('/quran/juz/')   ||
+        url.pathname === '/quran/'               ||
         url.pathname === '/quran'
     ) {
         event.respondWith(cacheFirstWithBackground(req, QURAN_CACHE));
+        return;
+    }
+
+    // صفحة الـ login — Cache First
+    if (url.pathname === '/login') {
+        event.respondWith(cacheFirst(req, CORE_CACHE));
         return;
     }
 
@@ -128,7 +154,7 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(networkFirstWithFallback(req));
 });
 
-// ===== Helpers =====
+// ===== Strategies =====
 
 async function cacheFirst(request, cacheName) {
     const cache  = await caches.open(cacheName);
@@ -139,7 +165,8 @@ async function cacheFirst(request, cacheName) {
         if (response.ok) cache.put(request, response.clone());
         return response;
     } catch {
-        return (await caches.match('/offline.html')) || new Response('Offline', { status: 503 });
+        return (await caches.match('/offline.html'))
+            || new Response('Offline', { status: 503, headers: { 'Content-Type': 'text/plain' } });
     }
 }
 
@@ -152,13 +179,14 @@ async function cacheFirstWithBackground(request, cacheName) {
         .catch(() => null);
 
     if (cached) {
-        networkFetch.catch(() => {}); // تحديث الخلفية بدون انتظار
+        networkFetch.catch(() => {});
         return cached;
     }
 
     const net = await networkFetch;
     if (net && net.ok) return net;
-    return (await caches.match('/offline.html')) || new Response('Offline', { status: 503 });
+    return (await caches.match('/offline.html'))
+        || new Response('Offline', { status: 503, headers: { 'Content-Type': 'text/plain' } });
 }
 
 async function networkFirstWithFallback(request) {
@@ -171,6 +199,8 @@ async function networkFirstWithFallback(request) {
         return response;
     } catch {
         const cached = await caches.match(request);
-        return cached || (await caches.match('/offline.html')) || new Response('Offline', { status: 503 });
+        return cached
+            || (await caches.match('/offline.html'))
+            || new Response('Offline', { status: 503, headers: { 'Content-Type': 'text/plain' } });
     }
 }
