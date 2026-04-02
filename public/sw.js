@@ -1,5 +1,5 @@
-// ===== Tilawa PWA Service Worker v7 =====
-const CACHE_VERSION = 'v7';
+// ===== Tilawa PWA Service Worker v8 =====
+const CACHE_VERSION = 'v8';
 const CORE_CACHE    = 'tilawa-core-'  + CACHE_VERSION;
 const QURAN_CACHE   = 'tilawa-quran-' + CACHE_VERSION;
 const FONT_CACHE    = 'tilawa-fonts-' + CACHE_VERSION;
@@ -109,6 +109,12 @@ self.addEventListener('fetch', (event) => {
 
     const url = new URL(req.url);
     if (!url.protocol.startsWith('http')) return;
+
+    // إزالة الـ trailing slash من /quran/ لتجنب ERR_FAILED
+    if (url.pathname === '/quran/') {
+        event.respondWith(Response.redirect('/quran', 301));
+        return;
+    }
 
     // خطوط وـ CDN — Cache First
     if (
