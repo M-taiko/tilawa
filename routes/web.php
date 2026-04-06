@@ -81,6 +81,11 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('analytics', [VisitorAnalyticsController::class, 'index'])->name('analytics');
         Route::get('analytics/visitor/{ip}', [VisitorAnalyticsController::class, 'visitorDetail'])->name('analytics.visitor');
+
+        // Users Management
+        Route::get('users', [\App\Http\Controllers\Saas\SaasUserController::class, 'index'])->name('users.index');
+        Route::get('users/{user}/edit', [\App\Http\Controllers\Saas\SaasUserController::class, 'edit'])->name('users.edit');
+        Route::put('users/{user}', [\App\Http\Controllers\Saas\SaasUserController::class, 'update'])->name('users.update');
     });
 
     Route::middleware(['role:tenant_admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -141,10 +146,6 @@ Route::middleware(['auth'])->group(function () {
 
         // Activity Logs
         Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
-
-        // Visitor Analytics
-        Route::get('analytics', [VisitorAnalyticsController::class, 'index'])->name('analytics');
-        Route::get('analytics/visitor/{ip}', [VisitorAnalyticsController::class, 'visitorDetail'])->name('analytics.visitor');
 
         // Payment System - الرسوم والمدفوعات
         Route::resource('student-fees', StudentFeeController::class);

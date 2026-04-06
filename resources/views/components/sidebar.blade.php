@@ -146,6 +146,17 @@
  <span class="tracking-tight sidebar-text">المراكز</span>
  </a>
 
+ {{-- إدارة المستخدمين --}}
+ <a href="{{ route('saas.users.index') }}" data-tooltip="المستخدمون" class="{{ $linkBase }} {{ $isActive('saas.users') ? $activeClass : $inactiveClass }}">
+ <span class="{{ $iconClass }} {{ $isActive('saas.users') ? '!bg-gradient-to-br !from-primary-500 !to-primary-600 !text-white !shadow-lg !shadow-primary-500/30' : 'text-slate-600 group-hover:text-primary-600 group-hover:scale-110' }}">
+ <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+ <path stroke-linecap="round" stroke-linejoin="round" stroke-width="{{ $isActive('saas.users') ? '2' : '1.5' }}" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+ </svg>
+ </span>
+ <span class="tracking-tight sidebar-text">المستخدمون</span>
+ </a>
+
+ {{-- إحصائيات الزوار --}}
  <a href="{{ route('saas.analytics') }}" data-tooltip="إحصائيات الزوار" class="{{ $linkBase }} {{ $currentRoute === 'saas.analytics' ? $activeClass : $inactiveClass }}">
  <span class="{{ $iconClass }} {{ $currentRoute === 'saas.analytics' ? '!bg-gradient-to-br !from-primary-500 !to-primary-600 !text-white !shadow-lg !shadow-primary-500/30' : 'text-slate-600 group-hover:text-primary-600 group-hover:scale-110' }}">
  <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -292,23 +303,6 @@
  <span class="tracking-tight sidebar-text">سجل النشاطات</span>
  </a>
 
- <a href="{{ route('admin.analytics') }}" data-tooltip="إحصائيات الزوار" class="{{ $linkBase }} {{ $currentRoute === 'admin.analytics' ? $activeClass : $inactiveClass }}">
- <span class="{{ $iconClass }} {{ $currentRoute === 'admin.analytics' ? '!bg-gradient-to-br !from-primary-500 !to-primary-600 !text-white !shadow-lg !shadow-primary-500/30' : 'text-slate-600 group-hover:text-primary-600 group-hover:scale-110' }}">
- <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
- <path stroke-linecap="round" stroke-linejoin="round" stroke-width="{{ $currentRoute === 'admin.analytics' ? '2' : '1.5' }}" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
- </svg>
- </span>
- <span class="tracking-tight sidebar-text">إحصائيات الزوار</span>
- </a>
-
- <a href="{{ route('admin.analytics') }}" data-tooltip="متابعة الزوار" class="{{ $linkBase }} {{ $currentRoute === 'admin.analytics.visitor' ? $activeClass : $inactiveClass }}">
- <span class="{{ $iconClass }} {{ $currentRoute === 'admin.analytics.visitor' ? '!bg-gradient-to-br !from-primary-500 !to-primary-600 !text-white !shadow-lg !shadow-primary-500/30' : 'text-slate-600 group-hover:text-primary-600 group-hover:scale-110' }}">
- <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
- <path stroke-linecap="round" stroke-linejoin="round" stroke-width="{{ $currentRoute === 'admin.analytics.visitor' ? '2' : '1.5' }}" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
- </svg>
- </span>
- <span class="tracking-tight sidebar-text">متابعة الزوار</span>
- </a>
  </div>
  </div>
  @elseif($tenantRole === 'teacher')
