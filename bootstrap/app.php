@@ -28,5 +28,9 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // 419 Page Expired → redirect to login with message
+        $exceptions->render(function (\Illuminate\Session\TokenMismatchException $e, $request) {
+            return redirect()->route('login')
+                ->withErrors(['email' => 'انتهت صلاحية الجلسة، يرجى تسجيل الدخول مجدداً.']);
+        });
     })->create();
