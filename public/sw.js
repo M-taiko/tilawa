@@ -1,17 +1,16 @@
-// ===== Tilawa PWA Service Worker v9 =====
-const CACHE_VERSION = 'v9';
+// ===== Tilawa PWA Service Worker v10 =====
+const CACHE_VERSION = 'v10';
 const CORE_CACHE    = 'tilawa-core-'  + CACHE_VERSION;
 const QURAN_CACHE   = 'tilawa-quran-' + CACHE_VERSION;
 const FONT_CACHE    = 'tilawa-fonts-' + CACHE_VERSION;
 const ALL_CACHES    = [CORE_CACHE, QURAN_CACHE, FONT_CACHE];
 
-// الملفات الثابتة دايماً في الكاش
+// الملفات الثابتة دايماً في الكاش (بدون /login عشان CSRF token لازم يكون جديد دايماً)
 const STATIC_CORE = [
     '/offline.html',
     '/manifest.json',
     '/images/logo.png',
     '/js/quran-offline.js',
-    '/login',
 ];
 
 // ===== Install =====
@@ -150,10 +149,9 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // صفحة الـ login — Cache First
-    if (url.pathname === '/login') {
-        event.respondWith(cacheFirst(req, CORE_CACHE));
-        return;
+    // صفحة الـ login — دايماً من النت (لازم CSRF token جديد في كل مرة)
+    if (url.pathname === '/login' || url.pathname === '/logout') {
+        return; // اتركها للمتصفح يجيبها من النت مباشرة
     }
 
     // باقي الطلبات — Network First مع Fallback
