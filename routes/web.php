@@ -187,6 +187,9 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // المصحف الكريم (متاح للجميع بدون تسجيل دخول)
+// /quran/ بـ trailing slash → redirect لـ /quran (بدون slash)
+Route::get('/quran/', fn() => redirect('/quran', 301))->name('quran.trailing-slash');
+
 Route::prefix('quran')->name('quran.')->group(function () {
     Route::get('/', [QuranController::class, 'index'])->name('index');
     Route::get('/page/{pageNumber}', [QuranController::class, 'showPage'])->name('page');
