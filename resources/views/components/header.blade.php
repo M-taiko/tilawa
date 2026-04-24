@@ -14,9 +14,27 @@
  </div>
  </div>
 
- <div class="flex items-center gap-4 lg:gap-6">
+ <div class="flex items-center gap-3 lg:gap-6">
+ <!-- Language Toggle -->
+ <div class="flex items-center gap-1 bg-slate-100 rounded-lg p-1">
+ <form method="POST" action="{{ route('locale.switch') }}" class="inline">
+ @csrf
+ <input type="hidden" name="locale" value="ar">
+ <button type="submit" class="px-2.5 py-1.5 rounded-md text-xs font-semibold transition-colors {{ app()->getLocale() === 'ar' ? 'bg-white text-primary-600 shadow-sm' : 'text-slate-500 hover:text-slate-700' }}">
+ العربية
+ </button>
+ </form>
+ <form method="POST" action="{{ route('locale.switch') }}" class="inline">
+ @csrf
+ <input type="hidden" name="locale" value="en">
+ <button type="submit" class="px-2.5 py-1.5 rounded-md text-xs font-semibold transition-colors {{ app()->getLocale() === 'en' ? 'bg-white text-primary-600 shadow-sm' : 'text-slate-500 hover:text-slate-700' }}">
+ EN
+ </button>
+ </form>
+ </div>
+
  <!-- User Profile -->
- <div class="flex items-center gap-3 pl-2 lg:pl-6">
+ <div class="flex items-center gap-3 pl-2 lg:pl-6 border-l border-slate-200">
  @auth
  <div class="hidden md:block text-left group cursor-pointer">
  <div class="text-sm font-bold text-slate-800 group-hover:text-primary-600 transition-colors">{{ auth()->user()->name }}</div>
@@ -24,7 +42,7 @@
  </div>
  <x-avatar class="ring-2 ring-white shadow-md cursor-pointer hover:ring-primary-100 transition-all">{{ substr(auth()->user()->name, 0, 1) }}</x-avatar>
  @else
- <a href="{{ route('login') }}" class="text-sm font-semibold text-primary-600 hover:text-primary-700 transition-colors">تسجيل الدخول</a>
+ <a href="{{ route('login') }}" class="text-sm font-semibold text-primary-600 hover:text-primary-700 transition-colors">{{ app()->getLocale() === 'ar' ? 'تسجيل الدخول' : 'Sign In' }}</a>
  @endauth
  </div>
  </div>

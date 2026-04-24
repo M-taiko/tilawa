@@ -14,6 +14,24 @@
 
     <div style="position:relative;z-index:1;width:100%;max-width:440px;">
 
+        {{-- Language Toggle (Login Page) --}}
+        <div style="display:flex;justify-content:center;gap:8px;margin-bottom:24px;">
+            <form method="POST" action="{{ route('locale.switch') }}" class="inline">
+                @csrf
+                <input type="hidden" name="locale" value="ar">
+                <button type="submit" style="padding:8px 16px;border-radius:10px;background:{{ app()->getLocale() === 'ar' ? 'rgba(201,168,76,0.2)' : 'rgba(255,255,255,0.1)' }};border:1px solid {{ app()->getLocale() === 'ar' ? '#c9a84c' : 'rgba(255,255,255,0.2)' }};color:#f1f5f9;font-family:'Tajawal',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s;">
+                    العربية
+                </button>
+            </form>
+            <form method="POST" action="{{ route('locale.switch') }}" class="inline">
+                @csrf
+                <input type="hidden" name="locale" value="en">
+                <button type="submit" style="padding:8px 16px;border-radius:10px;background:{{ app()->getLocale() === 'en' ? 'rgba(201,168,76,0.2)' : 'rgba(255,255,255,0.1)' }};border:1px solid {{ app()->getLocale() === 'en' ? '#c9a84c' : 'rgba(255,255,255,0.2)' }};color:#f1f5f9;font-family:'Tajawal',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s;">
+                    English
+                </button>
+            </form>
+        </div>
+
         {{-- الشعار --}}
         <div style="text-align:center;margin-bottom:32px;">
             <div style="width:84px;height:84px;border-radius:20px;overflow:hidden;margin:0 auto 16px;box-shadow:0 8px 32px rgba(201,168,76,0.3);background:#fff;display:flex;align-items:center;justify-content:center;padding:6px;">
@@ -31,12 +49,12 @@
             <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
             </svg>
-            فتح المصحف الكريم
+            {{ app()->getLocale() === 'ar' ? 'فتح المصحف الكريم' : 'Open Quran' }}
         </a>
 
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
             <div style="flex:1;height:1px;background:rgba(255,255,255,0.1);"></div>
-            <span style="font-family:'Tajawal',sans-serif;font-size:0.78rem;color:#64748b;">أو سجّل دخولك للإدارة</span>
+            <span style="font-family:'Tajawal',sans-serif;font-size:0.78rem;color:#64748b;">{{ app()->getLocale() === 'ar' ? 'أو سجّل دخولك للإدارة' : 'Or login to your account' }}</span>
             <div style="flex:1;height:1px;background:rgba(255,255,255,0.1);"></div>
         </div>
 
@@ -58,7 +76,7 @@
 
                 {{-- البريد الإلكتروني --}}
                 <div style="margin-bottom:16px;">
-                    <label style="display:block;font-family:'Tajawal',sans-serif;font-size:0.82rem;font-weight:600;color:#cbd5e1;margin-bottom:6px;">البريد الإلكتروني</label>
+                    <label style="display:block;font-family:'Tajawal',sans-serif;font-size:0.82rem;font-weight:600;color:#cbd5e1;margin-bottom:6px;">{{ app()->getLocale() === 'ar' ? 'البريد الإلكتروني' : 'Email' }}</label>
                     <div style="position:relative;">
                         <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:#64748b;">
                             <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -74,7 +92,7 @@
 
                 {{-- كلمة المرور --}}
                 <div style="margin-bottom:24px;">
-                    <label style="display:block;font-family:'Tajawal',sans-serif;font-size:0.82rem;font-weight:600;color:#cbd5e1;margin-bottom:6px;">كلمة المرور</label>
+                    <label style="display:block;font-family:'Tajawal',sans-serif;font-size:0.82rem;font-weight:600;color:#cbd5e1;margin-bottom:6px;">{{ app()->getLocale() === 'ar' ? 'كلمة المرور' : 'Password' }}</label>
                     <div style="position:relative;">
                         <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:#64748b;">
                             <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -95,7 +113,7 @@
                     <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
                     </svg>
-                    دخول لوحة الإدارة
+                    {{ app()->getLocale() === 'ar' ? 'دخول لوحة الإدارة' : 'Login to Dashboard' }}
                 </button>
             </form>
         </div>
