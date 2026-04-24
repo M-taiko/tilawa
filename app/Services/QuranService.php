@@ -205,7 +205,7 @@ class QuranService
             'quran:all:verses',
             now()->addMinutes(self::CACHE_DURATION),
             function () {
-                return Verse::select('id', 'surah_id', 'verse_number', 'verse_text', 'page_number', 'juz_number', 'sajda')
+                return Verse::select('id', 'surah_id', 'verse_number', 'verse_text', 'verse_text_english', 'page_number', 'juz_number', 'sajda')
                     ->orderBy('surah_id')
                     ->orderBy('verse_number')
                     ->get();

@@ -684,7 +684,11 @@ html, body { height: 100%; overflow: hidden; }
                               data-verse-number="{{ $verse->verse_number }}"
                               data-surah-id="{{ $verse->surah_id }}"
                               data-surah-name="{{ $verse->surah->name_arabic }}"
+                              data-surah-name-en="{{ $verse->surah->name_english }}"
                               onclick="showVersePopup(this)">{{ $verseText }}<span class="verse-end-marker">{{ $verse->verse_number }}</span></span>
+                        @if(app()->getLocale() === 'en' && $verse->verse_text_english)
+                        <p class="verse-translation" style="direction: ltr; text-align: left; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; color: #666; line-height: 1.8; margin: 8px 0 0 0; font-style: italic;">{{ $verse->verse_text_english }}</p>
+                        @endif
                     @endif
 
                 @endforeach
@@ -716,22 +720,22 @@ html, body { height: 100%; overflow: hidden; }
         <div class="popup-actions">
             <button class="popup-action-btn btn-bookmark" id="popup-bookmark-btn" onclick="toggleBookmark()">
                 <span class="icon">🔖</span>
-                <span id="popup-bookmark-label">حفظ موضع القراءة</span>
+                <span id="popup-bookmark-label">{{ app()->getLocale() === 'ar' ? 'حفظ موضع القراءة' : 'Save Position' }}</span>
             </button>
             <button class="popup-action-btn btn-copy" onclick="copyVerse()">
                 <span class="icon">📋</span>
-                نسخ الآية
+                {{ app()->getLocale() === 'ar' ? 'نسخ الآية' : 'Copy Verse' }}
             </button>
             <button class="popup-action-btn btn-tafsir" onclick="openTafsir()">
                 <span class="icon">📖</span>
-                التفسير
+                {{ app()->getLocale() === 'ar' ? 'التفسير' : 'Translation' }}
             </button>
             <button class="popup-action-btn btn-asbab" onclick="openAsbab()">
                 <span class="icon">🌙</span>
-                أسباب النزول
+                {{ app()->getLocale() === 'ar' ? 'أسباب النزول' : 'Reasons' }}
             </button>
             <button class="popup-action-btn btn-close" onclick="closeVersePopup()">
-                إغلاق
+                {{ app()->getLocale() === 'ar' ? 'إغلاق' : 'Close' }}
             </button>
         </div>
     </div>
@@ -817,14 +821,21 @@ function showVersePopup(el) {
     activeVerseEl = el;
     const verseNum  = el.dataset.verseNumber;
     const surahName = el.dataset.surahName;
+    const surahNameEn = el.dataset.surahNameEn;
+    const isEnglish = document.documentElement.lang === 'en';
 
     // نص الآية (بدون علامة الرقم)
     const textNode = el.childNodes[0];
     const text = textNode ? textNode.textContent.trim() : '';
 
     document.getElementById('popup-verse-text').textContent = text;
-    document.getElementById('popup-verse-meta').textContent =
-        'سورة ' + surahName + ' - الآية ' + toAr(verseNum);
+    if (isEnglish) {
+        document.getElementById('popup-verse-meta').textContent =
+            'Surah ' + surahNameEn + ' — Verse ' + verseNum;
+    } else {
+        document.getElementById('popup-verse-meta').textContent =
+            'سورة ' + surahName + ' - الآية ' + toAr(verseNum);
+    }
 
     // حالة الـ bookmark
     refreshBookmarkBtn();
@@ -860,23 +871,31 @@ function openTafsir() {
     const surahId  = activeVerseEl.dataset.surahId;
     const verseNum = activeVerseEl.dataset.verseNumber;
     const surahName = activeVerseEl.dataset.surahName;
+    const surahNameEn = activeVerseEl.dataset.surahNameEn;
+    const isEnglish = document.documentElement.lang === 'en';
+    const edition = isEnglish ? 'en.sahih' : 'ar.muyassar';
+    const sourceText = isEnglish ? 'Saheeh International Translation' : 'تفسير الميسر';
+    const loadingText = isEnglish ? '⏳ Loading translation...' : '⏳ جاري تحميل التفسير...';
+    const errorText = isEnglish ? 'Failed to load translation. Try again later.' : 'تعذّر تحميل التفسير. حاول لاحقاً.';
 
-    openQuranModal(
-        'تفسير سورة ' + surahName + ' - آية ' + toAr(verseNum),
-        '<div class="quran-modal-loading">⏳ جاري تحميل التفسير...</div>'
-    );
+    const title = isEnglish
+        ? 'Surah ' + surahNameEn + ' — Verse ' + verseNum
+        : 'تفسير سورة ' + surahName + ' - آية ' + toAr(verseNum);
 
-    fetch(`https://api.alquran.cloud/v1/ayah/${surahId}:${verseNum}/ar.muyassar`)
+    openQuranModal(title, '<div class="quran-modal-loading">' + loadingText + '</div>');
+
+    fetch(`https://api.alquran.cloud/v1/ayah/${surahId}:${verseNum}/${edition}`)
         .then(r => r.json())
         .then(data => {
             if (data.code === 200) {
                 const text = data.data.text;
+                const dirAttr = isEnglish ? 'direction: ltr; text-align: left;' : '';
                 document.getElementById('quran-modal-body').innerHTML =
-                    `<p style="font-size:1.05rem;line-height:2.2;">${text}</p>
-                     <p style="font-size:0.75rem;color:#64748b;margin-top:16px;text-align:center;">المصدر: تفسير الميسر</p>`;
+                    `<p style="font-size:1.05rem;line-height:2.2;${dirAttr}">${text}</p>
+                     <p style="font-size:0.75rem;color:#64748b;margin-top:16px;text-align:center;">Source: ${sourceText}</p>`;
             } else {
                 document.getElementById('quran-modal-body').innerHTML =
-                    '<p style="color:#ef4444;text-align:center;">تعذّر تحميل التفسير. حاول لاحقاً.</p>';
+                    '<p style="color:#ef4444;text-align:center;">' + errorText + '</p>';
             }
         })
         .catch(() => {

@@ -387,17 +387,35 @@
 
  <div class="sidebar-section px-4 mt-6 pt-6 border-t border-slate-200/60" data-section="profile">
  <div class="mb-3 pb-2 border-b border-slate-200/50">
- <h3 class="text-xs font-bold text-slate-600 uppercase tracking-wider">حسابي</h3>
+ <h3 class="text-xs font-bold text-slate-600 uppercase tracking-wider">{{ app()->getLocale() === 'ar' ? 'حسابي' : 'Account' }}</h3>
  </div>
  <div class="nav-section flex flex-col gap-2">
- <a href="{{ route('profile.edit') }}" data-tooltip="الملف الشخصي" class="{{ $linkBase }} {{ $isActive('profile') ? $activeClass : $inactiveClass }}">
+ <a href="{{ route('profile.edit') }}" data-tooltip="{{ app()->getLocale() === 'ar' ? 'الملف الشخصي' : 'Profile' }}" class="{{ $linkBase }} {{ $isActive('profile') ? $activeClass : $inactiveClass }}">
  <span class="{{ $iconClass }} {{ $isActive('profile') ? '!bg-gradient-to-br !from-primary-500 !to-primary-600 !text-white !shadow-lg !shadow-primary-500/30' : 'text-slate-600 group-hover:text-primary-600 group-hover:scale-110' }}">
  <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="{{ $isActive('profile') ? '2' : '1.5' }}" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
  </svg>
  </span>
- <span class="tracking-tight sidebar-text">الملف الشخصي</span>
+ <span class="tracking-tight sidebar-text">{{ app()->getLocale() === 'ar' ? 'الملف الشخصي' : 'Profile' }}</span>
  </a>
+
+ {{-- Language Toggle --}}
+ <div class="flex gap-2 mt-4">
+ <form method="POST" action="{{ route('locale.switch') }}" class="flex-1">
+ @csrf
+ <input type="hidden" name="locale" value="ar">
+ <button type="submit" class="{{ $linkBase }} {{ app()->getLocale() === 'ar' ? $activeClass : $inactiveClass }} !justify-center !py-2.5">
+ <span class="text-sm font-semibold">العربية</span>
+ </button>
+ </form>
+ <form method="POST" action="{{ route('locale.switch') }}" class="flex-1">
+ @csrf
+ <input type="hidden" name="locale" value="en">
+ <button type="submit" class="{{ $linkBase }} {{ app()->getLocale() === 'en' ? $activeClass : $inactiveClass }} !justify-center !py-2.5">
+ <span class="text-sm font-semibold">English</span>
+ </button>
+ </form>
+ </div>
  </div>
  </div>
 </nav>

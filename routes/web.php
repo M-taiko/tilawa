@@ -58,6 +58,9 @@ Route::post('/login', [AuthController::class, 'login'])
     ->name('login.submit');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// Locale switching
+Route::post('/locale', [\App\Http\Controllers\LocaleController::class, 'switch'])->name('locale.switch');
+
 Route::get('/p/{token}', [ParentController::class, 'show'])->name('parent.show');
 
 Route::middleware(['auth'])->group(function () {
