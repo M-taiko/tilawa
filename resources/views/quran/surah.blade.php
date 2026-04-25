@@ -14,34 +14,52 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
                     </svg>
-                    رجوع للفهرس
+                    {{ app()->getLocale() === 'ar' ? 'رجوع للفهرس' : 'Back to Index' }}
                 </x-button>
+
+                {{-- Language Toggle --}}
+                <div class="flex items-center gap-1 bg-slate-100 rounded-lg p-1">
+                    <form method="POST" action="{{ route('locale.switch') }}" class="inline">
+                        @csrf
+                        <input type="hidden" name="locale" value="ar">
+                        <button type="submit" class="px-2.5 py-1.5 rounded-md text-xs font-semibold transition-colors {{ app()->getLocale() === 'ar' ? 'bg-white text-primary-600 shadow-sm' : 'text-slate-500 hover:text-slate-700' }}" style="font-family:'Tajawal',sans-serif;">
+                            العربية
+                        </button>
+                    </form>
+                    <form method="POST" action="{{ route('locale.switch') }}" class="inline">
+                        @csrf
+                        <input type="hidden" name="locale" value="en">
+                        <button type="submit" class="px-2.5 py-1.5 rounded-md text-xs font-semibold transition-colors {{ app()->getLocale() === 'en' ? 'bg-white text-primary-600 shadow-sm' : 'text-slate-500 hover:text-slate-700' }}" style="font-family:'Tajawal',sans-serif;">
+                            EN
+                        </button>
+                    </form>
+                </div>
 
                 @if($surah->start_page)
                     <x-button variant="primary" href="{{ route('quran.page', $surah->start_page) }}">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                         </svg>
-                        عرض في المصحف
+                        {{ app()->getLocale() === 'ar' ? 'عرض في المصحف' : 'View in Mushaf' }}
                     </x-button>
                 @endif
             </div>
 
             {{-- Surah Info Card --}}
             <x-card islamic class="p-6 text-center bg-gradient-to-r from-emerald-50 to-gold-50">
-                <h1 class="text-3xl md:text-4xl font-bold text-emerald-800 mb-3">سورة {{ $surah->name_arabic }}</h1>
+                <h1 class="text-3xl md:text-4xl font-bold text-emerald-800 mb-3">{{ app()->getLocale() === 'ar' ? 'سورة ' . $surah->name_arabic : 'Surah ' . $surah->name_english }}</h1>
                 <div class="flex justify-center gap-4 text-sm text-slate-600">
                     <span class="px-3 py-1 rounded-full bg-white border border-emerald-200">
-                        {{ $surah->ayah_count }} آية
+                        {{ app()->getLocale() === 'ar' ? $surah->ayah_count . ' آية' : $surah->ayah_count . ' verses' }}
                     </span>
                     @if($surah->start_page && $surah->end_page)
                         <span class="px-3 py-1 rounded-full bg-white border border-emerald-200">
-                            من صفحة {{ $surah->start_page }} إلى {{ $surah->end_page }}
+                            {{ app()->getLocale() === 'ar' ? 'من صفحة ' . $surah->start_page . ' إلى ' . $surah->end_page : 'Pages ' . $surah->start_page . '-' . $surah->end_page }}
                         </span>
                     @endif
                     @if($surah->juz)
                         <span class="px-3 py-1 rounded-full bg-white border border-emerald-200">
-                            {{ $surah->juz->name_arabic }}
+                            {{ app()->getLocale() === 'ar' ? $surah->juz->name_arabic : 'Juz ' . $surah->juz->id }}
                         </span>
                     @endif
                 </div>
@@ -70,6 +88,9 @@
                             {{ $verse->verse_number }}
                         </span>
                     </div>
+                    @if(app()->getLocale() === 'en' && $verse->verse_text_english)
+                    <p style="direction: ltr; text-align: left; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; color: #666; line-height: 1.8; margin: 8px 0 0 0; font-style: italic;">{{ $verse->verse_text_english }}</p>
+                    @endif
                 @endforeach
             </div>
         </x-card>
@@ -83,19 +104,19 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                     </svg>
-                    {{ $surah->previous()->name_arabic }}
+                    {{ app()->getLocale() === 'ar' ? $surah->previous()->name_arabic : $surah->previous()->name_english }}
                 </x-button>
             @else
                 <div></div>
             @endif
 
             <a href="{{ route('quran.index') }}" class="text-emerald-700 hover:text-emerald-900 font-semibold">
-                العودة للفهرس
+                {{ app()->getLocale() === 'ar' ? 'العودة للفهرس' : 'Back to Index' }}
             </a>
 
             @if($surah->next())
                 <x-button variant="gold" href="{{ route('quran.surah', $surah->next()->id) }}">
-                    {{ $surah->next()->name_arabic }}
+                    {{ app()->getLocale() === 'ar' ? $surah->next()->name_arabic : $surah->next()->name_english }}
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                     </svg>

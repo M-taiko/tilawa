@@ -14,8 +14,26 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
                     </svg>
-                    رجوع للفهرس
+                    {{ app()->getLocale() === 'ar' ? 'رجوع للفهرس' : 'Back to Index' }}
                 </x-button>
+
+                {{-- Language Toggle --}}
+                <div class="flex items-center gap-1 bg-slate-100 rounded-lg p-1">
+                    <form method="POST" action="{{ route('locale.switch') }}" class="inline">
+                        @csrf
+                        <input type="hidden" name="locale" value="ar">
+                        <button type="submit" class="px-2.5 py-1.5 rounded-md text-xs font-semibold transition-colors {{ app()->getLocale() === 'ar' ? 'bg-white text-primary-600 shadow-sm' : 'text-slate-500 hover:text-slate-700' }}" style="font-family:'Tajawal',sans-serif;">
+                            العربية
+                        </button>
+                    </form>
+                    <form method="POST" action="{{ route('locale.switch') }}" class="inline">
+                        @csrf
+                        <input type="hidden" name="locale" value="en">
+                        <button type="submit" class="px-2.5 py-1.5 rounded-md text-xs font-semibold transition-colors {{ app()->getLocale() === 'en' ? 'bg-white text-primary-600 shadow-sm' : 'text-slate-500 hover:text-slate-700' }}" style="font-family:'Tajawal',sans-serif;">
+                            EN
+                        </button>
+                    </form>
+                </div>
 
                 <div class="flex gap-2">
                     @if($juzNumber > 1)
@@ -40,13 +58,13 @@
 
             {{-- Juz Info Card --}}
             <x-card islamic class="p-6 text-center bg-gradient-to-r from-gold-50 to-emerald-50">
-                <h1 class="text-3xl md:text-4xl font-bold text-gold-800 mb-3">{{ $juz->name_arabic }}</h1>
+                <h1 class="text-3xl md:text-4xl font-bold text-gold-800 mb-3">{{ app()->getLocale() === 'ar' ? $juz->name_arabic : 'Juz ' . $juz->id }}</h1>
                 <div class="flex justify-center gap-4 text-sm text-slate-600">
                     <span class="px-3 py-1 rounded-full bg-white border border-gold-200">
-                        من {{ $juz->startSurah->name_arabic }} ({{ $juz->start_verse_number }})
+                        {{ app()->getLocale() === 'ar' ? 'من ' . $juz->startSurah->name_arabic . ' (' . $juz->start_verse_number . ')' : 'From ' . $juz->startSurah->name_english . ' (' . $juz->start_verse_number . ')' }}
                     </span>
                     <span class="px-3 py-1 rounded-full bg-white border border-gold-200">
-                        إلى {{ $juz->endSurah->name_arabic }} ({{ $juz->end_verse_number }})
+                        {{ app()->getLocale() === 'ar' ? 'إلى ' . $juz->endSurah->name_arabic . ' (' . $juz->end_verse_number . ')' : 'To ' . $juz->endSurah->name_english . ' (' . $juz->end_verse_number . ')' }}
                     </span>
                 </div>
             </x-card>
@@ -67,7 +85,7 @@
                         @php $currentSurah = $verse->surah_id; @endphp
                         <div class="surah-header text-center my-6 animate-fadeIn">
                             <div class="inline-block px-6 py-3 rounded-xl bg-gradient-to-r from-gold-600 to-gold-700 text-white shadow-lg">
-                                <h2 class="text-xl md:text-2xl font-bold">سورة {{ $verse->surah->name_arabic }}</h2>
+                                <h2 class="text-xl md:text-2xl font-bold">{{ app()->getLocale() === 'ar' ? 'سورة ' . $verse->surah->name_arabic : 'Surah ' . $verse->surah->name_english }}</h2>
                             </div>
                         </div>
 
@@ -88,6 +106,9 @@
                             {{ $verse->verse_number }}
                         </span>
                     </div>
+                    @if(app()->getLocale() === 'en' && $verse->verse_text_english)
+                    <p style="direction: ltr; text-align: left; font-family: 'Segoe UI', sans-serif; font-size: 0.9rem; color: #666; line-height: 1.8; margin: 6px 0 0 0; font-style: italic;">{{ $verse->verse_text_english }}</p>
+                    @endif
                 @endforeach
             </div>
         </x-card>
@@ -101,19 +122,19 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                     </svg>
-                    {{ $juz->previous()->name_arabic }}
+                    {{ app()->getLocale() === 'ar' ? $juz->previous()->name_arabic : 'Juz ' . $juz->previous()->id }}
                 </x-button>
             @else
                 <div></div>
             @endif
 
             <a href="{{ route('quran.index') }}" class="text-gold-700 hover:text-gold-900 font-semibold">
-                العودة للفهرس
+                {{ app()->getLocale() === 'ar' ? 'العودة للفهرس' : 'Back to Index' }}
             </a>
 
             @if($juz->next())
                 <x-button variant="gold" href="{{ route('quran.juz', $juz->next()->id) }}">
-                    {{ $juz->next()->name_arabic }}
+                    {{ app()->getLocale() === 'ar' ? $juz->next()->name_arabic : 'Juz ' . $juz->next()->id }}
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                     </svg>
