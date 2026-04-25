@@ -40,7 +40,7 @@
 }
 
 /* ===== Layout كامل الشاشة ===== */
-html, body { height: 100%; overflow: hidden; }
+html, body { height: 100%; }
 
 .mushaf-shell {
     display: flex;
