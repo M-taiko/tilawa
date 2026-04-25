@@ -100,15 +100,18 @@ html, body { height: 100%; overflow: hidden; }
 .verse-overlay {
     position: absolute;
     cursor: pointer;
-    transition: background 0.15s, border-color 0.15s;
-    background: rgba(201,168,76,0.0);
-    border: 1px solid rgba(201,168,76,0.0);
+    transition: all 0.15s;
+    background: rgba(201,168,76,0.05);
+    border: 2px solid rgba(201,168,76,0.15);
+    border-radius: 4px;
+    user-select: none;
 }
 
 .verse-overlay:hover {
-    background: rgba(201,168,76,0.12);
-    border: 1px solid rgba(201,168,76,0.25);
-    border-radius: 3px;
+    background: rgba(201,168,76,0.25);
+    border-color: rgba(201,168,76,0.50);
+    box-shadow: 0 0 8px rgba(201,168,76,0.3);
+    transform: scale(1.05);
 }
 
 .verse-popup-overlay {
@@ -306,9 +309,10 @@ function loadPdfPage() {
 function createVerseOverlays() {
     const pdfPage = document.getElementById('pdfPage');
 
-    // Get wrapper dimensions for percentage-based positioning
-    const wrapper = document.getElementById('pdfImage');
-    const wrapperRect = wrapper.getBoundingClientRect();
+    if (!verses || verses.length === 0) {
+        console.warn('No verses found for this page');
+        return;
+    }
 
     verses.forEach((verse, index) => {
         const overlay = document.createElement('div');
@@ -316,23 +320,30 @@ function createVerseOverlays() {
         overlay.setAttribute('data-verse-id', verse.id);
         overlay.setAttribute('data-surah', verse.surah_id);
         overlay.setAttribute('data-verse', verse.verse_number);
-        overlay.title = locale === 'ar'
-            ? 'سورة ' + verse.surah.name_arabic + ' - الآية ' + verse.verse_number
-            : 'Surah ' + verse.surah.name_english + ' - Verse ' + verse.verse_number;
+
+        const verseLabel = locale === 'ar' ? 'آية' : 'Verse';
+        const surahName = locale === 'ar' ? verse.surah.name_arabic : verse.surah.name_english;
+        overlay.title = `${verseLabel} ${verse.verse_number} - ${surahName}`;
+        overlay.textContent = verse.verse_number;
 
         // Distribute overlays more intelligently across the page
-        // For now, this creates a grid pattern that can be refined with actual PDF coordinates
         const itemsPerRow = 4;
         const row = Math.floor(index / itemsPerRow);
         const col = index % itemsPerRow;
 
-        const leftPercent = (col * 25) + 5;
-        const topPercent = (row * 18) + 10;
+        const leftPercent = (col * 22) + 6;
+        const topPercent = (row * 16) + 8;
 
         overlay.style.left = leftPercent + '%';
         overlay.style.top = topPercent + '%';
-        overlay.style.width = '20%';
-        overlay.style.height = '12%';
+        overlay.style.width = '18%';
+        overlay.style.height = '10%';
+        overlay.style.display = 'flex';
+        overlay.style.alignItems = 'center';
+        overlay.style.justifyContent = 'center';
+        overlay.style.fontSize = '12px';
+        overlay.style.fontWeight = 'bold';
+        overlay.style.color = 'rgba(139, 111, 71, 0.6)';
 
         overlay.onclick = (e) => {
             e.stopPropagation();
@@ -341,6 +352,8 @@ function createVerseOverlays() {
 
         pdfPage.appendChild(overlay);
     });
+
+    console.log('Created ' + verses.length + ' verse overlays');
 }
 
 // Show verse details in popup
