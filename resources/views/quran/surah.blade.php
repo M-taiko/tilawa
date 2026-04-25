@@ -10,32 +10,37 @@
     text-align: justify;
     text-align-last: center;
     direction: rtl;
-    word-spacing: 0.1em;
-    letter-spacing: 0.05em;
+    word-spacing: 0.2em;
+    letter-spacing: 0.08em;
 }
 .quran-font {
     font-family: 'KFGQPC Uthmanic', 'Amiri Quran', 'Scheherazade New', serif !important;
-    font-size: 1.8rem !important;
-    line-height: 3.1 !important;
-    color: #1a1200 !important;
-    font-weight: 600 !important;
+    font-size: 1.95rem !important;
+    line-height: 3.4 !important;
+    color: #000000 !important;
+    font-weight: 700 !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: geometricPrecision;
 }
 .verse-number {
-    background: radial-gradient(circle at 35% 35%, #fef5e7 0%, #f5e6c8 50%, #e8d5a0 100%) !important;
+    background: radial-gradient(circle at 30% 30%, #f9f5ed 0%, #f0e6d8 50%, #dcc9a8 100%) !important;
     border-color: #8b6f47 !important;
-    border-width: 2px !important;
+    border-width: 2.5px !important;
+    color: #4a3920 !important;
     font-size: 0.7rem !important;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15), inset 0 1px 2px rgba(255,255,255,0.8) !important;
 }
 .verse-translation {
     font-style: italic;
-    color: #666;
+    color: #555;
     font-size: 0.95rem;
-    line-height: 1.8;
-    margin: 8px 0 0 0;
-    padding: 8px 12px;
-    background: rgba(255,255,255,0.3);
-    border-right: 3px solid #c9a84c;
-    border-radius: 4px;
+    line-height: 1.9;
+    margin: 10px 0 0 0;
+    padding: 10px 14px;
+    background: rgba(200,200,200,0.05);
+    border-right: 3px solid #8b6f47;
+    border-radius: 3px;
 }
 </style>
 @endpush

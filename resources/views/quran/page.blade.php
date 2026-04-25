@@ -46,7 +46,7 @@ html, body { height: 100%; overflow: hidden; }
     display: flex;
     flex-direction: column;
     height: 100dvh;
-    background: linear-gradient(160deg, #1a0e00 0%, #2d1a00 60%, #1a0e00 100%);
+    background: linear-gradient(160deg, #2d2520 0%, #3d3530 60%, #2d2520 100%);
     overflow: hidden;
     position: relative;
 }
@@ -113,20 +113,21 @@ html, body { height: 100%; overflow: hidden; }
 
 /* ===== ورقة المصحف ===== */
 .mushaf-page {
-    background: linear-gradient(135deg, #f5ead0 0%, #efe3c5 50%, #f5ead0 100%);
-    border: 2px solid #8b6f47;
-    box-shadow:
-        0 0 0 6px #d4c5a9,
-        0 0 0 12px #8b6f47,
-        0 12px 60px rgba(80,60,30,0.5),
-        inset 0 0 100px rgba(139,111,71,0.08);
+    background: #ffffff;
     position: relative;
     width: 100%;
-    max-width: 700px;
-    border-radius: 1px;
+    max-width: 720px;
+    border-radius: 0;
     transition: transform 0.28s cubic-bezier(.4,0,.2,1), opacity 0.28s ease;
     display: flex;
     flex-direction: column;
+    /* Ornate border like Madinah Quran */
+    border: 8px solid;
+    border-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><defs><pattern id="border" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><rect x="0" y="0" width="20" height="20" fill="%238b6f47"/><circle cx="10" cy="10" r="3" fill="%23c9a84c"/><path d="M5 10 Q10 5 15 10 T25 10" stroke="%23c9a84c" fill="none" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="%238b6f47"/><rect x="2" y="2" width="96" height="96" fill="none" stroke="%23c9a84c" stroke-width="1"/><rect x="4" y="4" width="92" height="92" fill="none" stroke="%23d4a574" stroke-width="0.5"/></svg>') 1;
+    box-shadow:
+        0 0 0 1px #8b6f47,
+        0 8px 40px rgba(0,0,0,0.3),
+        inset 0 0 20px rgba(0,0,0,0.02);
 }
 
 @media (max-width: 600px) {
@@ -149,8 +150,19 @@ html, body { height: 100%; overflow: hidden; }
 .mushaf-page::before {
     content: '';
     position: absolute;
-    inset: 8px;
-    border: 1px solid rgba(201,168,76,0.4);
+    inset: 12px;
+    border: 1px solid #8b6f47;
+    border-style: double;
+    border-width: 2px;
+    pointer-events: none;
+    z-index: 1;
+}
+.mushaf-page::after {
+    content: '';
+    position: absolute;
+    inset: 14px;
+    border: 1px dashed #c9a84c;
+    opacity: 0.3;
     pointer-events: none;
     z-index: 1;
 }
@@ -166,16 +178,18 @@ html, body { height: 100%; overflow: hidden; }
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 20px 6px;
-    border-bottom: 1px solid rgba(201,168,76,0.35);
+    padding: 10px 28px 8px;
+    border-bottom: 1.5px solid #8b6f47;
     position: relative;
     z-index: 2;
+    background: linear-gradient(to bottom, #f9f9f9 0%, #ffffff 100%);
 }
 .mushaf-header-text {
     font-family: 'Amiri', serif;
-    font-size: 0.78rem;
-    color: #7a5c1e;
-    font-weight: 600;
+    font-size: 0.82rem;
+    color: #5d4e1f;
+    font-weight: 700;
+    letter-spacing: 0.05em;
 }
 
 /* ===== عنوان السورة ===== */
@@ -232,21 +246,24 @@ html, body { height: 100%; overflow: hidden; }
 
 /* ===== نص القرآن ===== */
 .mushaf-body {
-    padding: 16px 28px 20px;
+    padding: 20px 32px 24px;
     direction: rtl;
     text-align: justify;
     text-align-last: center;
     position: relative;
     z-index: 2;
-    word-spacing: 0.15em;
-    letter-spacing: 0.05em;
+    word-spacing: 0.2em;
+    letter-spacing: 0.08em;
 }
 .quran-font {
     font-family: 'KFGQPC Uthmanic','Amiri Quran','Scheherazade New',serif;
-    font-size: 1.85rem;
-    line-height: 3.2;
-    color: #1a1200;
-    font-weight: 600;
+    font-size: 1.95rem;
+    line-height: 3.4;
+    color: #000000;
+    font-weight: 700;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: geometricPrecision;
 }
 
 /* ===== حاوية الآية ===== */
@@ -267,21 +284,21 @@ html, body { height: 100%; overflow: hidden; }
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 1.6em;
-    height: 1.6em;
-    margin: 0 0.15em;
+    width: 1.7em;
+    height: 1.7em;
+    margin: 0 0.18em;
     font-family: 'Amiri', serif;
-    font-size: 0.5em;
-    color: #5d4e1f;
-    background: radial-gradient(circle at 35% 35%, #fef5e7 0%, #f5e6c8 50%, #e8d5a0 100%);
-    border: 2px solid #8b6f47;
+    font-size: 0.48em;
+    color: #4a3920;
+    background: radial-gradient(circle at 30% 30%, #f9f5ed 0%, #f0e6d8 50%, #dcc9a8 100%);
+    border: 2.5px solid #8b6f47;
     border-radius: 50%;
     vertical-align: middle;
     position: relative;
-    top: -0.12em;
+    top: -0.15em;
     line-height: 1;
     font-weight: 700;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15), inset 0 1px 2px rgba(255,255,255,0.8);
 }
 
 /* ===== علامة متابعة القراءة 🔖 ===== */
@@ -321,8 +338,9 @@ html, body { height: 100%; overflow: hidden; }
 /* ===== فاصل بين السور ===== */
 .surah-divider {
     border: none;
-    border-top: 1px solid rgba(201,168,76,0.5);
-    margin: 10px 0;
+    border-top: 2px solid #8b6f47;
+    margin: 14px 0;
+    opacity: 0.6;
 }
 
 /* ===== ذيل الصفحة ===== */
@@ -330,37 +348,39 @@ html, body { height: 100%; overflow: hidden; }
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 6px 20px 10px;
-    border-top: 1px solid rgba(201,168,76,0.35);
+    padding: 8px 28px 12px;
+    border-top: 1.5px solid #8b6f47;
     position: relative;
     z-index: 2;
     gap: 10px;
+    background: linear-gradient(to bottom, #ffffff 0%, #f9f9f9 100%);
 }
 .mushaf-page-number {
     font-family: 'Amiri',serif;
-    font-size: 0.85rem;
-    color: #7a5c1e;
+    font-size: 0.9rem;
+    color: #4a3920;
     font-weight: 700;
-    background: radial-gradient(circle, #fdf3d0, #e8d5a0);
-    border: 1.5px solid #c9a84c;
+    background: radial-gradient(circle at 30% 30%, #f9f5ed 0%, #f0e6d8 50%, #dcc9a8 100%);
+    border: 2.5px solid #8b6f47;
     border-radius: 50%;
-    width: 2rem;
-    height: 2rem;
+    width: 2.2rem;
+    height: 2.2rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15), inset 0 1px 2px rgba(255,255,255,0.8);
 }
 .mushaf-nav-arrow {
-    color: #c9a84c;
+    color: #8b6f47;
     font-size: 1.4rem;
     font-weight: 700;
     cursor: pointer;
-    padding: 2px 6px;
+    padding: 4px 8px;
     border-radius: 4px;
     transition: background 0.2s;
     user-select: none;
 }
-.mushaf-nav-arrow:hover { background: rgba(201,168,76,0.15); }
+.mushaf-nav-arrow:hover { background: rgba(139,111,71,0.15); }
 
 /* ===== Popup الآية ===== */
 .verse-popup-overlay {
