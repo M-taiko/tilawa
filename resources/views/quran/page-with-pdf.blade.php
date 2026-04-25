@@ -77,34 +77,38 @@ html, body { height: 100%; overflow: hidden; }
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    padding: 20px;
+    padding: 20px 10px;
     position: relative;
 }
 
 .pdf-page-wrapper {
     position: relative;
-    max-width: 720px;
     width: 100%;
+    max-width: 90vw;
+    aspect-ratio: 720 / 1050;
     background: #ffffff;
     box-shadow: 0 8px 40px rgba(0,0,0,0.3);
 }
 
 .pdf-image {
     width: 100%;
-    height: auto;
+    height: 100%;
     display: block;
+    object-fit: contain;
 }
 
 .verse-overlay {
     position: absolute;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.15s, border-color 0.15s;
     background: rgba(201,168,76,0.0);
+    border: 1px solid rgba(201,168,76,0.0);
 }
 
 .verse-overlay:hover {
-    background: rgba(201,168,76,0.15);
-    border-radius: 2px;
+    background: rgba(201,168,76,0.12);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 3px;
 }
 
 .verse-popup-overlay {
