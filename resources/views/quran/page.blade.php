@@ -757,8 +757,8 @@ html[lang="en"] body {
                               data-surah-name="{{ $verse->surah->name_arabic }}"
                               data-surah-name-en="{{ $verse->surah->name_english }}"
                               onclick="showVersePopup(this)">{{ $verseText }}<span class="verse-end-marker">{{ $verse->verse_number }}</span></span>
-                        @if(app()->getLocale() === 'en' && $verse->verse_text_english)
-                            <p class="verse-translation" style="direction: ltr; text-align: left; font-family: 'Segoe UI', sans-serif; font-size: var(--translation-font-size); color: #888; line-height: 1.7; margin: 6px 0 12px 0; font-style: italic; padding-left: 12px; border-left: 2px solid #d4a574;">{{ $verse->verse_text_english }}</p>
+                        @if(!empty($verse->verse_text_english))
+                            <p class="verse-translation" style="direction: ltr; text-align: left; font-family: 'Segoe UI', sans-serif; font-size: var(--translation-font-size); color: #888; line-height: 1.7; margin: 6px 0 12px 0; font-style: italic; padding-left: 12px; border-left: 2px solid #d4a574; display: {{ app()->getLocale() === 'en' ? 'block' : 'none' }};">{{ $verse->verse_text_english }}</p>
                         @endif
                     @endif
 
