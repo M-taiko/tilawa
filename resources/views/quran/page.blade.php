@@ -273,15 +273,28 @@ html, body { height: 100%; }
     word-spacing: 0.12em;
     letter-spacing: 0.04em;
 }
+:root {
+    --quran-font-size: 1.45rem;
+    --quran-line-height: 2.8;
+    --translation-font-size: 0.85rem;
+}
+
 .quran-font {
     font-family: 'KFGQPC Uthmanic','Amiri Quran','Scheherazade New',serif;
-    font-size: 1.45rem;
-    line-height: 2.8;
+    font-size: var(--quran-font-size);
+    line-height: var(--quran-line-height);
     color: #000000;
     font-weight: 700;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: geometricPrecision;
+}
+
+/* عندما تكون الترجمة الإنجليزية مفعلة */
+body[lang="en"] {
+    --quran-font-size: 1.15rem;
+    --quran-line-height: 2.2;
+    --translation-font-size: 0.8rem;
 }
 
 /* ===== حاوية الآية ===== */
@@ -744,7 +757,7 @@ html, body { height: 100%; }
                               data-surah-name-en="{{ $verse->surah->name_english }}"
                               onclick="showVersePopup(this)">{{ $verseText }}<span class="verse-end-marker">{{ $verse->verse_number }}</span></span>
                         @if(app()->getLocale() === 'en' && $verse->verse_text_english)
-                        <p class="verse-translation" style="direction: ltr; text-align: left; font-family: 'Segoe UI', sans-serif; font-size: 0.85rem; color: #888; line-height: 1.7; margin: 6px 0 12px 0; font-style: italic; padding-left: 12px; border-left: 2px solid #d4a574;">{{ $verse->verse_text_english }}</p>
+                        <p class="verse-translation" style="direction: ltr; text-align: left; font-family: 'Segoe UI', sans-serif; font-size: var(--translation-font-size); color: #888; line-height: 1.7; margin: 6px 0 12px 0; font-style: italic; padding-left: 12px; border-left: 2px solid #d4a574;">{{ $verse->verse_text_english }}</p>
                         @endif
                     @endif
 
@@ -1206,6 +1219,23 @@ function installPWA() {
         document.getElementById('pwa-install-btn').classList.add('hidden');
     });
 }
+
+// ========== Font size adjustment for English mode ==========
+function adjustFontSize() {
+    const lang = document.documentElement.lang || 'ar';
+    if (lang === 'en') {
+        document.documentElement.setAttribute('lang', 'en');
+    } else {
+        document.documentElement.removeAttribute('lang');
+    }
+}
+
+// Monitor lang attribute changes (when user switches language)
+const observer = new MutationObserver(() => adjustFontSize());
+observer.observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
+
+// Run on page load
+adjustFontSize();
 
 // ========== Keyboard shortcuts ==========
 document.addEventListener('keydown', e => {
