@@ -121,13 +121,21 @@ html, body { height: 100%; overflow: hidden; }
     transition: transform 0.28s cubic-bezier(.4,0,.2,1), opacity 0.28s ease;
     display: flex;
     flex-direction: column;
-    /* Ornate border like Madinah Quran */
-    border: 8px solid;
-    border-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><defs><pattern id="border" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><rect x="0" y="0" width="20" height="20" fill="%238b6f47"/><circle cx="10" cy="10" r="3" fill="%23c9a84c"/><path d="M5 10 Q10 5 15 10 T25 10" stroke="%23c9a84c" fill="none" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="%238b6f47"/><rect x="2" y="2" width="96" height="96" fill="none" stroke="%23c9a84c" stroke-width="1"/><rect x="4" y="4" width="92" height="92" fill="none" stroke="%23d4a574" stroke-width="0.5"/></svg>') 1;
+    /* Ornate border matching Madinah Quran */
+    border: 10px solid #8b6f47;
+    border-image: repeating-linear-gradient(
+        45deg,
+        #8b6f47,
+        #8b6f47 2px,
+        #d4a574 2px,
+        #d4a574 4px,
+        #6b5538 4px,
+        #6b5538 6px
+    ) 10;
     box-shadow:
-        0 0 0 1px #8b6f47,
+        0 0 0 1px #6b5538,
         0 8px 40px rgba(0,0,0,0.3),
-        inset 0 0 20px rgba(0,0,0,0.02);
+        inset 0 0 30px rgba(0,0,0,0.01);
 }
 
 @media (max-width: 600px) {
@@ -146,25 +154,34 @@ html, body { height: 100%; overflow: hidden; }
     }
 }
 
-/* إطار داخلي */
+/* Ornate decorative borders - matching Madinah Quran */
 .mushaf-page::before {
-    content: '';
+    content: '۞  ۞  ۞  ۞  ۞  ۞';
     position: absolute;
-    inset: 12px;
-    border: 1px solid #8b6f47;
-    border-style: double;
-    border-width: 2px;
+    top: 8px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-family: 'Amiri', serif;
+    font-size: 1.2rem;
+    color: #8b6f47;
     pointer-events: none;
-    z-index: 1;
+    z-index: 3;
+    font-weight: 700;
 }
 .mushaf-page::after {
-    content: '';
+    content: '۞  ۞  ۞  ۞  ۞  ۞';
     position: absolute;
-    inset: 14px;
-    border: 1px dashed #c9a84c;
-    opacity: 0.3;
+    bottom: 8px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-family: 'Amiri', serif;
+    font-size: 1.2rem;
+    color: #8b6f47;
     pointer-events: none;
-    z-index: 1;
+    z-index: 3;
+    font-weight: 700;
 }
 
 /* animation أثناء الـ swipe */
@@ -178,11 +195,12 @@ html, body { height: 100%; overflow: hidden; }
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 28px 8px;
-    border-bottom: 1.5px solid #8b6f47;
+    padding: 12px 24px 8px;
+    border-bottom: 1px solid #d4a574;
     position: relative;
     z-index: 2;
-    background: linear-gradient(to bottom, #f9f9f9 0%, #ffffff 100%);
+    background: #ffffff;
+    margin-top: 20px;
 }
 .mushaf-header-text {
     font-family: 'Amiri', serif;
@@ -246,19 +264,19 @@ html, body { height: 100%; overflow: hidden; }
 
 /* ===== نص القرآن ===== */
 .mushaf-body {
-    padding: 20px 32px 24px;
+    padding: 8px 24px 8px;
     direction: rtl;
     text-align: justify;
     text-align-last: center;
     position: relative;
     z-index: 2;
-    word-spacing: 0.2em;
-    letter-spacing: 0.08em;
+    word-spacing: 0.12em;
+    letter-spacing: 0.04em;
 }
 .quran-font {
     font-family: 'KFGQPC Uthmanic','Amiri Quran','Scheherazade New',serif;
-    font-size: 1.95rem;
-    line-height: 3.4;
+    font-size: 1.45rem;
+    line-height: 2.8;
     color: #000000;
     font-weight: 700;
     -webkit-font-smoothing: antialiased;
@@ -348,12 +366,13 @@ html, body { height: 100%; overflow: hidden; }
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 8px 28px 12px;
-    border-top: 1.5px solid #8b6f47;
+    padding: 8px 24px 12px;
+    border-top: 1px solid #d4a574;
     position: relative;
     z-index: 2;
     gap: 10px;
-    background: linear-gradient(to bottom, #ffffff 0%, #f9f9f9 100%);
+    background: #ffffff;
+    margin-bottom: 20px;
 }
 .mushaf-page-number {
     font-family: 'Amiri',serif;
@@ -725,7 +744,7 @@ html, body { height: 100%; overflow: hidden; }
                               data-surah-name-en="{{ $verse->surah->name_english }}"
                               onclick="showVersePopup(this)">{{ $verseText }}<span class="verse-end-marker">{{ $verse->verse_number }}</span></span>
                         @if(app()->getLocale() === 'en' && $verse->verse_text_english)
-                        <p class="verse-translation" style="direction: ltr; text-align: left; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; color: #666; line-height: 1.8; margin: 8px 0 0 0; font-style: italic;">{{ $verse->verse_text_english }}</p>
+                        <p class="verse-translation" style="direction: ltr; text-align: left; font-family: 'Segoe UI', sans-serif; font-size: 0.85rem; color: #888; line-height: 1.7; margin: 6px 0 12px 0; font-style: italic; padding-left: 12px; border-left: 2px solid #d4a574;">{{ $verse->verse_text_english }}</p>
                         @endif
                     @endif
 
