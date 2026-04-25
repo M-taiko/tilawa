@@ -111,6 +111,35 @@ html, body { height: 100%; overflow: hidden; }
     align-items: stretch;
 }
 
+/* ===== Translation Panel (منفصل للترجمة الإنجليزية) ===== */
+.translation-panel {
+    display: none;
+    width: 100%;
+    max-width: 720px;
+    background: #f8f5f0;
+    border-top: 2px solid #8b6f47;
+    padding: 16px;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: #333;
+    direction: ltr;
+    text-align: left;
+    overflow-y: auto;
+    max-height: 300px;
+}
+
+.translation-panel.show {
+    display: block;
+}
+
+.translation-panel-title {
+    font-weight: 700;
+    color: #8b6f47;
+    margin-bottom: 12px;
+    font-size: 1rem;
+}
+
 /* ===== ورقة المصحف ===== */
 .mushaf-page {
     background: #ffffff;
@@ -744,7 +773,9 @@ html, body { height: 100%; overflow: hidden; }
                               data-surah-name-en="{{ $verse->surah->name_english }}"
                               onclick="showVersePopup(this)">{{ $verseText }}<span class="verse-end-marker">{{ $verse->verse_number }}</span></span>
                         @if(app()->getLocale() === 'en' && $verse->verse_text_english)
-                        <p class="verse-translation" style="direction: ltr; text-align: left; font-family: 'Segoe UI', sans-serif; font-size: 0.85rem; color: #888; line-height: 1.7; margin: 6px 0 12px 0; font-style: italic; padding-left: 12px; border-left: 2px solid #d4a574;">{{ $verse->verse_text_english }}</p>
+                        @if(app()->getLocale() === 'en')
+                        <p class="verse-translation" style="display:none">{{ $verse->verse_text_english }}</p>
+                        @endif
                         @endif
                     @endif
 
@@ -762,6 +793,12 @@ html, body { height: 100%; overflow: hidden; }
                 @if($pageNumber > 1)
                 <span class="mushaf-nav-arrow" onclick="navigatePage('prev')">›</span>
                 @endif
+            </div>
+
+            {{-- Translation Panel --}}
+            <div class="translation-panel" id="translation-panel">
+                <div class="translation-panel-title">English Translation</div>
+                <div id="translation-content"></div>
             </div>
         </div>
     </div>
@@ -1206,6 +1243,34 @@ function installPWA() {
         document.getElementById('pwa-install-btn').classList.add('hidden');
     });
 }
+
+// ========== Translation Toggle ==========
+function updateTranslationPanel() {
+    const isEnglish = document.documentElement.lang === 'en';
+    const panel = document.getElementById('translation-panel');
+    const content = document.getElementById('translation-content');
+
+    if (isEnglish) {
+        panel.classList.add('show');
+        // جمع جميع الترجمات من الآيات
+        const translations = Array.from(document.querySelectorAll('.verse-translation'))
+            .map(el => el.textContent.trim())
+            .filter(text => text.length > 0);
+        content.innerHTML = translations.map(t => `<p style="margin-bottom: 12px; line-height: 1.8;">${t}</p>`).join('');
+    } else {
+        panel.classList.remove('show');
+    }
+}
+
+// تحديث الترجمة عند تحميل الصفحة وتبديل اللغة
+document.addEventListener('DOMContentLoaded', updateTranslationPanel);
+// مراقبة تغيير الـ lang attribute
+setInterval(() => {
+    const isEnglish = document.documentElement.lang === 'en';
+    const panelVisible = document.getElementById('translation-panel').classList.contains('show');
+    if (isEnglish && !panelVisible) updateTranslationPanel();
+    if (!isEnglish && panelVisible) updateTranslationPanel();
+}, 500);
 
 // ========== Keyboard shortcuts ==========
 document.addEventListener('keydown', e => {
