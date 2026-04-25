@@ -6,19 +6,39 @@
 <div class="min-h-screen p-4 md:p-6 pattern-subtle">
     {{-- Header --}}
     <div class="mb-6 md:mb-8 text-center animate-fadeInUp">
-        <x-button variant="ghost" href="{{ route('quran.index') }}" class="mb-4">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
-            </svg>
-            رجوع للمصحف
-        </x-button>
+        <div class="flex items-center justify-center gap-4 mb-4">
+            <x-button variant="ghost" href="{{ route('quran.index') }}">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
+                </svg>
+                {{ app()->getLocale() === 'ar' ? 'رجوع للمصحف' : 'Back to Quran' }}
+            </x-button>
+
+            {{-- Language Toggle --}}
+            <div class="flex items-center gap-1 bg-slate-100 rounded-lg p-1">
+                <form method="POST" action="{{ route('locale.switch') }}" class="inline">
+                    @csrf
+                    <input type="hidden" name="locale" value="ar">
+                    <button type="submit" class="px-2.5 py-1.5 rounded-md text-xs font-semibold transition-colors {{ app()->getLocale() === 'ar' ? 'bg-white text-primary-600 shadow-sm' : 'text-slate-500 hover:text-slate-700' }}" style="font-family:'Tajawal',sans-serif;">
+                        العربية
+                    </button>
+                </form>
+                <form method="POST" action="{{ route('locale.switch') }}" class="inline">
+                    @csrf
+                    <input type="hidden" name="locale" value="en">
+                    <button type="submit" class="px-2.5 py-1.5 rounded-md text-xs font-semibold transition-colors {{ app()->getLocale() === 'en' ? 'bg-white text-primary-600 shadow-sm' : 'text-slate-500 hover:text-slate-700' }}" style="font-family:'Tajawal',sans-serif;">
+                        EN
+                    </button>
+                </form>
+            </div>
+        </div>
 
         <div class="inline-block p-4 md:p-6 rounded-2xl bg-gradient-to-br from-accent-50 to-emerald-50 border-2 border-accent-300 shadow-lg">
             <svg class="w-14 h-14 md:w-16 md:h-16 mx-auto text-accent-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
             </svg>
-            <h1 class="text-2xl md:text-3xl font-bold heading-islamic text-accent-800 mb-2">البحث في القرآن الكريم</h1>
-            <p class="text-accent-700">ابحث عن أي كلمة أو عبارة في القرآن</p>
+            <h1 class="text-2xl md:text-3xl font-bold heading-islamic text-accent-800 mb-2">{{ app()->getLocale() === 'ar' ? 'البحث في القرآن الكريم' : 'Search the Quran' }}</h1>
+            <p class="text-accent-700">{{ app()->getLocale() === 'ar' ? 'ابحث عن أي كلمة أو عبارة في القرآن' : 'Search for any word or phrase in the Quran' }}</p>
         </div>
     </div>
 
@@ -31,7 +51,7 @@
                 {{-- Search Input --}}
                 <div>
                     <label class="block text-sm font-bold text-accent-800 mb-3">
-                        <span class="text-gold-600">*</span> ابحث عن كلمة أو عبارة
+                        <span class="text-gold-600">*</span> {{ app()->getLocale() === 'ar' ? 'ابحث عن كلمة أو عبارة' : 'Search for a word or phrase' }}
                     </label>
                     <div class="relative">
                         <input
@@ -39,7 +59,7 @@
                             name="q"
                             required
                             minlength="3"
-                            placeholder="مثال: الحمد لله"
+                            placeholder="{{ app()->getLocale() === 'ar' ? 'مثال: الحمد لله' : 'Example: Allah' }}"
                             class="w-full px-4 py-4 pr-12 border-2 border-accent-200 rounded-xl focus:ring-4 focus:ring-accent-500/30 focus:border-accent-500 transition-all text-lg"
                             value="{{ old('q') }}"
                         >
@@ -58,15 +78,15 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {{-- Filter by Surah --}}
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">تحديد السورة (اختياري)</label>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">{{ app()->getLocale() === 'ar' ? 'تحديد السورة (اختياري)' : 'Select Surah (Optional)' }}</label>
                         <select
                             name="surah_id"
                             class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-4 focus:ring-accent-500/30 focus:border-accent-500 transition-all"
                         >
-                            <option value="">جميع السور</option>
+                            <option value="">{{ app()->getLocale() === 'ar' ? 'جميع السور' : 'All Surahs' }}</option>
                             @foreach($surahs as $surah)
                                 <option value="{{ $surah->id }}" {{ old('surah_id') == $surah->id ? 'selected' : '' }}>
-                                    {{ $surah->name_arabic }}
+                                    {{ app()->getLocale() === 'ar' ? $surah->name_arabic : $surah->name_english }}
                                 </option>
                             @endforeach
                         </select>
@@ -74,15 +94,15 @@
 
                     {{-- Filter by Juz --}}
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">تحديد الجزء (اختياري)</label>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">{{ app()->getLocale() === 'ar' ? 'تحديد الجزء (اختياري)' : 'Select Juz (Optional)' }}</label>
                         <select
                             name="juz_number"
                             class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-4 focus:ring-accent-500/30 focus:border-accent-500 transition-all"
                         >
-                            <option value="">جميع الأجزاء</option>
+                            <option value="">{{ app()->getLocale() === 'ar' ? 'جميع الأجزاء' : 'All Juzs' }}</option>
                             @for($i = 1; $i <= 30; $i++)
                                 <option value="{{ $i }}" {{ old('juz_number') == $i ? 'selected' : '' }}>
-                                    الجزء {{ $i }}
+                                    {{ app()->getLocale() === 'ar' ? 'الجزء ' . $i : 'Juz ' . $i }}
                                 </option>
                             @endfor
                         </select>
@@ -90,7 +110,7 @@
 
                     {{-- Filter by Page --}}
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">تحديد الصفحة (اختياري)</label>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">{{ app()->getLocale() === 'ar' ? 'تحديد الصفحة (اختياري)' : 'Select Page (Optional)' }}</label>
                         <input
                             type="number"
                             name="page_number"
@@ -109,7 +129,7 @@
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
-                        بحث
+                        {{ app()->getLocale() === 'ar' ? 'بحث' : 'Search' }}
                     </x-button>
                 </div>
             </form>
