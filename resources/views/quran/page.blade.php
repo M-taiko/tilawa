@@ -113,17 +113,17 @@ html, body { height: 100%; overflow: hidden; }
 
 /* ===== ورقة المصحف ===== */
 .mushaf-page {
-    background: linear-gradient(135deg, #fdf8f0 0%, #faf4e8 50%, #fdf8f0 100%);
-    border: 1px solid #c9a84c;
+    background: linear-gradient(135deg, #f5ead0 0%, #efe3c5 50%, #f5ead0 100%);
+    border: 2px solid #8b6f47;
     box-shadow:
-        0 0 0 4px #e8d5a0,
-        0 0 0 8px #c9a84c,
-        0 8px 40px rgba(100,70,20,0.4),
-        inset 0 0 60px rgba(200,160,80,0.06);
+        0 0 0 6px #d4c5a9,
+        0 0 0 12px #8b6f47,
+        0 12px 60px rgba(80,60,30,0.5),
+        inset 0 0 100px rgba(139,111,71,0.08);
     position: relative;
     width: 100%;
-    max-width: 660px;
-    border-radius: 2px;
+    max-width: 700px;
+    border-radius: 1px;
     transition: transform 0.28s cubic-bezier(.4,0,.2,1), opacity 0.28s ease;
     display: flex;
     flex-direction: column;
@@ -232,18 +232,21 @@ html, body { height: 100%; overflow: hidden; }
 
 /* ===== نص القرآن ===== */
 .mushaf-body {
-    padding: 4px 22px 14px;
+    padding: 16px 28px 20px;
     direction: rtl;
     text-align: justify;
     text-align-last: center;
     position: relative;
     z-index: 2;
+    word-spacing: 0.15em;
+    letter-spacing: 0.05em;
 }
 .quran-font {
     font-family: 'KFGQPC Uthmanic','Amiri Quran','Scheherazade New',serif;
-    font-size: 1.75rem;
-    line-height: 3.0;
-    color: #0d0d0d;
+    font-size: 1.85rem;
+    line-height: 3.2;
+    color: #1a1200;
+    font-weight: 600;
 }
 
 /* ===== حاوية الآية ===== */
@@ -264,20 +267,21 @@ html, body { height: 100%; overflow: hidden; }
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 1.5em;
-    height: 1.5em;
-    margin: 0 0.12em;
-    font-family: 'Tajawal', 'Segoe UI', sans-serif;
-    font-size: 0.55em;
-    color: #7a5c1e;
-    background: radial-gradient(circle, #fdf3d0 60%, #e8d5a0 100%);
-    border: 1.5px solid #c9a84c;
+    width: 1.6em;
+    height: 1.6em;
+    margin: 0 0.15em;
+    font-family: 'Amiri', serif;
+    font-size: 0.5em;
+    color: #5d4e1f;
+    background: radial-gradient(circle at 35% 35%, #fef5e7 0%, #f5e6c8 50%, #e8d5a0 100%);
+    border: 2px solid #8b6f47;
     border-radius: 50%;
     vertical-align: middle;
     position: relative;
-    top: -0.08em;
+    top: -0.12em;
     line-height: 1;
     font-weight: 700;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 /* ===== علامة متابعة القراءة 🔖 ===== */

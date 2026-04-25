@@ -4,6 +4,51 @@
 @section('meta_description', 'قراءة ' . $juz->name_arabic . ' (الجزء ' . $juz->id . ') من القرآن الكريم بالرسم العثماني — تطبيق تلاوة.')
 @section('canonical', url('/quran/juz/' . $juz->id))
 
+@push('styles')
+<style>
+.quran-content {
+    text-align: justify;
+    text-align-last: center;
+    direction: rtl;
+    word-spacing: 0.1em;
+    letter-spacing: 0.05em;
+}
+.quran-font {
+    font-family: 'KFGQPC Uthmanic', 'Amiri Quran', 'Scheherazade New', serif !important;
+    font-size: 1.7rem !important;
+    line-height: 3.0 !important;
+    color: #1a1200 !important;
+    font-weight: 600 !important;
+}
+.verse-number {
+    background: radial-gradient(circle at 35% 35%, #fef5e7 0%, #f5e6c8 50%, #e8d5a0 100%) !important;
+    border-color: #8b6f47 !important;
+    border-width: 2px !important;
+    font-size: 0.65rem !important;
+}
+.verse-translation {
+    font-style: italic;
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.8;
+    margin: 6px 0 0 0;
+    padding: 6px 10px;
+    background: rgba(255,255,255,0.3);
+    border-right: 3px solid #c9a84c;
+    border-radius: 4px;
+}
+.surah-header {
+    margin: 16px 0 12px;
+    text-align: center;
+}
+.surah-header .inline-block {
+    background: linear-gradient(135deg, #8b6f47 0%, #6b5538 100%) !important;
+    color: #fef5e7 !important;
+    box-shadow: 0 4px 12px rgba(139,111,71,0.3);
+}
+</style>
+@endpush
+
 @section('content')
 <div class="min-h-screen p-4 md:p-6 pattern-subtle">
     {{-- Header --}}

@@ -4,6 +4,42 @@
 @section('meta_description', 'قراءة سورة ' . $surah->name_arabic . ' كاملةً — ' . $surah->ayah_count . ' آية — من القرآن الكريم بالرسم العثماني في تطبيق تلاوة.')
 @section('canonical', url('/quran/surah/' . $surah->id))
 
+@push('styles')
+<style>
+.quran-content {
+    text-align: justify;
+    text-align-last: center;
+    direction: rtl;
+    word-spacing: 0.1em;
+    letter-spacing: 0.05em;
+}
+.quran-font {
+    font-family: 'KFGQPC Uthmanic', 'Amiri Quran', 'Scheherazade New', serif !important;
+    font-size: 1.8rem !important;
+    line-height: 3.1 !important;
+    color: #1a1200 !important;
+    font-weight: 600 !important;
+}
+.verse-number {
+    background: radial-gradient(circle at 35% 35%, #fef5e7 0%, #f5e6c8 50%, #e8d5a0 100%) !important;
+    border-color: #8b6f47 !important;
+    border-width: 2px !important;
+    font-size: 0.7rem !important;
+}
+.verse-translation {
+    font-style: italic;
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    margin: 8px 0 0 0;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.3);
+    border-right: 3px solid #c9a84c;
+    border-radius: 4px;
+}
+</style>
+@endpush
+
 @section('content')
 <div class="min-h-screen p-4 md:p-6 pattern-subtle">
     {{-- Header --}}

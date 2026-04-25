@@ -39,8 +39,17 @@
 }
 .surah-name-uthmanic {
     font-family: 'KFGQPC Uthmanic', 'Amiri Quran', 'Scheherazade New', serif;
-    font-size: 1.15rem;
-    line-height: 1.6;
+    font-size: 1.25rem;
+    line-height: 1.7;
+    color: #1a1200;
+    font-weight: 600;
+}
+.heading-islamic {
+    font-family: 'KFGQPC Uthmanic', 'Amiri Quran', 'Scheherazade New', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 </style>
 @endpush
