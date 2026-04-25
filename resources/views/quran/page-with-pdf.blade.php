@@ -101,17 +101,18 @@ html, body { height: 100%; overflow: hidden; }
     position: absolute;
     cursor: pointer;
     transition: all 0.15s;
-    background: rgba(201,168,76,0.05);
-    border: 2px solid rgba(201,168,76,0.15);
-    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.6);
+    border: 2px solid rgba(201,168,76,0.40);
+    border-radius: 6px;
     user-select: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .verse-overlay:hover {
-    background: rgba(201,168,76,0.25);
-    border-color: rgba(201,168,76,0.50);
-    box-shadow: 0 0 8px rgba(201,168,76,0.3);
-    transform: scale(1.05);
+    background: rgba(201,168,76,0.35);
+    border-color: rgba(139, 111, 71, 0.80);
+    box-shadow: 0 4px 12px rgba(139, 111, 71, 0.4);
+    transform: scale(1.10);
 }
 
 .verse-popup-overlay {
@@ -341,9 +342,10 @@ function createVerseOverlays() {
         overlay.style.display = 'flex';
         overlay.style.alignItems = 'center';
         overlay.style.justifyContent = 'center';
-        overlay.style.fontSize = '12px';
-        overlay.style.fontWeight = 'bold';
-        overlay.style.color = 'rgba(139, 111, 71, 0.6)';
+        overlay.style.fontSize = '18px';
+        overlay.style.fontWeight = '900';
+        overlay.style.color = '#8b6f47';
+        overlay.style.textShadow = '1px 1px 2px rgba(255,255,255,0.8)';
 
         overlay.onclick = (e) => {
             e.stopPropagation();
