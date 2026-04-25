@@ -561,8 +561,22 @@ html, body { height: 100%; overflow: hidden; }
             <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
             </svg>
-            الفهرس
+            {{ app()->getLocale() === 'ar' ? 'الفهرس' : 'Index' }}
         </a>
+
+        {{-- Language Toggle --}}
+        <div style="display:flex;align-items:center;gap:4px;background:rgba(201,168,76,0.12);border-radius:6px;padding:2px 4px;">
+            <form method="POST" action="{{ route('locale.switch') }}" class="inline">
+                @csrf
+                <input type="hidden" name="locale" value="ar">
+                <button type="submit" class="top-bar-btn" style="background:{{ app()->getLocale() === 'ar' ? 'rgba(201,168,76,0.3)' : 'transparent' }};padding:4px 8px;">العربية</button>
+            </form>
+            <form method="POST" action="{{ route('locale.switch') }}" class="inline">
+                @csrf
+                <input type="hidden" name="locale" value="en">
+                <button type="submit" class="top-bar-btn" style="background:{{ app()->getLocale() === 'en' ? 'rgba(201,168,76,0.3)' : 'transparent' }};padding:4px 8px;">EN</button>
+            </form>
+        </div>
 
         <div style="display:flex;align-items:center;gap:6px;">
             @if($pageNumber < 604)
@@ -582,7 +596,7 @@ html, body { height: 100%; overflow: hidden; }
 
         <div style="display:flex;gap:6px;align-items:center;">
             {{-- زر الرجوع لآخر موضع --}}
-            <button id="goto-bookmark-btn" class="top-bar-btn hidden" onclick="goToBookmark()" title="الرجوع لآخر موضع">
+            <button id="goto-bookmark-btn" class="top-bar-btn hidden" onclick="goToBookmark()" title="{{ app()->getLocale() === 'ar' ? 'الرجوع لآخر موضع' : 'Go to bookmark' }}">
                 🔖
             </button>
             {{-- PWA --}}

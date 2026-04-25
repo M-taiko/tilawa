@@ -47,8 +47,8 @@
 
 @section('content')
 <div class="pattern-subtle">
-    {{-- شريط علوي: لوجو + زرار الدخول --}}
-    <div class="flex items-center justify-between mb-4 animate-fadeInUp">
+    {{-- شريط علوي: لوجو + لغة + زرار الدخول --}}
+    <div class="flex items-center justify-between mb-4 animate-fadeInUp gap-3">
         {{-- لوجو Masar Soft --}}
         <a href="https://masarsoft.io" target="_blank" class="flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity min-w-0">
             <div class="w-8 h-8 rounded-lg shadow bg-white flex-shrink-0 flex items-center justify-center overflow-hidden" style="padding:2px;">
@@ -57,6 +57,26 @@
             <span class="text-xs font-bold text-slate-500 hidden sm:inline" style="font-family:'Tajawal',sans-serif;">Masar Soft</span>
         </a>
 
+        {{-- Language Toggle --}}
+        <div class="flex-1 flex justify-center">
+            <div class="flex items-center gap-1 bg-white rounded-lg p-1 border border-slate-200 shadow-sm">
+                <form method="POST" action="{{ route('locale.switch') }}" class="inline">
+                    @csrf
+                    <input type="hidden" name="locale" value="ar">
+                    <button type="submit" class="px-2.5 py-1.5 rounded-md text-xs font-semibold transition-colors {{ app()->getLocale() === 'ar' ? 'bg-slate-100 text-primary-600 shadow-sm' : 'text-slate-500 hover:text-slate-700' }}" style="font-family:'Tajawal',sans-serif;">
+                        العربية
+                    </button>
+                </form>
+                <form method="POST" action="{{ route('locale.switch') }}" class="inline">
+                    @csrf
+                    <input type="hidden" name="locale" value="en">
+                    <button type="submit" class="px-2.5 py-1.5 rounded-md text-xs font-semibold transition-colors {{ app()->getLocale() === 'en' ? 'bg-slate-100 text-primary-600 shadow-sm' : 'text-slate-500 hover:text-slate-700' }}" style="font-family:'Tajawal',sans-serif;">
+                        EN
+                    </button>
+                </form>
+            </div>
+        </div>
+
         {{-- زرار الرجوع للصفحة الرئيسية --}}
         <a href="{{ route('login') }}"
            class="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white border border-slate-200 shadow-sm text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:shadow-md transition-all"
@@ -64,8 +84,8 @@
             <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
             </svg>
-            <span class="hidden xs:inline">الصفحة الرئيسية</span>
-            <span class="xs:hidden">دخول</span>
+            <span class="hidden xs:inline">{{ app()->getLocale() === 'ar' ? 'الصفحة الرئيسية' : 'Home' }}</span>
+            <span class="xs:hidden">{{ app()->getLocale() === 'ar' ? 'دخول' : 'Sign In' }}</span>
         </a>
     </div>
 
@@ -75,8 +95,8 @@
             <svg class="w-14 h-14 mx-auto text-emerald-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
             </svg>
-            <h1 class="text-2xl md:text-3xl font-bold heading-islamic text-emerald-800 mb-1">المصحف الكريم</h1>
-            <p class="text-emerald-700 text-sm md:text-base">القرآن الكريم كاملاً بالرسم العثماني</p>
+            <h1 class="text-2xl md:text-3xl font-bold heading-islamic text-emerald-800 mb-1">{{ app()->getLocale() === 'ar' ? 'المصحف الكريم' : 'The Noble Quran' }}</h1>
+            <p class="text-emerald-700 text-sm md:text-base">{{ app()->getLocale() === 'ar' ? 'القرآن الكريم كاملاً بالرسم العثماني' : 'Complete Quran with English Translation' }}</p>
         </div>
     </div>
 
@@ -87,8 +107,8 @@
                 ⬇️
             </div>
             <div class="flex-1 min-w-0">
-                <div id="offline-status-title" class="font-bold text-teal-900 text-base">تحميل القرآن للقراءة بدون إنترنت</div>
-                <div id="offline-status-desc" class="text-xs text-teal-700 mt-0.5">احفظ القرآن الكريم كاملاً على جهازك واقرأه في أي مكان بدون إنترنت</div>
+                <div id="offline-status-title" class="font-bold text-teal-900 text-base">{{ app()->getLocale() === 'ar' ? 'تحميل القرآن للقراءة بدون إنترنت' : 'Download Quran for Offline Reading' }}</div>
+                <div id="offline-status-desc" class="text-xs text-teal-700 mt-0.5">{{ app()->getLocale() === 'ar' ? 'احفظ القرآن الكريم كاملاً على جهازك واقرأه في أي مكان بدون إنترنت' : 'Save the complete Quran with translations on your device and read it anywhere without internet' }}</div>
                 {{-- شريط التقدم --}}
                 <div id="offline-progress-bar-wrap" class="hidden mt-2">
                     <div class="w-full bg-teal-200 rounded-full h-2">
@@ -101,12 +121,12 @@
                 <button id="offline-download-btn"
                         onclick="handleOfflineDownload()"
                         class="px-4 py-2 rounded-xl bg-teal-500 hover:bg-teal-600 text-white font-bold text-sm transition-colors shadow cursor-pointer w-full sm:w-auto text-center">
-                    تحميل القرآن
+                    {{ app()->getLocale() === 'ar' ? 'تحميل القرآن' : 'Download' }}
                 </button>
                 <button id="offline-delete-btn"
                         onclick="handleOfflineDelete()"
                         class="hidden px-4 py-1.5 rounded-xl bg-red-100 hover:bg-red-200 text-red-600 text-xs font-semibold transition-colors cursor-pointer w-full sm:w-auto text-center">
-                    حذف البيانات
+                    {{ app()->getLocale() === 'ar' ? 'حذف البيانات' : 'Delete' }}
                 </button>
             </div>
         </div>
@@ -119,18 +139,18 @@
                 📲
             </div>
             <div class="flex-1 min-w-0">
-                <div class="font-bold text-emerald-900 text-base">تثبيت التطبيق للقراءة بدون إنترنت</div>
-                <div class="text-xs text-emerald-700 mt-0.5">ثبّت تلاوة على شاشتك الرئيسية واقرأ القرآن في أي وقت</div>
+                <div class="font-bold text-emerald-900 text-base">{{ app()->getLocale() === 'ar' ? 'تثبيت التطبيق للقراءة بدون إنترنت' : 'Install App for Offline Reading' }}</div>
+                <div class="text-xs text-emerald-700 mt-0.5">{{ app()->getLocale() === 'ar' ? 'ثبّت تلاوة على شاشتك الرئيسية واقرأ القرآن في أي وقت' : 'Install Tilawa on your home screen and read Quran anytime' }}</div>
             </div>
             <div class="flex flex-col gap-2 flex-shrink-0">
                 <button id="pwa-install-btn"
                         onclick="installPWA()"
                         class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm transition-colors shadow cursor-pointer">
-                    تثبيت
+                    {{ app()->getLocale() === 'ar' ? 'تثبيت' : 'Install' }}
                 </button>
                 <button onclick="document.getElementById('pwa-install-card').remove()"
                         class="px-4 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 text-xs transition-colors cursor-pointer">
-                    لاحقاً
+                    {{ app()->getLocale() === 'ar' ? 'لاحقاً' : 'Later' }}
                 </button>
             </div>
         </div>
@@ -144,11 +164,11 @@
                 <span style="font-size:1.4rem;line-height:1;">🔖</span>
             </div>
             <div class="flex-1 min-w-0">
-                <div class="font-bold text-amber-900 text-sm md:text-lg mb-0.5">استكمال القراءة من حيث توقفت</div>
+                <div class="font-bold text-amber-900 text-sm md:text-lg mb-0.5">{{ app()->getLocale() === 'ar' ? 'استكمال القراءة من حيث توقفت' : 'Continue Reading' }}</div>
                 <div id="resume-info" class="text-xs md:text-sm text-amber-700 truncate"></div>
             </div>
             <div class="flex-shrink-0 flex items-center gap-1 md:gap-2 px-3 md:px-4 py-2 rounded-xl bg-amber-500 text-white font-bold text-xs md:text-sm group-hover:bg-amber-600 transition-colors shadow whitespace-nowrap">
-                <span>استكمال</span>
+                <span>{{ app()->getLocale() === 'ar' ? 'استكمال' : 'Continue' }}</span>
                 <svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                 </svg>
@@ -167,8 +187,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
                     </div>
-                    <h3 class="text-sm md:text-base font-bold text-emerald-800">السور</h3>
-                    <p class="text-slate-500 text-xs hidden sm:block">114 سورة</p>
+                    <h3 class="text-sm md:text-base font-bold text-emerald-800">{{ app()->getLocale() === 'ar' ? 'السور' : 'Surahs' }}</h3>
+                    <p class="text-slate-500 text-xs hidden sm:block">{{ app()->getLocale() === 'ar' ? '114 سورة' : '114 Surahs' }}</p>
                 </div>
             </x-card>
         </a>
@@ -182,8 +202,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                         </svg>
                     </div>
-                    <h3 class="text-sm md:text-base font-bold text-gold-800">الأجزاء</h3>
-                    <p class="text-slate-500 text-xs hidden sm:block">30 جزءاً</p>
+                    <h3 class="text-sm md:text-base font-bold text-gold-800">{{ app()->getLocale() === 'ar' ? 'الأجزاء' : 'Juzs' }}</h3>
+                    <p class="text-slate-500 text-xs hidden sm:block">{{ app()->getLocale() === 'ar' ? '30 جزءاً' : '30 Juzs' }}</p>
                 </div>
             </x-card>
         </a>
@@ -197,8 +217,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
                     </div>
-                    <h3 class="text-sm md:text-base font-bold text-accent-800">البحث</h3>
-                    <p class="text-slate-500 text-xs hidden sm:block">ابحث في القرآن</p>
+                    <h3 class="text-sm md:text-base font-bold text-accent-800">{{ app()->getLocale() === 'ar' ? 'البحث' : 'Search' }}</h3>
+                    <p class="text-slate-500 text-xs hidden sm:block">{{ app()->getLocale() === 'ar' ? 'ابحث في القرآن' : 'Search Quran' }}</p>
                 </div>
             </x-card>
         </a>
@@ -212,7 +232,7 @@
                     <svg class="w-8 h-8 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
-                    سور القرآن الكريم
+                    {{ app()->getLocale() === 'ar' ? 'سور القرآن الكريم' : 'Surahs of the Quran' }}
                 </h2>
             </div>
             <div class="p-4 md:p-6">
@@ -227,8 +247,8 @@
                                             {{ $surah->id }}
                                         </div>
                                         <div class="flex-1 min-w-0">
-                                            <h3 class="surah-name-uthmanic font-bold text-emerald-900 mb-0.5 truncate">{{ $surah->name_arabic }}</h3>
-                                            <p class="text-xs text-slate-500">{{ $surah->ayah_count }} آية</p>
+                                            <h3 class="surah-name-uthmanic font-bold text-emerald-900 mb-0.5 truncate">{{ app()->getLocale() === 'ar' ? $surah->name_arabic : $surah->name_english }}</h3>
+                                            <p class="text-xs text-slate-500">{{ app()->getLocale() === 'ar' ? $surah->ayah_count . ' آية' : $surah->ayah_count . ' verses' }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -251,7 +271,7 @@
                     <svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                     </svg>
-                    أجزاء القرآن الكريم
+                    {{ app()->getLocale() === 'ar' ? 'أجزاء القرآن الكريم' : 'Juzs of the Quran' }}
                 </h2>
             </div>
             <div class="p-4 md:p-6">
@@ -263,8 +283,8 @@
                             <div class="w-12 h-12 mx-auto mb-2 rounded-full bg-gradient-to-br from-gold-400 to-gold-500 flex items-center justify-center text-white font-bold text-lg shadow-md group-hover:scale-110 transition-transform">
                                 {{ $juz->id }}
                             </div>
-                            <h3 class="font-bold text-xs text-gold-900 mb-0.5">{{ $juz->name_arabic }}</h3>
-                            <p class="surah-name-uthmanic text-xs text-slate-600" style="font-size:0.85rem;">{{ $juz->startSurah?->name_arabic }}</p>
+                            <h3 class="font-bold text-xs text-gold-900 mb-0.5">{{ app()->getLocale() === 'ar' ? $juz->name_arabic : 'Juz ' . $juz->id }}</h3>
+                            <p class="surah-name-uthmanic text-xs text-slate-600" style="font-size:0.85rem;">{{ app()->getLocale() === 'ar' ? $juz->startSurah?->name_arabic : $juz->startSurah?->name_english }}</p>
                         </a>
                     @endforeach
                 </div>
@@ -275,9 +295,9 @@
     {{-- Footer --}}
     <div class="pt-4 pb-4 text-center border-t border-emerald-100 mt-2">
         <p class="text-xs text-slate-400" style="font-family:'Tajawal',sans-serif;">
-            صُمِّم بالكامل بواسطة
+            {{ app()->getLocale() === 'ar' ? 'صُمِّم بالكامل بواسطة' : 'Designed by' }}
             <a href="https://masarsoft.io" target="_blank" class="text-emerald-600 hover:text-emerald-800 font-semibold transition-colors">masarsoft.io</a>
-            &nbsp;•&nbsp; نسألكم الدعاء 🤲
+            &nbsp;•&nbsp; {{ app()->getLocale() === 'ar' ? 'نسألكم الدعاء 🤲' : 'Pray for us 🤲' }}
         </p>
     </div>
 </div>
@@ -294,15 +314,16 @@
 })();
 
 function updateOfflineUI(isDownloaded) {
+    const locale = '{{ app()->getLocale() }}';
     const title  = document.getElementById('offline-status-title');
     const desc   = document.getElementById('offline-status-desc');
     const btn    = document.getElementById('offline-download-btn');
     const delBtn = document.getElementById('offline-delete-btn');
 
     if (isDownloaded) {
-        title.textContent  = 'القرآن الكريم محفوظ على جهازك ✓';
-        desc.textContent   = 'يمكنك قراءة القرآن الكريم كاملاً حتى بدون إنترنت';
-        btn.textContent    = 'تحديث البيانات';
+        title.textContent  = locale === 'ar' ? 'القرآن الكريم محفوظ على جهازك ✓' : 'Quran Saved on Your Device ✓';
+        desc.textContent   = locale === 'ar' ? 'يمكنك قراءة القرآن الكريم كاملاً حتى بدون إنترنت' : 'You can read the complete Quran even without internet';
+        btn.textContent    = locale === 'ar' ? 'تحديث البيانات' : 'Update Data';
         btn.className      = btn.className.replace('bg-teal-500 hover:bg-teal-600', 'bg-emerald-500 hover:bg-emerald-600');
         delBtn.classList.remove('hidden');
 
@@ -310,20 +331,25 @@ function updateOfflineUI(isDownloaded) {
         TilawaOffline.getDownloadInfo().then(info => {
             if (info.downloaded_at) {
                 const d = new Date(info.downloaded_at);
-                desc.textContent = `تم التحميل: ${d.toLocaleDateString('ar-EG')} — ${info.verse_count} آية محفوظة`;
+                if (locale === 'ar') {
+                    desc.textContent = `تم التحميل: ${d.toLocaleDateString('ar-EG')} — ${info.verse_count} آية محفوظة`;
+                } else {
+                    desc.textContent = `Downloaded: ${d.toLocaleDateString('en-US')} — ${info.verse_count} verses saved`;
+                }
             }
         });
     } else {
-        title.textContent  = 'تحميل القرآن للقراءة بدون إنترنت';
-        desc.textContent   = 'احفظ القرآن الكريم كاملاً على جهازك واقرأه في أي مكان بدون إنترنت';
-        btn.textContent    = 'تحميل القرآن';
+        title.textContent  = locale === 'ar' ? 'تحميل القرآن للقراءة بدون إنترنت' : 'Download Quran for Offline Reading';
+        desc.textContent   = locale === 'ar' ? 'احفظ القرآن الكريم كاملاً على جهازك واقرأه في أي مكان بدون إنترنت' : 'Save the complete Quran with translations on your device and read it anywhere without internet';
+        btn.textContent    = locale === 'ar' ? 'تحميل القرآن' : 'Download';
         delBtn.classList.add('hidden');
     }
 }
 
 async function handleOfflineDownload() {
+    const locale = '{{ app()->getLocale() }}';
     if (typeof TilawaOffline === 'undefined') {
-        alert('خطأ: مكتبة التخزين غير محملة');
+        alert(locale === 'ar' ? 'خطأ: مكتبة التخزين غير محملة' : 'Error: Storage library not loaded');
         return;
     }
 
@@ -334,7 +360,7 @@ async function handleOfflineDownload() {
     const desc         = document.getElementById('offline-status-desc');
 
     btn.disabled   = true;
-    btn.textContent = 'جارٍ التحميل...';
+    btn.textContent = locale === 'ar' ? 'جارٍ التحميل...' : 'Downloading...';
     progressWrap.classList.remove('hidden');
 
     try {
@@ -351,26 +377,28 @@ async function handleOfflineDownload() {
     } catch (err) {
         progressWrap.classList.add('hidden');
         btn.disabled    = false;
-        btn.textContent = 'إعادة المحاولة';
-        desc.textContent = 'حدث خطأ أثناء التحميل: ' + err.message;
+        btn.textContent = locale === 'ar' ? 'إعادة المحاولة' : 'Retry';
+        desc.textContent = (locale === 'ar' ? 'حدث خطأ أثناء التحميل: ' : 'Download error: ') + err.message;
         console.error('Quran download error:', err);
     }
 }
 
 async function handleOfflineDelete() {
-    if (!confirm('هل تريد حذف بيانات القرآن المحفوظة؟')) return;
+    const locale = '{{ app()->getLocale() }}';
+    if (!confirm(locale === 'ar' ? 'هل تريد حذف بيانات القرآن المحفوظة؟' : 'Do you want to delete the saved Quran data?')) return;
 
     await TilawaOffline.deleteQuranData();
     updateOfflineUI(false);
 
     const btn = document.getElementById('offline-download-btn');
     btn.disabled    = false;
-    btn.textContent = 'تحميل القرآن';
+    btn.textContent = locale === 'ar' ? 'تحميل القرآن' : 'Download';
 }
 
 // ===== Bookmark =====
 (function() {
     const BOOKMARK_KEY = 'tilawa_bookmark';
+    const locale = '{{ app()->getLocale() }}';
     try {
         const bm = JSON.parse(localStorage.getItem(BOOKMARK_KEY) || 'null');
         if (!bm || !bm.page) return;
@@ -379,7 +407,12 @@ async function handleOfflineDelete() {
         const info = document.getElementById('resume-info');
         if (!card || !link || !info) return;
         link.href = '/quran/page/' + bm.page;
-        info.textContent = 'سورة ' + (bm.surahName || '') + ' — الآية ' + bm.verse + ' — صفحة ' + bm.page;
+        if (locale === 'ar') {
+            info.textContent = 'سورة ' + (bm.surahName || '') + ' — الآية ' + bm.verse + ' — صفحة ' + bm.page;
+        } else {
+            const surahNameEn = bm.surahNameEn || bm.surahName || '';
+            info.textContent = 'Surah ' + surahNameEn + ' — Verse ' + bm.verse + ' — Page ' + bm.page;
+        }
         card.classList.remove('hidden');
     } catch(e) {}
 })();
