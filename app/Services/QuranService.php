@@ -27,6 +27,7 @@ class QuranService
             now()->addMinutes(self::CACHE_DURATION),
             function () use ($pageNumber) {
                 return Verse::where('page_number', $pageNumber)
+                    ->select('id', 'surah_id', 'verse_number', 'verse_text', 'verse_text_english', 'page_number')
                     ->with('surah:id,name_arabic,name_english')
                     ->orderBy('surah_id')
                     ->orderBy('verse_number')
