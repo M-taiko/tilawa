@@ -291,7 +291,8 @@ html, body { height: 100%; }
 }
 
 /* عندما تكون الترجمة الإنجليزية مفعلة */
-body[lang="en"] {
+html[lang="en"],
+html[lang="en"] body {
     --quran-font-size: 1.15rem;
     --quran-line-height: 2.2;
     --translation-font-size: 0.8rem;
@@ -1223,19 +1224,11 @@ function installPWA() {
 // ========== Font size adjustment for English mode ==========
 function adjustFontSize() {
     const lang = document.documentElement.lang || 'ar';
-    if (lang === 'en') {
-        document.documentElement.setAttribute('lang', 'en');
-    } else {
-        document.documentElement.removeAttribute('lang');
-    }
+    console.log('Current lang:', lang);
 }
 
-// Monitor lang attribute changes (when user switches language)
-const observer = new MutationObserver(() => adjustFontSize());
-observer.observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
-
 // Run on page load
-adjustFontSize();
+document.addEventListener('DOMContentLoaded', adjustFontSize);
 
 // ========== Keyboard shortcuts ==========
 document.addEventListener('keydown', e => {
