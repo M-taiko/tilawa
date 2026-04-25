@@ -294,19 +294,19 @@ html, body { height: 100%; }
 html[lang="en"],
 html[lang="en"] body {
     --quran-font-size: 1.15rem;
-    --quran-line-height: 2.2;
-    --translation-font-size: 0.8rem;
+    --quran-line-height: 2.0;
+    --translation-font-size: 0.78rem;
 }
 
 /* Verse translation styling */
 .verse-translation {
     display: none;
-    font-size: var(--translation-font-size) !important;
-    color: #666 !important;
-    margin: 4px 0 8px 0 !important;
-    padding: 0 !important;
-    line-height: 1.6 !important;
-    border: none !important;
+    font-size: var(--translation-font-size);
+    color: #777;
+    margin: 2px 0 6px 0;
+    padding: 0 0 0 12px;
+    line-height: 1.5;
+    border-left: 2px solid #d4a574;
     font-style: italic;
 }
 
