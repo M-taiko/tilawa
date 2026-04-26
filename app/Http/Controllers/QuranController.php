@@ -38,17 +38,8 @@ class QuranController extends Controller
             abort(404, 'الصفحة غير موجودة');
         }
 
-        // Check if PDF pages are available
-        $pdfPagePath = public_path('quran-pages/page-' . str_pad($pageNumber, 3, '0', STR_PAD_LEFT) . '.jpg');
-        $usePdfView = file_exists($pdfPagePath);
-
         $verses = $this->quranService->getPageVerses($pageNumber);
         $page = $this->quranService->getPageInfo($pageNumber);
-
-        // If PDF pages available, use the PDF view
-        if ($usePdfView) {
-            return view('quran.page-with-pdf', compact('verses', 'pageNumber'));
-        }
 
         // البسملة الفعلية من قاعدة البيانات (سورة 2 آية 1 تبدأ بها)
         static $basmalaPrefix = null;
